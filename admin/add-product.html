@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naarithread | Add Product</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png ">
+<link rel="stylesheet" href="admin.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+</head>
+
+<body class="admin-body">
+
+<!-- SIDEBAR -->
+<aside class="admin-sidebar">
+  <div class="sidebar-logo">
+    <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png">
+  </div>
+  <nav class="sidebar-menu">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="products.html" class="active">Products</a>
+    <a href="orders.html">Orders</a>
+    <a href="users.html">Users</a>
+    <a href="reports.html">Reports</a>
+    <a href="subscription.html">Subscriptions</a>
+    <a class="logout">Logout</a>
+  </nav>
+</aside>
+
+<main class="admin-main">
+
+<h1 class="page-title">Add New Product</h1>
+
+<form class="pro-form" id="productForm">
+
+<!-- BASIC INFO -->
+<div class="form-section">
+<h2>Basic Information</h2>
+
+<input type="text" placeholder="Product Name" required>
+<input type="text" placeholder="SKU Code">
+<textarea placeholder="Short Description"></textarea>
+<textarea placeholder="Full Description"></textarea>
+
+</div>
+
+<!-- PRICING -->
+<div class="form-section">
+<h2>Pricing</h2>
+
+<input type="number" id="originalPrice" placeholder="Original Price (₹)" required>
+<input type="number" id="discount" placeholder="Discount %" required>
+<input type="number" id="finalPrice" placeholder="Final Price" readonly>
+
+<label><input type="checkbox"> Show Discount Badge</label>
+
+</div>
+
+<!-- CATEGORY -->
+<div class="form-section">
+<h2>Category & Placement</h2>
+
+<select>
+<option>Select Signature Category</option>
+<option>Festive Wear</option>
+<option>Party Wear</option>
+<option>Lightweight</option>
+<option>Occasion Wear</option>
+</select>
+
+<label><input type="checkbox"> Show in Featured Lehengas</label>
+<label><input type="checkbox"> Show in Best Seller</label>
+<label><input type="checkbox"> Show in New Arrival</label>
+
+<h3>Collections</h3>
+<label><input type="checkbox"> Mirror Lehenga</label>
+<label><input type="checkbox"> Sequence Lehenga</label>
+<label><input type="checkbox"> Party Lehenga</label>
+
+</div>
+
+<!-- INVENTORY -->
+<div class="form-section">
+<h2>Inventory</h2>
+
+<input type="number" placeholder="Stock Quantity">
+<select>
+<option>In Stock</option>
+<option>Out of Stock</option>
+</select>
+
+</div>
+
+<!-- SIZES -->
+<div class="form-section">
+<h2>Available Sizes</h2>
+
+<div class="size-grid">
+<label><input type="checkbox"> XS</label>
+<label><input type="checkbox"> S</label>
+<label><input type="checkbox"> M</label>
+<label><input type="checkbox"> L</label>
+<label><input type="checkbox"> XL</label>
+<label><input type="checkbox"> XXL</label>
+<label><input type="checkbox"> Custom</label>
+</div>
+
+</div>
+
+<!-- FABRIC DETAILS -->
+<div class="form-section">
+<h2>Product Details</h2>
+
+<input type="text" placeholder="Fabric (e.g. Georgette)">
+<input type="text" placeholder="Work Type (e.g. Mirror Work)">
+<input type="text" placeholder="Occasion">
+<input type="text" placeholder="Care Instructions">
+
+</div>
+
+<!-- IMAGES -->
+<div class="form-section">
+<h2>Product Images</h2>
+
+<label>Main Image</label>
+<input type="file" required>
+
+<label>Gallery Images</label>
+<input type="file" multiple>
+
+</div>
+
+<button type="submit" class="submit-btn">Publish Product</button>
+
+</form>
+
+</main>
+
+<script>
+const originalPrice = document.getElementById("originalPrice");
+const discount = document.getElementById("discount");
+const finalPrice = document.getElementById("finalPrice");
+
+function calculatePrice(){
+let price = parseFloat(originalPrice.value);
+let disc = parseFloat(discount.value);
+if(!isNaN(price) && !isNaN(disc)){
+let final = price - (price * disc / 100);
+finalPrice.value = Math.round(final);
+}
+}
+
+originalPrice.addEventListener("input", calculatePrice);
+discount.addEventListener("input", calculatePrice);
+
+document.getElementById("productForm").addEventListener("submit", function(e){
+e.preventDefault();
+alert("Product Published Successfully (UI Only)");
+window.location.href = "products.html";
+});
+</script>
+
+</body>
+</html>

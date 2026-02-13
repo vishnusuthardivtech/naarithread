@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naarithread | Admin Dashboard</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png ">
+  <link rel="stylesheet" href="admin.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+
+<!-- SIDEBAR -->
+<aside class="admin-sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread">
+  </div>
+
+  <nav class="sidebar-menu">
+  <a href="dashboard.html" class="active" onclick="closeSidebar()">Dashboard</a>
+
+  <a href="products.html" onclick="closeSidebar()">Products</a>
+
+  <a href="orders.html" onclick="closeSidebar()">Orders</a>
+
+  <a href="users.html" onclick="closeSidebar()">Users</a>
+
+  <a href="reports.html" onclick="closeSidebar()">Reports</a>
+
+  <a href="subscription.html" onclick="closeSidebar()">Subscriptions</a>
+
+  <a href="index.html"   class="logout" onclick="closeSidebar()">Logout</a>
+</nav>
+
+</aside>
+
+<!-- MAIN -->
+<main class="admin-main">
+
+  <!-- TOP BAR -->
+  <div class="admin-topbar">
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <!-- <h1>Dashboard</h1> -->
+  </div>
+  
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- STATS -->
+
+  <div class="topbar">
+      <h1>Dashboard</h1>
+      </div>
+  <section class="dashboard-cards">
+    
+    <div class="dash-card">
+      <h3>Total Products</h3>
+      <span>0</span>
+    </div>
+
+    <div class="dash-card">
+      <h3>Total Orders</h3>
+      <span>0</span>
+    </div>
+
+    <div class="dash-card">
+      <h3>Pending Orders</h3>
+      <span>0</span>
+    </div>
+
+    <div class="dash-card">
+      <h3>Delivered</h3>
+      <span>0</span>
+    </div>
+  </section>
+
+</main>
+
+<script src="admin.js"></script>
+</body>
+</html>

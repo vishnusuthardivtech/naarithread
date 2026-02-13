@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naarithread | users</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png ">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+
+  <!-- <style>
+   
+  </style> -->
+</head>
+<body class="admin-body">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread">
+  </div>
+
+  <nav class="sidebar-menu">
+  <a href="dashboard.html"  onclick="closeSidebar()">Dashboard</a>
+
+  <a href="products.html"  onclick="closeSidebar()">Products</a>
+
+  <a href="orders.html"  onclick="closeSidebar()">Orders</a>
+
+  <a href="users.html" class="active" onclick="closeSidebar()">Users</a>
+
+  <a href="reports.html" onclick="closeSidebar()">Reports</a>
+
+  <a href="subscription.html" onclick="closeSidebar()">Subscriptions</a>
+
+  <a href="index.html" class="logout" onclick="closeSidebar()">Logout</a>
+</nav>
+
+</aside>
+
+<!-- MAIN -->
+<main class="admin-main">
+
+  <!-- TOP BAR -->
+  <div class="admin-topbar">
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <!-- <h1>Dashboard</h1> -->
+  </div>
+  
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+
+  <!-- MAIN CONTENT -->
+ 
+
+    <h1 class="page-title">Users</h1>
+
+    <div class="users-wrapper">
+
+      <!-- USER ROW -->
+      <div class="user-card">
+        <div class="user-info">
+          <h3>Vishnu Suthar</h3>
+          <p>vishnusuthar.divtech@gmail.com</p>
+        </div>
+
+        <div class="user-meta">
+          <span><strong>Joined:</strong> 12 Jan 2026</span>
+          <span><strong>Orders:</strong> 3</span>
+        </div>
+      </div>
+
+      <!-- USER ROW -->
+      <div class="user-card">
+        <div class="user-info">
+          <h3>Anjali Shah</h3>
+          <p>anjali.shah@gmail.com</p>
+        </div>
+
+        <div class="user-meta">
+          <span><strong>Joined:</strong> 18 Jan 2026</span>
+          <span><strong>Orders:</strong> 1</span>
+        </div>
+      </div>
+
+      <!-- USER ROW -->
+      <div class="user-card">
+        <div class="user-info">
+          <h3>Pooja Mehta</h3>
+          <p>pooja.mehta@gmail.com</p>
+        </div>
+
+        <div class="user-meta">
+          <span><strong>Joined:</strong> 22 Jan 2026</span>
+          <span><strong>Orders:</strong> 5</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+<script src="admin.js"></script>
+</body>
+</html>

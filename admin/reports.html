@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naarithread | reports</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png ">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+
+  <!-- <style>
+   
+  </style> -->
+</head>
+<body class="admin-body">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread">
+  </div>
+
+   <nav class="sidebar-menu">
+  <a href="dashboard.html"  onclick="closeSidebar()">Dashboard</a>
+
+  <a href="products.html"  onclick="closeSidebar()">Products</a>
+
+  <a href="orders.html"  onclick="closeSidebar()">Orders</a>
+
+  <a href="users.html"  onclick="closeSidebar()">Users</a>
+
+  <a href="reports.html" class="active" onclick="closeSidebar()">Reports</a>
+
+  <a href="subscription.html" onclick="closeSidebar()">Subscriptions</a>
+
+  <a href="index.html" class="logout" onclick="closeSidebar()">Logout</a>
+</nav>
+
+</aside>
+
+<!-- MAIN -->
+<main class="admin-main">
+
+  <!-- TOP BAR -->
+  <div class="admin-topbar">
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <!-- <h1>Dashboard</h1> -->
+  </div>
+  
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+
+  <!-- MAIN -->
+
+
+    <!-- HEADER -->
+    <div class="reports-header">
+      <div>
+        <h1 class="page-title">Reports & Analytics</h1>
+        <p class="page-sub">Overview of your store performance</p>
+      </div>
+
+      <div class="report-actions">
+        <select class="filter-select">
+          <option>All Time</option>
+          <option>Last 7 Days</option>
+          <option>Last 30 Days</option>
+          <option>Last 90 Days</option>
+        </select>
+
+        <button class="export-btn">Export Report</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <section class="report-stats">
+      <div class="stat-card">
+        <p>Total Revenue</p>
+        <h2>₹124,500</h2>
+        <span class="up">↑ 12.5%</span>
+      </div>
+
+      <div class="stat-card">
+        <p>Total Orders</p>
+        <h2>1,432</h2>
+        <span class="up">↑ 8.2%</span>
+      </div>
+
+      <div class="stat-card">
+        <p>Total Customers</p>
+        <h2>892</h2>
+        <span class="up">↑ 15.3%</span>
+      </div>
+
+      <div class="stat-card">
+        <p>Avg Order Value</p>
+        <h2>₹1,525</h2>
+        <span class="down">↓ 3.1%</span>
+      </div>
+    </section>
+
+    <!-- CHARTS -->
+    <section class="charts-grid">
+      <div class="chart-card">
+        <h3>Revenue Analytics</h3>
+        <canvas id="revenueChart"></canvas>
+      </div>
+
+      <div class="chart-card">
+        <h3>Order Status</h3>
+        <canvas id="orderStatusChart"></canvas>
+      </div>
+    </section>
+
+    <!-- TOP PRODUCTS -->
+    <section class="top-products">
+      <div class="table-header">
+        <h3>Top Selling Products</h3>
+        <a href="#">View All</a>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Sales</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td data-label="Product">Ruby Festive Lehenga</td>
+          <td data-label="Category">Festive</td>
+          <td data-label="Sales">120</td>
+          <td data-label="Revenue">₹24,000</td>
+        </tr>
+
+          <tr>
+  <td data-label="Product">Midnight Elegance</td>
+  <td data-label="Category">Party</td>
+  <td data-label="Sales">210</td>
+  <td data-label="Revenue">₹63,000</td>
+</tr>
+
+<tr>
+  <td data-label="Product">Ivory Grace</td>
+  <td data-label="Category">Wedding</td>
+  <td data-label="Sales">85</td>
+  <td data-label="Revenue">₹42,500</td>
+</tr>
+
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="admin.js"></script>
+  <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const revenueCanvas = document.getElementById("revenueChart");
+  const orderCanvas = document.getElementById("orderStatusChart");
+
+  if (revenueCanvas) {
+    new Chart(revenueCanvas, {
+      type: 'line',
+      data: {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul'],
+        datasets: [{
+          data: [4000, 3000, 2000, 2800, 1900, 2500, 3500],
+          borderColor: '#d4af37',
+          backgroundColor: 'rgba(212,175,55,0.25)',
+          borderWidth: 3,
+          pointRadius: 5,
+          pointBackgroundColor: '#d4af37',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            ticks: { color: '#ccc' },
+            grid: { color: 'rgba(255,255,255,0.08)' }
+          },
+          x: {
+            ticks: { color: '#ccc' },
+            grid: { color: 'rgba(255,255,255,0.05)' }
+          }
+        }
+      }
+    });
+  }
+
+  if (orderCanvas) {
+    new Chart(orderCanvas, {
+      type: 'doughnut',
+      data: {
+        labels: ['Delivered', 'Processing', 'Cancelled', 'Pending'],
+        datasets: [{
+          data: [400, 300, 100, 200],
+          backgroundColor: [
+            '#2ecc71',
+            '#3498db',
+            '#e74c3c',
+            '#f39c12'
+          ],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: { color: '#ccc' }
+          }
+        }
+      }
+    });
+  }
+
+});
+</script>
+
+</body>
+</html>

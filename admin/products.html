@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naarithread | Admin Products</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png ">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+
+ 
+</head>
+
+
+
+<body class="admin-body">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread">
+    </div>
+
+    <nav class="sidebar-menu">
+      <a href="dashboard.html" onclick="closeSidebar()">Dashboard</a>
+      <a href="products.html" class="active" onclick="closeSidebar()">Products</a>
+      <a href="orders.html" onclick="closeSidebar()">Orders</a>
+      <a href="users.html" onclick="closeSidebar()">Users</a>
+      <a href="reports.html" onclick="closeSidebar()">Reports</a>
+      <a href="subscription.html" onclick="closeSidebar()">Subscriptions</a>
+      <a href="index.html" class="logout" onclick="closeSidebar()">Logout</a>
+    </nav>
+  </aside>
+
+  <!-- OVERLAY (ONLY ONE PLACE) -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+  <!-- MAIN CONTENT -->
+  <main class="admin-main">
+
+    <!-- TOP BAR -->
+    <div class="admin-topbar">
+      <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    </div>
+
+    <!-- PAGE CONTENT -->
+    <div class="topbar">
+      <h1>Products</h1>
+      <a href="add-product.html">
+  <button class="add-btn">+ Add Product</button>
+</a>
+
+    </div>
+
+    <div class="product-grid">
+      <div class="product-card">
+        <div class="product-image">
+          <img src="../featured lehengas/1.jpg">
+        </div>
+        <div class="product-info">
+          <h3>Ruby Festive Lehenga</h3>
+          <p>Category: Festive</p>
+          <div class="price">₹4,999</div>
+        </div>
+        <div class="actions">
+          <button class="edit">Edit</button>
+          <button class="delete">Delete</button>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-image">
+          <img src="../featured lehengas/2.jpg">
+        </div>
+        <div class="product-info">
+          <h3>Midnight Elegance</h3>
+          <p>Category: Party</p>
+          <div class="price">₹5,499</div>
+        </div>
+        <div class="actions">
+          <button class="edit">Edit</button>
+          <button class="delete">Delete</button>
+        </div>
+      </div>
+
+    </div>
+    </div>
+
+  </main>
+
+  <script src="admin.js"></script>
+</body>
+
+</html>
