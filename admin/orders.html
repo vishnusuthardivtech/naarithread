@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naarithread | Orders</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png ">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+
+  <!-- <style>
+   
+  </style> -->
+</head>
+<body class="admin-body">
+
+  <!-- SIDEBAR -->
+  <aside class="admin-sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread">
+  </div>
+
+  <nav class="sidebar-menu">
+  <a href="dashboard.html"  onclick="closeSidebar()">Dashboard</a>
+
+  <a href="products.html"  onclick="closeSidebar()">Products</a>
+
+  <a href="orders.html" class="active" onclick="closeSidebar()">Orders</a>
+
+  <a href="users.html" onclick="closeSidebar()">Users</a>
+
+  <a href="reports.html" onclick="closeSidebar()">Reports</a>
+
+  <a href="subscription.html" onclick="closeSidebar()">Subscriptions</a>
+
+  <a href="index.html" class="logout" onclick="closeSidebar()">Logout</a>
+</nav>
+
+</aside>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<!-- MAIN -->
+<main class="admin-main">
+
+  <!-- TOP BAR -->
+  <div class="admin-topbar">
+    <button class="hamburger" onclick="toggleSidebar()">☰</button>
+    <!-- <h1>Dashboard</h1> -->
+  </div>
+  
+
+
+
+
+  <!-- MAIN CONTENT -->
+ 
+
+    <h1 class="page-title">Orders</h1>
+
+    <div class="orders-wrapper">
+
+      <!-- ORDER ROW -->
+      <div class="order-card">
+        <div class="order-info">
+          <p><strong>Order ID:</strong> #NT1023</p>
+          <p><strong>Customer:</strong> Riya Patel</p>
+          <p><strong>Product:</strong> Ruby Festive Lehenga</p>
+          <p><strong>Amount:</strong> ₹4,999</p>
+        </div>
+
+        <div class="order-status pending">
+          Pending
+        </div>
+
+        <div class="order-action">
+          <button class="deliver-btn">Mark as Delivered</button>
+        </div>
+      </div>
+
+      <!-- ORDER ROW -->
+      <div class="order-card">
+        <div class="order-info">
+          <p><strong>Order ID:</strong> #NT1024</p>
+          <p><strong>Customer:</strong> Anjali Shah</p>
+          <p><strong>Product:</strong> Midnight Elegance</p>
+          <p><strong>Amount:</strong> ₹5,499</p>
+        </div>
+
+        <div class="order-status delivered">
+          Delivered
+        </div>
+
+        <div class="order-action">
+          <button class="deliver-btn disabled">Delivered</button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+<script src="admin.js"></script>
+</body>
+</html>

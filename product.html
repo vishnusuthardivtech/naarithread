@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naarithread-Trendy & Elegant Lehengas</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="page-load">
+
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+
+<header class="navbar" id="navbar">
+    <!-- LOGO -->
+    <div class="logo">
+        <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread">
+    </div>
+
+   <!-- MENU -->
+    <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+
+
+        <div class="nav-item mega-dropdown">
+   <a href="#" class="nav-link collections-trigger">Collections</a>
+<a href="collection1.html">
+  <div class="mega-menu">
+    <div class="mega-card">
+      <img src="best seller\1.jpg" alt="Mirror Lehenga">
+      <button class="mega-btn">Mirror Lehenga</button>
+
+    </div>
+</a>
+<a href="collection2.html">
+    <div class="mega-card">
+      <img src="best seller\2.jpg" alt="Sequence Lehenga">
+     <button class="mega-btn">Sequence Lehenga</button>
+
+    </div>
+</a>
+<a href="collection3.html">
+    <div class="mega-card">
+      <img src="best seller\3.jpg" alt="Black Lehenga">
+      <button class="mega-btn">Party Lehenga</button>
+    </div>
+    </a>
+  </div>
+</div>
+
+
+        <a href="new-arrival.html">New Arrival</a>
+        <a href="best-seller.html">Best Seller </a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <!-- ICONS -->
+    <div class="nav-icons">
+        <!-- SEARCH ICON -->
+<div class="icon-wrapper search-trigger" id="searchTrigger">
+  <svg class="icon" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="8"/>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+</div>
+        <!-- Account -->
+        <div class="user-menu" id="userMenu">
+  <div class="user-trigger" id="userTrigger">
+    <svg class="icon" viewBox="0 0 24 24">
+      <circle cx="12" cy="7" r="4"/>
+      <path d="M5.5 21a6.5 6.5 0 0 1 13 0"/>
+    </svg>
+    <span id="userNameDisplay"></span>
+  </div>
+
+  <div class="user-dropdown" id="userDropdown">
+    <a href="order.html">My Orders</a>
+    <a href="account.html">My Account</a>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</div>
+        <!-- Wishlist -->
+         <a href="wishlist.html" class="icon-wrapper cart-link">
+        <div class="icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+            </svg>
+          <span class="badge pulse wishlist-badge">0</span>
+
+        </div>
+</a>
+        <!-- Cart -->
+         <a href="cart.html" class="icon-wrapper cart-link">
+        <div class="icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24">
+                <circle cx="9" cy="21" r="1"/>
+                <circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.6 13h11.8l2-8H6"/>
+            </svg>
+           <span class="badge pulse cart-badge">0</span>
+
+        </div>
+</a>
+        <!-- HAMBURGER -->
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</header>
+
+
+
+<!-- SEARCH BAR PANEL (MUST BE HERE) -->
+<div class="nav-search-panel" id="navSearchPanel">
+  <div class="search-box">
+    <input
+      type="text"
+      id="navSearchInput"
+      placeholder="Search lehengas, styles, colors..."
+    />
+    <button class="search-close" id="searchClose">✕</button>
+  </div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<main class="pdp-page">
+
+<section class="pdp-container">
+
+  <!-- LEFT: PRODUCT IMAGES -->
+ <div class="pdp-gallery">
+
+  <!-- MAIN IMAGE WRAPPER -->
+  <div class="pdp-main-wrapper">
+
+    <button class="gallery-arrow left" onclick="prevImage()">&#10094;</button>
+
+    <img id="mainProductImage" src="featured lehengas/1.jpg" alt="Lehenga">
+
+    <button class="gallery-arrow right" onclick="nextImage()">&#10095;</button>
+
+  </div>
+
+  <!-- THUMBNAIL SLIDER -->
+  <div class="thumbnail-wrapper">
+
+  <button class="thumb-arrow left" onclick="prevThumb()">&#10094;</button>
+
+  <div class="thumb-viewport">
+    <div class="pdp-thumbnails" id="thumbnailTrack">
+      <img src="featured lehengas/1.jpg" onclick="selectImage(0)">
+      <img src="featured lehengas/2.jpg" onclick="selectImage(1)">
+      <img src="featured lehengas/3.jpg" onclick="selectImage(2)">
+      <img src="featured lehengas/4.jpg" onclick="selectImage(3)">
+      <img src="featured lehengas/5.jpg" onclick="selectImage(4)">
+      <img src="featured lehengas/6.jpg" onclick="selectImage(5)">
+    </div>
+  </div>
+
+  <button class="thumb-arrow right" onclick="nextThumb()">&#10095;</button>
+
+</div>
+
+
+</div>
+
+
+  <!-- RIGHT: PRODUCT INFO -->
+  <div class="pdp-details">
+
+    <h1 class="pdp-title">Ruby Festive Lehenga</h1>
+
+    <!-- Rating -->
+    <div class="pdp-rating">
+      ⭐ 4.8 <span>(126 Reviews)</span>
+    </div>
+
+    <!-- Price -->
+    <div class="pdp-price-box">
+      <span class="pdp-mrp">₹14,999</span>
+      <span class="pdp-price">₹4,999</span>
+      <span class="pdp-discount">67% OFF</span>
+    </div>
+
+    <!-- Description -->
+    <p class="pdp-description">
+      A royal ruby lehenga crafted with mirror embroidery,
+      designed for festive evenings and modern celebrations.
+      Lightweight, elegant and timeless.
+    </p>
+
+    <!-- Size Selection -->
+    <div class="pdp-size-section">
+      <h4>Select Size</h4>
+      <div class="pdp-sizes">
+        <button class="size-btn">S</button>
+        <button class="size-btn">M</button>
+        <button class="size-btn">L</button>
+        <button class="size-btn">XL</button>
+      </div>
+    </div>
+
+    <!-- Quantity -->
+    <div class="pdp-quantity">
+      <button onclick="decreaseQty()">-</button>
+      <span id="qty">1</span>
+      <button onclick="increaseQty()">+</button>
+    </div>
+
+    <!-- Buttons -->
+    <div class="pdp-buttons">
+      <button class="royal-btn royal-outline" id="mainAddBtn" disabled>
+  Add to Cart
+</button>
+      <button class="royal-btn royal-gold" onclick="buyNow()">Buy Now</button>
+      <button class="pdp-wishlist">
+  <span>❤</span>
+</button>
+
+    </div>
+
+    <!-- Trust Badges -->
+    <div class="pdp-trust">
+  <div class="trust-item">
+    <span class="trust-icon">✦</span>
+    <span>Secure Payment</span>
+  </div>
+
+  <div class="trust-item">
+    <span class="trust-icon">✦</span>
+    <span>Easy Returns</span>
+  </div>
+
+  <div class="trust-item">
+    <span class="trust-icon">✦</span>
+    <span>Free Shipping</span>
+  </div>
+</div>
+
+
+  </div>
+
+</section>
+
+<!-- PRODUCT DESCRIPTION TABS -->
+<section class="pdp-tabs">
+
+  <div class="tab-buttons">
+    <button class="tab-btn active" onclick="openTab('desc')">Description</button>
+    <button class="tab-btn" onclick="openTab('details')">Product Details</button>
+    <button class="tab-btn" onclick="openTab('reviews')">Reviews</button>
+  </div>
+
+  <div class="tab-content active" id="desc">
+    <p>
+     ✦ This lehenga features premium mirror work with a flowing silhouette,
+      perfect for sangeet, festive parties, and family occasions.
+      <br><br>
+       
+       
+      ✦ This lehenga features premium mirror work with a flowing silhouette,
+      perfect for sangeet, festive parties, and family occasions.
+      <br><br>
+      ✦ This lehenga features premium mirror work with a flowing silhouette,
+      perfect for sangeet, festive parties, and family occasions.
+      <br><br>
+     ✦ This lehenga features premium mirror work with a flowing silhouette,
+      perfect for sangeet, festive parties, and family occasions.
+      <br><br>
+
+     ✦ This lehenga features premium mirror work with a flowing silhouette,
+      perfect for sangeet, festive parties, and family occasions.
+      <br><br>
+      
+     ✦ This lehenga features premium mirror work with a flowing silhouette,
+      perfect for sangeet, festive parties, and family occasions.
+    </p>
+  </div>
+
+  <div class="tab-content" id="details">
+    <ul>
+      <li>Fabric: Georgette</li>
+      <li>Work: Mirror Embroidery</li>
+      <li>Occasion: Festive / Party</li>
+      <li>Made in Surat</li>
+    </ul>
+  </div>
+
+  <div class="tab-content" id="reviews">
+    <p>⭐ 4.8 out of 5 based on 126 reviews.</p>
+  </div>
+
+</section>
+
+</main>
+
+
+
+
+
+
+
+
+
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    --> 
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+
+<div class="luxury-footer">
+
+<div class="container">
+  <div class="footer-wrapper">
+
+    <!-- BRAND -->
+    <div class="footer-brand">
+      <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread Logo" class="footer-logo">
+
+      <p class="brand-desc">
+        Timeless royal elegance in non-bridal lehengas, crafted for modern women with heritage and grace. <br>
+        Mo. No. :- 7990645085 <br>
+        Email id:-naarithread@gmail.com
+      </p>
+
+      <div class="social-icons">
+        <a href="https://www.instagram.com/naarithread.co?igsh=aG11ZWV3ZWtjbnRv" target="_blank">
+          <img src="icon/instagram.svg">
+        </a>
+        <a href="#" target="_blank">
+          <img src="icon/facebook-logo.svg">
+        </a>
+        <a href="https://youtube.com/@naarithread?si=iaUBTbwmyKBUBuQZ" target="_blank">
+          <img src="icon/youtube.svg">
+        </a>
+      </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="footer-links">
+      <h4>Shop</h4>
+      <a href="collection1.html">Collections</a>
+      <a href="new-arrival.html">New Arrivals</a>
+      <a href="best-seller.html">Best Sellers</a>
+      <a href="collection2.html">Lehengas</a>
+    </div>
+
+    <div class="footer-links">
+      <h4>Customer</h4>
+      <a href="login.html">My Account</a>
+      <a href="order.html">Orders</a>
+      <a href="wishlist.html">Wishlist</a>
+      <a href="Faq.html">FAQs</a>
+    </div>
+
+    <div class="footer-links">
+      <h4>Company</h4>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms & Conditions</a>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="footer-newsletter">
+      <h4>Newsletter Signup</h4>
+      <p>Be the first to know about exclusive launches & offers.</p>
+
+      <div class="newsletter-input">
+        <input type="email" placeholder="Your email address">
+        <button>Subscribe</button>
+      </div>
+
+      <div class="payment-icons">
+        <img src="icon/visa.svg">
+        <img src="icon/mastercard.svg">
+        <img src="icon/google-pay.svg">
+        <img src="icon/paytm.svg">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 Naarithread All Right Reserved  — Crafted with Royal Elegance
+  </div>
+  </div>
+</div>
+</footer>
+</div>
+
+</div>
+
+
+
+<!-- MOBILE COLLECTION MENU -->
+<div class="mobile-collections" id="mobileCollections">
+  <div class="mobile-collections-header">
+    <span>Collections</span>
+    <button id="closeCollections">✕</button>
+  </div>
+
+  <a href="collection1.html">Mirror Lehenga</a>
+  <a href="collection2.html">Sequence Lehenga</a>
+  <a href="collection3.html">Party Lehenga</a>
+</div>
+
+
+
+
+
+<!-- STICKY MOBILE CART -->
+<div class="sticky-cart-bar">
+  <div class="sticky-price">₹4,999</div>
+  <button class="sticky-add-btn" id="stickyAddBtn" disabled>
+  Add to Cart
+</button>
+</div>
+
+
+
+
+
+
+<!-- ADD TO CART TOAST -->
+<div class="cart-toast" id="cartToast">
+  <div class="toast-content">
+    <span>✔ Added to Cart</span>
+    <a href="cart.html">View Cart</a>
+  </div>
+</div>
+
+
+
+<script> 
+// ================= USER DROPDOWN CONTROL =================
+
+const loggedUser = JSON.parse(localStorage.getItem("ntLoggedInUser"));
+
+const userTrigger = document.getElementById("userTrigger");
+const userDropdown = document.getElementById("userDropdown");
+const userNameDisplay = document.getElementById("userNameDisplay");
+const logoutBtn = document.getElementById("logoutBtn");
+
+if(loggedUser){
+
+  // userNameDisplay.textContent = loggedUser.name;
+
+  userTrigger.addEventListener("click", function(){
+    userDropdown.classList.toggle("show");
+  });
+
+  logoutBtn.addEventListener("click", function(){
+    localStorage.removeItem("ntLoggedInUser");
+    window.location.reload();
+  });
+
+} else {
+
+  userTrigger.addEventListener("click", function(){
+    window.location.href = "login.html";
+  });
+
+}
+
+
+</script>
+
+<script src="script.js"></script>
+<script src="search.js"></script>
+<script src="mobile.js"></script>
+
+
+</body>
+
+</html>

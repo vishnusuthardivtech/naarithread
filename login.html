@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login – Naarithread</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="auth-clean auth-lock">
+
+  <div class="auth-wrapper">
+
+    <div class="auth-card">
+
+      <!-- BRAND -->
+      <div class="auth-brand-top">
+        <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread">
+        <h1>Naarithread</h1>
+      </div>
+
+      <!-- TITLE -->
+      <h2>Sign in</h2>
+      <p class="auth-sub">
+        Sign in or create an account
+      </p>
+
+      <!-- PRIMARY ACTION -->
+      <button class="auth-primary-btn" onclick="goToSignIn()">
+  Continue with Naarithread
+</button>
+
+
+      <!-- GOOGLE (UI ONLY) -->
+      <button class="auth-google-btn">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg">
+        Continue with Google
+      </button>
+
+      <!-- DIVIDER -->
+      <div class="auth-divider">
+        <span>or</span>
+      </div>
+
+      <!-- EMAIL -->
+      <input
+        type="email"
+        placeholder="Email"
+        class="auth-input"
+      >
+
+      <button class="auth-submit">
+        Continue
+      </button>
+
+    </div>
+
+    <!-- FOOTER LINKS -->
+    <div class="auth-footer">
+      <a href="#">Privacy policy</a>
+      <a href="#">Terms of service</a>
+    </div>
+
+  </div>
+<script>
+  function goToSignIn() {
+    window.location.href = "signin.html";
+  }
+</script>
+
+
+</body>
+</html>

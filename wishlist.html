@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Naarithread-Trendy & Elegant Lehengas</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="page-load">
+
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+<!--   ======================navbar=======================    -->
+
+<header class="navbar" id="navbar">
+    <!-- LOGO -->
+    <div class="logo">
+        <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread">
+    </div>
+
+   <!-- MENU -->
+    <nav class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+
+
+        <div class="nav-item mega-dropdown">
+ <a href="#" class="nav-link collections-trigger">Collections</a>
+<a href="collection1.html">
+  <div class="mega-menu">
+    <div class="mega-card">
+      <img src="best seller\1.jpg" alt="Mirror Lehenga">
+      <button class="mega-btn">Mirror Lehenga</button>
+
+    </div>
+</a>
+<a href="collection2.html">
+    <div class="mega-card">
+      <img src="best seller\2.jpg" alt="Sequence Lehenga">
+     <button class="mega-btn">Sequence Lehenga</button>
+
+    </div>
+</a>
+<a href="collection3.html">
+    <div class="mega-card">
+      <img src="best seller\3.jpg" alt="Black Lehenga">
+      <button class="mega-btn">Party Lehenga</button>
+    </div>
+    </a>
+  </div>
+</div>
+
+
+        <a href="new-arrival.html">New Arrival</a>
+        <a href="best-seller.html">Best Seller </a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+    </nav>
+
+    <!-- ICONS -->
+    <div class="nav-icons">
+        <!-- SEARCH ICON -->
+<div class="icon-wrapper search-trigger" id="searchTrigger">
+  <svg class="icon" viewBox="0 0 24 24">
+    <circle cx="11" cy="11" r="8"/>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+</div>
+        <!-- Account -->
+        <div class="user-menu" id="userMenu">
+  <div class="user-trigger" id="userTrigger">
+    <svg class="icon" viewBox="0 0 24 24">
+      <circle cx="12" cy="7" r="4"/>
+      <path d="M5.5 21a6.5 6.5 0 0 1 13 0"/>
+    </svg>
+    <span id="userNameDisplay"></span>
+  </div>
+
+  <div class="user-dropdown" id="userDropdown">
+    <a href="order.html">My Orders</a>
+    <a href="account.html">My Account</a>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</div>
+        <!-- Wishlist -->
+         <a href="wishlist.html" class="icon-wrapper cart-link">
+        <div class="icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
+            </svg>
+            <span class="badge pulse wishlist-badge">0</span>
+
+        </div>
+</a>
+        <!-- Cart -->
+         <a href="cart.html" class="icon-wrapper cart-link">
+        <div class="icon-wrapper">
+            <svg class="icon" viewBox="0 0 24 24">
+                <circle cx="9" cy="21" r="1"/>
+                <circle cx="20" cy="21" r="1"/>
+                <path d="M1 1h4l2.6 13h11.8l2-8H6"/>
+            </svg>
+            <span class="badge pulse cart-badge">0</span>
+
+        </div>
+</a>
+        <!-- HAMBURGER -->
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+</header>
+
+
+<!-- SEARCH BAR PANEL (MUST BE HERE) -->
+<div class="nav-search-panel" id="navSearchPanel">
+  <div class="search-box">
+    <input
+      type="text"
+      id="navSearchInput"
+      placeholder="Search lehengas, styles, colors..."
+    />
+    <button class="search-close" id="searchClose">✕</button>
+  </div>
+</div>
+<!--   ======================Wishlist card=======================    -->
+<!--   ======================Wishlist card=======================    -->
+<!--   ======================Wishlist card=======================    -->
+<!--   ======================Wishlist card=======================    -->
+<!--   ======================Wishlist card=======================    -->
+
+<section class="wishlist-page">
+  <h1 class="wishlist-title">
+    Your Wishlist (<span id="wishlistCount">0</span>)
+  </h1>
+
+  <div class="wishlist-grid" id="wishlistGrid"></div>
+
+  <!-- EMPTY STATE -->
+  <div class="wishlist-empty" id="wishlistEmpty" style="display:none;">
+    <h2>Your wishlist is waiting 💛</h2>
+    
+    <p>Save your favorite lehengas here.</p>
+    <br>
+    <a href="index.html" class="hero-btn">Explore Collections</a>
+  </div>
+</section>
+
+
+<style>
+.wishlist-page{
+  padding:100px 6%;
+  background:radial-gradient(circle at top,#2b0000,#000);
+  color:#fff;
+  min-height:100vh;
+}
+
+.wishlist-title{
+  text-align:center;
+  font-size:42px;
+  color:#d4af37;
+  margin-bottom:60px;
+  font-family:'Playfair Display',serif;
+}
+
+.wishlist-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+  gap:30px;
+}
+
+.wishlist-card {
+  background: #000;
+  border-radius: 22px;
+  border: 1px solid rgba(212,175,55,0.5);
+  overflow: hidden;
+  transition: all 0.4s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.wishlist-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 25px 60px rgba(212,175,55,0.25);
+}
+
+
+.wishlist-image{
+  position:relative;
+}
+
+.wishlist-image img{
+  width:100%;
+  height:380px;
+  object-fit:cover;
+}
+
+.remove-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #d4af37, #b8962e);
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(212,175,55,0.4);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.remove-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 28px rgba(212,175,55,0.6);
+   color: #000;
+}
+
+
+.wishlist-info {
+  padding: 22px 18px 26px;
+  text-align: center;
+  background: #000;
+}
+
+.wishlist-info h3 {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.price {
+  color: #d4af37;
+  font-weight: 600;
+  
+}
+
+
+
+
+.wishlist-empty{
+  text-align:center;
+  margin-top:80px;
+}
+
+
+
+.move-btn {
+  background: linear-gradient(135deg,#d4af37,#b8962e);
+  border: none;
+  padding: 12px 28px;
+  border-radius: 40px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 12px;
+}
+
+.move-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(212,175,55,0.4);
+}
+
+.move-btn:active {
+  transform: scale(0.95);
+} 
+
+</style>
+
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<!--   ====================== Footer =======================    -->
+<div class="luxury-footer">
+
+<div class="container">
+  <div class="footer-wrapper">
+
+    <!-- BRAND -->
+    <div class="footer-brand">
+      <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread Logo" class="footer-logo">
+
+      <p class="brand-desc">
+        Timeless royal elegance in non-bridal lehengas, crafted for modern women with heritage and grace. <br>
+        Mo. No. :- 7990645085 <br>
+        Email id:-naarithread@gmail.com
+      </p>
+
+      <div class="social-icons">
+        <a href="https://www.instagram.com/naarithread.co?igsh=aG11ZWV3ZWtjbnRv" target="_blank">
+          <img src="icon/instagram.svg">
+        </a>
+        <a href="#" target="_blank">
+          <img src="icon/facebook-logo.svg">
+        </a>
+        <a href="https://youtube.com/@naarithread?si=iaUBTbwmyKBUBuQZ" target="_blank">
+          <img src="icon/youtube.svg">
+        </a>
+      </div>
+    </div>
+
+    <!-- LINKS -->
+    <div class="footer-links">
+      <h4>Shop</h4>
+      <a href="collection1.html">Collections</a>
+      <a href="new-arrival.html">New Arrivals</a>
+      <a href="best-seller.html">Best Sellers</a>
+      <a href="collection2.html">Lehengas</a>
+    </div>
+
+    <div class="footer-links">
+      <h4>Customer</h4>
+      <a href="login.html">My Account</a>
+      <a href="order.html">Orders</a>
+      <a href="wishlist.html">Wishlist</a>
+      <a href="Faq.html">FAQs</a>
+    </div>
+
+    <div class="footer-links">
+      <h4>Company</h4>
+      <a href="about.html">About Us</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms & Conditions</a>
+    </div>
+
+    <!-- NEWSLETTER -->
+    <div class="footer-newsletter">
+      <h4>Newsletter Signup</h4>
+      <p>Be the first to know about exclusive launches & offers.</p>
+
+      <div class="newsletter-input">
+        <input type="email" placeholder="Your email address">
+        <button>Subscribe</button>
+      </div>
+
+      <div class="payment-icons">
+        <img src="icon/visa.svg">
+        <img src="icon/mastercard.svg">
+        <img src="icon/google-pay.svg">
+        <img src="icon/paytm.svg">
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    © 2026 Naarithread All Right Reserved  — Crafted with Royal Elegance
+  </div>
+  </div>
+</div>
+</footer>
+</div>
+
+</div>
+
+
+<!-- MOBILE COLLECTION MENU -->
+<div class="mobile-collections" id="mobileCollections">
+  <div class="mobile-collections-header">
+    <span>Collections</span>
+    <button id="closeCollections">✕</button>
+  </div>
+
+  <a href="collection1.html">Mirror Lehenga</a>
+  <a href="collection2.html">Sequence Lehenga</a>
+  <a href="collection3.html">Party Lehenga</a>
+</div>
+
+
+
+
+
+
+
+
+<script src="script.js"></script>
+<script> 
+// ================= USER DROPDOWN CONTROL =================
+
+const loggedUser = JSON.parse(localStorage.getItem("ntLoggedInUser"));
+
+const userTrigger = document.getElementById("userTrigger");
+const userDropdown = document.getElementById("userDropdown");
+const userNameDisplay = document.getElementById("userNameDisplay");
+const logoutBtn = document.getElementById("logoutBtn");
+
+if(loggedUser){
+
+  // userNameDisplay.textContent = loggedUser.name;
+
+  userTrigger.addEventListener("click", function(){
+    userDropdown.classList.toggle("show");
+  });
+
+  logoutBtn.addEventListener("click", function(){
+    localStorage.removeItem("ntLoggedInUser");
+    window.location.reload();
+  });
+
+} else {
+
+  userTrigger.addEventListener("click", function(){
+    window.location.href = "login.html";
+  });
+
+}
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<!-- the wishlist logic javascript code  -->
+ <!-- the wishlist logic javascript code  -->
+  <!-- the wishlist logic javascript code  -->
+   <!-- the wishlist logic javascript code  --><!-- the wishlist logic javascript code  -->
+    <!-- the wishlist logic javascript code  -->
+     <!-- the wishlist logic javascript code  -->
+      <!-- the wishlist logic javascript code  --><!-- the wishlist logic javascript code  -->
+
+
+<!-- <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const user = JSON.parse(localStorage.getItem("ntLoggedInUser"));
+
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  const key = "wishlist_" + user.email;
+  const wishlist = JSON.parse(localStorage.getItem(key)) || [];
+
+  const grid = document.getElementById("wishlistGrid");
+  const empty = document.getElementById("wishlistEmpty");
+  const count = document.getElementById("wishlistCount");
+
+  count.textContent = wishlist.length; -->
+
+  <!-- grid.innerHTML = "";   // 🔥 IMPORTANT
+
+  if (wishlist.length === 0) {
+    empty.style.display = "block";
+    return;
+  }
+
+  wishlist.forEach(item => {
+
+    const card = document.createElement("div");
+    card.className = "wishlist-card";
+
+    card.innerHTML = `
+      <div class="wishlist-image">
+        <img src="${item.image}" />
+        <button class="remove-btn">✕</button>
+      </div>
+      <div class="wishlist-info">
+        <h3>${item.name}</h3>
+        <p class="price">₹${item.price}</p>
+        <button class="move-btn">Move to Cart</button>
+      </div>
+    `;
+
+
+
+    
+  // REMOVE BUTTON
+  card.querySelector(".remove-btn").addEventListener("click", function () {
+    const updated = wishlist.filter(p => p.id !== item.id);
+    localStorage.setItem(key, JSON.stringify(updated));
+    location.reload();
+  });
+
+  // MOVE TO CART BUTTON
+  card.querySelector(".move-btn").addEventListener("click", function () {
+
+    const user = JSON.parse(localStorage.getItem("ntLoggedInUser"));
+    if (!user) return;
+
+    const cartKey = "ntCart_" + user.email;
+
+    let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+
+    const alreadyExists = cart.find(p => p.id === item.id);
+
+    if (alreadyExists) {
+      alreadyExists.quantity += 1;
+    } else {
+      const cleanPrice = parseInt(
+  item.price.toString().replace(/[^0-9]/g, "")
+);
+
+cart.push({
+  id: item.id,
+  name: item.name,
+  price: cleanPrice,
+  image: item.image,
+  quantity: 1
+});
+
+    }
+
+    localStorage.setItem(cartKey, JSON.stringify(cart));
+
+    // Remove from wishlist
+    const updated = wishlist.filter(p => p.id !== item.id);
+    localStorage.setItem(key, JSON.stringify(updated));
+
+    // Update cart badge
+    if (typeof updateCartBadge === "function") {
+      updateCartBadge();
+    }
+
+    // Animation
+    card.style.transform = "scale(0.85)";
+    card.style.opacity = "0";
+
+    setTimeout(() => {
+      location.reload();
+    }, 300);
+
+  });
+
+  grid.appendChild(card);
+
+});
+
+
+
+
+});
+
+
+
+
+</script> -->
+
+
+
+
+<script src="search.js"></script>
+<script src="mobile.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sign In – Naarithread</title>
+<link rel="icon" type="image/png" href="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins&display=swap" rel="stylesheet">
+
+<style>
+.auth-clean{
+  background: radial-gradient(circle at top, #2b0000 0%, #000 60%);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px; /* IMPORTANT */
+  font-family:'Poppins',sans-serif;
+}
+
+
+.auth-card{
+  background:#000;
+  padding:50px 40px;
+  border-radius:20px;
+  border:1px solid rgba(212,175,55,0.4);
+  width:100%;
+  max-width:420px;   /* desktop max */
+  text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,0.8);
+}
+
+.auth-card h2{
+  font-family:'Playfair Display',serif;
+  color:#d4af37;
+  margin-bottom:10px;
+}
+
+.auth-sub{
+  color:#ccc;
+  margin-bottom:30px;
+  font-size:14px;
+}
+
+.auth-input{
+  width:100%;
+  padding:14px 18px;
+  margin-bottom:20px;
+  background:#111;
+  border:1px solid rgba(212,175,55,0.4);
+  border-radius:30px;
+  color:#fff;
+  outline:none;
+  transition:0.3s;
+}
+
+.auth-input:focus{
+  border-color:#d4af37;
+  box-shadow:0 0 12px rgba(212,175,55,0.4);
+}
+
+.auth-submit{
+  width:100%;
+  padding:14px;
+  border-radius:30px;
+  border:none;
+  background:linear-gradient(135deg,#d4af37,#b8962e);
+  color:#000;
+  font-weight:600;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+.auth-submit:hover{
+  box-shadow:0 10px 30px rgba(212,175,55,0.4);
+  transform:translateY(-2px);
+}
+/* ===== Auth Logo (New Unique Class) ===== */
+
+.nt-auth-logo{
+  margin-bottom:25px;
+  text-align:center;
+}
+
+.nt-auth-logo img{
+  width:130px;
+  max-width:100%;
+  height:auto;
+  filter: drop-shadow(0 10px 30px rgba(212,175,55,0.4));
+  transition:0.3s ease;
+}
+
+.nt-auth-logo img:hover{
+  transform:scale(1.05);
+}
+
+
+
+
+/* ===== RESPONSIVE FIX ===== */
+/* 
+@media (max-width: 768px){
+
+  .auth-clean{
+    align-items:flex-start;   /* prevents vertical cut */
+    /* padding:30px 16px;
+  }
+
+  .auth-card{
+    max-width:100%;
+    padding:35px 20px;
+  }
+
+}
+
+@media (max-width: 480px){
+
+  .auth-card{
+    padding:28px 16px;
+  }
+
+} */ 
+
+
+</style>
+</head>
+
+<body class="auth-clean">
+
+<div class="auth-card">
+<div class="nt-auth-logo">
+    <img src="ChatGPT Image Jan 6, 2026, 11_31_50 AM.png" alt="Naarithread Logo">
+</div>
+
+<h2>Sign In</h2>
+<p class="auth-sub">Welcome back to Naarithread</p>
+
+<form action="index.html">
+
+<input type="email" placeholder="Email Address" class="auth-input" required>
+<input type="password" placeholder="Password" class="auth-input" required>
+
+<button type="submit" class="auth-submit">Sign In</button>
+
+</form>
+
+<p style="margin-top:20px;color:#aaa;font-size:14px;">
+  Don’t have an account?
+  <a href="register.html" style="color:#d4af37;text-decoration:none;">Create Account</a>
+</p>
+
+</div>
+<script>
+document.querySelector("form").addEventListener("submit", function(e){
+
+  e.preventDefault();
+
+  const email = document.querySelector("input[type='email']").value.trim();
+  const password = document.querySelector("input[type='password']").value;
+
+  let users = JSON.parse(localStorage.getItem("ntUsers")) || [];
+
+  const validUser = users.find(user => 
+    user.email === email && user.password === password
+  );
+
+  if(!validUser){
+    alert("Invalid email or password");
+    return;
+  }
+
+  // Save session
+  localStorage.setItem("ntLoggedInUser", JSON.stringify(validUser));
+
+  window.location.href = "index.html";
+
+});
+</script>
+
+</body>
+</html>
