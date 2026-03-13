@@ -6,7 +6,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/naarithread/assets/featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured-lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
