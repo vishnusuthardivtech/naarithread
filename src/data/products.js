@@ -36,7 +36,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured-lehengas/4.jpg",
+      "image": "/assets/featured-lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -106,7 +106,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured-lehengas/3.jpg",
+      "image": "/assets/featured-lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -430,7 +430,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured-lehengas/3.jpg",
+      "image": "/assets/featured-lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -450,7 +450,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured-lehengas/5.jpg",
+      "image": "/assets/featured-lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -856,7 +856,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured-lehengas/5.jpg",
+      "image": "/assets/featured-lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -970,7 +970,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 5499,
       "priceLabel": "\u20B95,499",
-      "image": "featured-lehengas/2.jpg",
+      "image": "/assets/featured-lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1640,7 +1640,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured-lehengas/7.jpg",
+      "image": "/assets/featured-lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
