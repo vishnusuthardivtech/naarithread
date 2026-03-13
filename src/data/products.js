@@ -6,7 +6,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "assets/featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -16,7 +16,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -26,7 +26,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -46,7 +46,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -56,7 +56,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -66,7 +66,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -76,7 +76,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -86,7 +86,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -96,7 +96,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -116,7 +116,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -126,7 +126,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -136,7 +136,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -146,7 +146,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -156,7 +156,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -168,7 +168,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -178,7 +178,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -188,7 +188,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -198,7 +198,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -208,7 +208,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -218,7 +218,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -228,7 +228,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -238,7 +238,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -248,7 +248,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -258,7 +258,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -268,7 +268,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -278,7 +278,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -288,7 +288,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -298,7 +298,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -308,7 +308,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -318,7 +318,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     }
@@ -330,7 +330,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -340,7 +340,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -350,7 +350,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -360,7 +360,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -370,7 +370,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -380,7 +380,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -390,7 +390,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -400,7 +400,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -410,7 +410,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -420,7 +420,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -440,7 +440,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -460,7 +460,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -470,7 +470,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -480,7 +480,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -492,7 +492,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -502,7 +502,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -512,7 +512,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -522,7 +522,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -532,7 +532,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -542,7 +542,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -552,7 +552,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -562,7 +562,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -572,7 +572,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -582,7 +582,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -592,7 +592,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -602,7 +602,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -612,7 +612,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -622,7 +622,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -632,7 +632,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -642,7 +642,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -654,7 +654,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -664,7 +664,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -674,7 +674,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -684,7 +684,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -694,7 +694,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -704,7 +704,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -714,7 +714,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -724,7 +724,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -734,7 +734,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -744,7 +744,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -754,7 +754,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -764,7 +764,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -774,7 +774,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -784,7 +784,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -794,7 +794,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -804,7 +804,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -816,7 +816,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -826,7 +826,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 5499,
       "priceLabel": "\u20B95,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -836,7 +836,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -846,7 +846,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -866,7 +866,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -876,7 +876,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -886,7 +886,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -898,7 +898,7 @@ export const productsByPage = {
       "category": "Royal Red Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "best seller/1.jpg",
+      "image": "/naarithread/assets/best seller/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -908,7 +908,7 @@ export const productsByPage = {
       "category": "Festive Elegance",
       "price": 5499,
       "priceLabel": "\u20B95,499",
-      "image": "best seller/2.jpg",
+      "image": "/naarithread/assets/best seller/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -918,7 +918,7 @@ export const productsByPage = {
       "category": "Party Glam",
       "price": 6299,
       "priceLabel": "\u20B96,299",
-      "image": "best seller/3.jpg",
+      "image": "/naarithread/assets/best seller/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -928,7 +928,7 @@ export const productsByPage = {
       "category": "Minimal Grace",
       "price": 4299,
       "priceLabel": "\u20B94,299",
-      "image": "best seller/4.jpg",
+      "image": "/naarithread/assets/best seller/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -938,7 +938,7 @@ export const productsByPage = {
       "category": "Wedding Guest",
       "price": 5899,
       "priceLabel": "\u20B95,899",
-      "image": "best seller/5.jpg",
+      "image": "/naarithread/assets/best seller/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -948,7 +948,7 @@ export const productsByPage = {
       "category": "Classic Charm",
       "price": 6999,
       "priceLabel": "\u20B96,999",
-      "image": "best seller/6.jpg",
+      "image": "/naarithread/assets/best seller/6.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -960,7 +960,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -980,7 +980,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -990,7 +990,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1000,7 +1000,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1010,7 +1010,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1020,7 +1020,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1030,7 +1030,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1040,7 +1040,7 @@ export const productsByPage = {
       "category": "Royal Red Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "best seller/1.jpg",
+      "image": "/naarithread/assets/best seller/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1050,7 +1050,7 @@ export const productsByPage = {
       "category": "Festive Elegance",
       "price": 5499,
       "priceLabel": "\u20B95,499",
-      "image": "best seller/2.jpg",
+      "image": "/naarithread/assets/best seller/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1060,7 +1060,7 @@ export const productsByPage = {
       "category": "Party Glam",
       "price": 6299,
       "priceLabel": "\u20B96,299",
-      "image": "best seller/3.jpg",
+      "image": "/naarithread/assets/best seller/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1070,7 +1070,7 @@ export const productsByPage = {
       "category": "Minimal Grace",
       "price": 4299,
       "priceLabel": "\u20B94,299",
-      "image": "best seller/4.jpg",
+      "image": "/naarithread/assets/best seller/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1080,7 +1080,7 @@ export const productsByPage = {
       "category": "Wedding Guest",
       "price": 5899,
       "priceLabel": "\u20B95,899",
-      "image": "best seller/5.jpg",
+      "image": "/naarithread/assets/best seller/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1090,7 +1090,7 @@ export const productsByPage = {
       "category": "Classic Charm",
       "price": 6999,
       "priceLabel": "\u20B96,999",
-      "image": "best seller/6.jpg",
+      "image": "/naarithread/assets/best seller/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1100,7 +1100,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1110,7 +1110,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1120,7 +1120,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1130,7 +1130,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1140,7 +1140,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1150,7 +1150,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1160,7 +1160,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1170,7 +1170,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1180,7 +1180,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1190,7 +1190,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1200,7 +1200,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1210,7 +1210,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1220,7 +1220,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1230,7 +1230,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1240,7 +1240,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1250,7 +1250,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1260,7 +1260,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1270,7 +1270,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1280,7 +1280,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1290,7 +1290,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1300,7 +1300,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1310,7 +1310,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1320,7 +1320,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1330,7 +1330,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1340,7 +1340,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1350,7 +1350,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1360,7 +1360,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1370,7 +1370,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1380,7 +1380,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1390,7 +1390,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1400,7 +1400,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1410,7 +1410,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1420,7 +1420,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1430,7 +1430,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1440,7 +1440,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1450,7 +1450,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1460,7 +1460,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1470,7 +1470,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1480,7 +1480,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1490,7 +1490,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1500,7 +1500,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1510,7 +1510,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1520,7 +1520,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1530,7 +1530,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1540,7 +1540,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1550,7 +1550,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1560,7 +1560,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1570,7 +1570,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1580,7 +1580,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1590,7 +1590,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1600,7 +1600,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1610,7 +1610,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1620,7 +1620,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1630,7 +1630,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1650,7 +1650,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1660,7 +1660,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1670,7 +1670,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1680,7 +1680,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1690,7 +1690,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1700,7 +1700,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1710,7 +1710,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1720,7 +1720,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1730,7 +1730,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1740,7 +1740,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1750,7 +1750,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1760,7 +1760,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1770,7 +1770,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1780,7 +1780,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1790,7 +1790,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1800,7 +1800,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1810,7 +1810,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1820,7 +1820,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/1.jpg",
+      "image": "/naarithread/assets/featured lehengas/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1830,7 +1830,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "featured lehengas/2.jpg",
+      "image": "/naarithread/assets/featured lehengas/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1840,7 +1840,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "featured lehengas/3.jpg",
+      "image": "/naarithread/assets/featured lehengas/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1850,7 +1850,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "featured lehengas/4.jpg",
+      "image": "/naarithread/assets/featured lehengas/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1860,7 +1860,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/5.jpg",
+      "image": "/naarithread/assets/featured lehengas/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1870,7 +1870,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/6.jpg",
+      "image": "/naarithread/assets/featured lehengas/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1880,7 +1880,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/7.jpg",
+      "image": "/naarithread/assets/featured lehengas/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1890,7 +1890,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "featured lehengas/8.jpg",
+      "image": "/naarithread/assets/featured lehengas/8.jpg",
       "rating": null,
       "ratingText": null
     }
