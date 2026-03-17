@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { assetPath } from '../data/site'
 import { formatPrice } from '../utils/storage'
 
 export default function Wishlist() {
@@ -16,8 +15,6 @@ export default function Wishlist() {
 
   if (!user) return null
 
-  const resolveImage = (image) => (image.startsWith('/assets') ? image : assetPath(image))
-
   const handleRemove = (item) => {
     toggleWishlist(item)
   }
@@ -27,7 +24,7 @@ export default function Wishlist() {
       id: item.id,
       name: item.name,
       price: item.price || Number(String(item.priceLabel).replace(/[^0-9]/g, '')),
-      image: resolveImage(item.image),
+      image: item.image,
       quantity: 1,
     })
 
@@ -67,7 +64,7 @@ export default function Wishlist() {
             {wishlistItems.map((item) => (
               <div className="wishlist-card active" key={item.id}>
                 <div className="wishlist-image">
-                  <img src={resolveImage(item.image)} alt={item.name} />
+                  <img src={item.image} alt={item.name} />
                   <button
                     className="remove-btn"
                     onClick={() => handleRemove(item)}
@@ -99,4 +96,3 @@ export default function Wishlist() {
     </>
   )
 }
-

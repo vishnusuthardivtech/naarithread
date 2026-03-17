@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { assetPath } from '../data/site'
 import { findProductById, getProductMeta } from '../data/products'
 import { formatPrice } from '../utils/storage'
 
@@ -55,7 +54,7 @@ export default function Product() {
   }
 
   const productMeta = getProductMeta(product)
-  const image = assetPath(product.image)
+  const image = product.image
   const originalPrice = getOriginalPrice(product.price)
   const discount = Math.max(1, Math.round(((originalPrice - product.price) / originalPrice) * 100))
   const rating = product.rating || 4.8
