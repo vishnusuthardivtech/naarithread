@@ -1,8 +1,45 @@
-export const logoPath = '/assets/ChatGPT Image Jan 6, 2026, 11_31_50 AM.png'
-export const assetPath = (path = '') => {
-  const normalizedPath = path.replace(/\\/g, '/').replace(/^assets\//, '')
-  return `/assets/${normalizedPath}`
+const assetDirectoryAliases = {
+  assets: '',
+  images: '',
+  asset: '',
+  banner: 'banner',
+  banners: 'banner',
+  'best seller': 'best-seller',
+  'best-seller': 'best-seller',
+  'featured lehengas': 'featured',
+  'featured-lehengas': 'featured',
+  featured: 'featured',
+  icon: 'icons',
+  icons: 'icons',
+  logo: 'logo',
+  signature: 'signature',
 }
+
+const encodeAssetSegment = (segment) => encodeURIComponent(segment.trim())
+
+export const normalizeAssetPath = (path = '') =>
+  path
+    .replace(/\\/g, '/')
+    .replace(/^\.?\//, '')
+    .split('/')
+    .map((segment, index) => {
+      const trimmedSegment = segment.trim()
+      if (!trimmedSegment) {
+        return ''
+      }
+
+      if (index === 0) {
+        return assetDirectoryAliases[trimmedSegment.toLowerCase()] ?? encodeAssetSegment(trimmedSegment)
+      }
+
+      return encodeAssetSegment(trimmedSegment)
+    })
+    .filter(Boolean)
+    .join('/')
+
+export const assetPath = (path = '') => `${import.meta.env.BASE_URL}images/${normalizeAssetPath(path)}`
+
+export const logoPath = assetPath('logo/naarithread-logo.png')
 
 export const states = [
   'Gujarat',
@@ -58,7 +95,7 @@ export const signatureProducts = [
 ]
 
 export const megaMenuItems = [
-  { image: 'best seller/1.jpg', label: 'Mirror Lehenga', href: '/collection1' },
-  { image: 'best seller/2.jpg', label: 'Sequence Lehenga', href: '/collection2' },
-  { image: 'best seller/3.jpg', label: 'Party Lehenga', href: '/collection3' },
+  { image: 'best-seller/1.jpg', label: 'Mirror Lehenga', href: '/collection1' },
+  { image: 'best-seller/2.jpg', label: 'Sequence Lehenga', href: '/collection2' },
+  { image: 'best-seller/3.jpg', label: 'Party Lehenga', href: '/collection3' },
 ]

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { assetPath } from '../data/site'
+
 import { formatPrice } from '../utils/storage'
 import WishlistButton from './WishlistButton'
 
@@ -12,8 +12,9 @@ export default function ProductCard({ product, className = 'product-card', showR
     <div className={cardClassName}>
       <Link to={`/product?id=${product.id}`}>
         <div className="product-image">
-          <img src={assetPath(product.image)} alt={product.category} />
+          <img src={product.image} alt={product.category} />
           <div className="product-actions">
+
             <WishlistButton product={product} />
 
             <button
@@ -25,8 +26,9 @@ export default function ProductCard({ product, className = 'product-card', showR
                   id: product.id,
                   name: product.name,
                   price: product.price,
-                  image: assetPath(product.image),
+                  image: product.image,
                   quantity: 1,
+
                 })
               }}
             >

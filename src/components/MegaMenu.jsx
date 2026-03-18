@@ -23,19 +23,19 @@ export default function MegaMenu({ onNavigate, isOpen }) {
     >
       <Link to="/collection1" onClick={onNavigate}>
         <div className="mega-card">
-          <img src={assetPath('best seller/1.jpg')} alt="Mirror Lehenga" />
+          <img src={assetPath('best-seller/1.jpg')} alt="Mirror Lehenga" />
           <button className="mega-btn">Mirror Lehenga</button>
         </div>
       </Link>
       <Link to="/collection2" onClick={onNavigate}>
         <div className="mega-card">
-          <img src={assetPath('best seller/2.jpg')} alt="Sequence Lehenga" />
+          <img src={assetPath('best-seller/2.jpg')} alt="Sequence Lehenga" />
           <button className="mega-btn">Sequence Lehenga</button>
         </div>
       </Link>
       <Link to="/collection3" onClick={onNavigate}>
         <div className="mega-card">
-          <img src={assetPath('best seller/3.jpg')} alt="Party Lehenga" />
+          <img src={assetPath('best-seller/3.jpg')} alt="Party Lehenga" />
           <button className="mega-btn">Party Lehenga</button>
         </div>
       </Link>

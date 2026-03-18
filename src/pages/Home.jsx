@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import { heroSlides, signatureProducts } from '../data/site'
+import { heroSlides, signatureProducts, assetPath } from '../data/site'
 import { productsByPage } from '../data/products'
 import ProductCard from '../components/ProductCard'
 
@@ -22,7 +22,7 @@ export default function Home() {
       <section className="hero-slider">
         <div className="container">
           {heroSlides.map((slide, index) => (
-            <div key={slide.image} className={`slide${index === currentSlide ? ' active' : ''}`} style={{ backgroundImage: `url('${slide.image}')` }}>
+            <div key={slide.image} className={`slide${index === currentSlide ? ' active' : ''}`} style={{ backgroundImage: `url('${assetPath(slide.image)}')` }}>
               <div className="slide-content">
                 <h1>{slide.title}</h1>
                 <p>{slide.text}</p>
@@ -41,8 +41,9 @@ export default function Home() {
         <div className="lehenga-grid">
           {signatureProducts.map((item) => (
             <div className="product-card reveal" key={item.title}>
-              <div className="product-image"><img src={item.image} alt={item.title} /></div>
+              <div className="product-image"><img src={assetPath(item.image)} alt={item.title} /></div>
               <div className="product-info"><h3>{item.title}</h3><span>{item.subtitle}</span></div>
+
             </div>
           ))}
         </div>

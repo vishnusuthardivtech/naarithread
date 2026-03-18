@@ -219,7 +219,7 @@ export function AppProvider({ children }) {
       throw new Error('Email already registered')
     }
 
-    const newUser = { name, email, password }
+    const newUser = { id: email, name, email, password, createdAt: new Date().toISOString() }
     writeStorage('ntUsers', [...users, newUser])
     writeStorage('ntLoggedInUser', newUser)
     setUser(newUser)

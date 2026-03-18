@@ -33,9 +33,13 @@ export default function Checkout() {
     const existingOrders = readStorage(orderKey, [])
     const newOrders = cartItems.map((item) => ({
       orderId: `NT_${Date.now()}_${Math.floor(Math.random() * 1000000)}`,
+      createdAt: new Date().toISOString(),
       items: [item],
       total: item.price * item.quantity,
       paymentMethod: payment,
+      customerName: form.fullName.trim() || user.name,
+      customerEmail: form.email.trim() || user.email,
+      userEmail: user.email,
       address: { ...form },
       date: new Date().toLocaleDateString(),
       status: 'Processing',

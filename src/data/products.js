@@ -1,4 +1,6 @@
-export const productsByPage = {
+import { assetPath } from './site'
+
+const rawProductsByPage = {
   "collection1": [
     {
       "id": "mirror-31",
@@ -6,7 +8,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -16,7 +18,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -26,7 +28,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -36,7 +38,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -46,7 +48,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -56,7 +58,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -66,7 +68,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -76,7 +78,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -86,7 +88,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -96,7 +98,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -106,7 +108,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -116,7 +118,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -126,7 +128,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -136,7 +138,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -146,7 +148,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -156,7 +158,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -168,7 +170,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -178,7 +180,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -188,7 +190,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -198,7 +200,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -208,7 +210,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -218,7 +220,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -228,7 +230,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -238,7 +240,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -248,7 +250,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -258,7 +260,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -268,7 +270,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -278,7 +280,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -288,7 +290,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -298,7 +300,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -308,7 +310,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -318,7 +320,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     }
@@ -330,7 +332,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -340,7 +342,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -350,7 +352,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -360,7 +362,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -370,7 +372,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -380,7 +382,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -390,7 +392,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -400,7 +402,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -410,7 +412,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -420,7 +422,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -430,7 +432,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -440,7 +442,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -450,7 +452,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -460,7 +462,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -470,7 +472,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -480,7 +482,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -492,7 +494,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -502,7 +504,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -512,7 +514,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -522,7 +524,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -532,7 +534,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -542,7 +544,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -552,7 +554,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -562,7 +564,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -572,7 +574,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -582,7 +584,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -592,7 +594,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -602,7 +604,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -612,7 +614,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -622,7 +624,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -632,7 +634,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -642,7 +644,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -654,7 +656,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -664,7 +666,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -674,7 +676,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -684,7 +686,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -694,7 +696,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -704,7 +706,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -714,7 +716,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -724,7 +726,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -734,7 +736,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -744,7 +746,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -754,7 +756,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -764,7 +766,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -774,7 +776,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -784,7 +786,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -794,7 +796,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -804,7 +806,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -816,7 +818,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -826,7 +828,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 5499,
       "priceLabel": "\u20B95,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -836,7 +838,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -846,7 +848,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -856,7 +858,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -866,7 +868,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -876,7 +878,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -886,7 +888,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -898,7 +900,7 @@ export const productsByPage = {
       "category": "Royal Red Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/best-seller/1.jpg",
+      "image": "/images/best-seller/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -908,7 +910,7 @@ export const productsByPage = {
       "category": "Festive Elegance",
       "price": 5499,
       "priceLabel": "\u20B95,499",
-      "image": "/assets/best-seller/2.jpg",
+      "image": "/images/best-seller/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -918,7 +920,7 @@ export const productsByPage = {
       "category": "Party Glam",
       "price": 6299,
       "priceLabel": "\u20B96,299",
-      "image": "/assets/best-seller/3.jpg",
+      "image": "/images/best-seller/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -928,7 +930,7 @@ export const productsByPage = {
       "category": "Minimal Grace",
       "price": 4299,
       "priceLabel": "\u20B94,299",
-      "image": "/assets/best-seller/4.jpg",
+      "image": "/images/best-seller/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -938,7 +940,7 @@ export const productsByPage = {
       "category": "Wedding Guest",
       "price": 5899,
       "priceLabel": "\u20B95,899",
-      "image": "/assets/best-seller/5.jpg",
+      "image": "/images/best-seller/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -948,7 +950,7 @@ export const productsByPage = {
       "category": "Classic Charm",
       "price": 6999,
       "priceLabel": "\u20B96,999",
-      "image": "/assets/best-seller/6.jpg",
+      "image": "/images/best-seller/6.jpg",
       "rating": null,
       "ratingText": null
     }
@@ -960,7 +962,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -970,7 +972,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 5499,
       "priceLabel": "\u20B95,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -980,7 +982,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -990,7 +992,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1000,7 +1002,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1010,7 +1012,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1020,7 +1022,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1030,7 +1032,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1040,7 +1042,7 @@ export const productsByPage = {
       "category": "Royal Red Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/best-seller/1.jpg",
+      "image": "/images/best-seller/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1050,7 +1052,7 @@ export const productsByPage = {
       "category": "Festive Elegance",
       "price": 5499,
       "priceLabel": "\u20B95,499",
-      "image": "/assets/best-seller/2.jpg",
+      "image": "/images/best-seller/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1060,7 +1062,7 @@ export const productsByPage = {
       "category": "Party Glam",
       "price": 6299,
       "priceLabel": "\u20B96,299",
-      "image": "/assets/best-seller/3.jpg",
+      "image": "/images/best-seller/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1070,7 +1072,7 @@ export const productsByPage = {
       "category": "Minimal Grace",
       "price": 4299,
       "priceLabel": "\u20B94,299",
-      "image": "/assets/best-seller/4.jpg",
+      "image": "/images/best-seller/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1080,7 +1082,7 @@ export const productsByPage = {
       "category": "Wedding Guest",
       "price": 5899,
       "priceLabel": "\u20B95,899",
-      "image": "/assets/best-seller/5.jpg",
+      "image": "/images/best-seller/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1090,7 +1092,7 @@ export const productsByPage = {
       "category": "Classic Charm",
       "price": 6999,
       "priceLabel": "\u20B96,999",
-      "image": "/assets/best-seller/6.jpg",
+      "image": "/images/best-seller/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1100,7 +1102,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1110,7 +1112,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1120,7 +1122,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1130,7 +1132,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1140,7 +1142,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1150,7 +1152,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1160,7 +1162,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1170,7 +1172,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1180,7 +1182,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1190,7 +1192,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1200,7 +1202,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1210,7 +1212,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1220,7 +1222,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1230,7 +1232,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1240,7 +1242,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1250,7 +1252,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1260,7 +1262,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1270,7 +1272,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1280,7 +1282,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1290,7 +1292,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1300,7 +1302,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1310,7 +1312,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1320,7 +1322,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1330,7 +1332,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1340,7 +1342,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1350,7 +1352,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1360,7 +1362,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1370,7 +1372,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1380,7 +1382,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1390,7 +1392,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1400,7 +1402,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1410,7 +1412,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": 4.8,
       "ratingText": "4.8 • 126 Reviews"
     },
@@ -1420,7 +1422,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1430,7 +1432,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1440,7 +1442,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1450,7 +1452,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1460,7 +1462,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1470,7 +1472,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1480,7 +1482,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1490,7 +1492,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1500,7 +1502,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1510,7 +1512,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1520,7 +1522,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1530,7 +1532,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1540,7 +1542,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1550,7 +1552,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1560,7 +1562,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1570,7 +1572,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1580,7 +1582,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1590,7 +1592,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1600,7 +1602,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1610,7 +1612,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1620,7 +1622,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1630,7 +1632,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1640,7 +1642,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1650,7 +1652,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1660,7 +1662,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1670,7 +1672,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1680,7 +1682,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1690,7 +1692,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1700,7 +1702,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1710,7 +1712,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1720,7 +1722,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1730,7 +1732,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1740,7 +1742,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1750,7 +1752,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1760,7 +1762,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1770,7 +1772,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1780,7 +1782,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1790,7 +1792,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1800,7 +1802,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1810,7 +1812,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1820,7 +1822,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/1.jpg",
+      "image": "/images/featured/1.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1830,7 +1832,7 @@ export const productsByPage = {
       "category": "Midnight Elegance",
       "price": 4499,
       "priceLabel": "\u20B94,499",
-      "image": "/assets/featured-lehengas/2.jpg",
+      "image": "/images/featured/2.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1840,7 +1842,7 @@ export const productsByPage = {
       "category": "Blush Royale",
       "price": 4799,
       "priceLabel": "\u20B94,799",
-      "image": "/assets/featured-lehengas/3.jpg",
+      "image": "/images/featured/3.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1850,7 +1852,7 @@ export const productsByPage = {
       "category": "Ivory Grace",
       "price": 5199,
       "priceLabel": "\u20B95,199",
-      "image": "/assets/featured-lehengas/4.jpg",
+      "image": "/images/featured/4.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1860,7 +1862,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/5.jpg",
+      "image": "/images/featured/5.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1870,7 +1872,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/6.jpg",
+      "image": "/images/featured/6.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1880,7 +1882,7 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/7.jpg",
+      "image": "/images/featured/7.jpg",
       "rating": null,
       "ratingText": null
     },
@@ -1890,12 +1892,30 @@ export const productsByPage = {
       "category": "Ruby Festive Lehenga",
       "price": 4999,
       "priceLabel": "\u20B94,999",
-      "image": "/assets/featured-lehengas/8.jpg",
+      "image": "/images/featured/8.jpg",
       "rating": null,
       "ratingText": null
     }
   ]
 };
+
+const normalizeProductImage = (imagePath) => {
+  if (!imagePath) {
+    return imagePath
+  }
+
+  return assetPath(imagePath)
+}
+
+export const productsByPage = Object.fromEntries(
+  Object.entries(rawProductsByPage).map(([page, items]) => [
+    page,
+    items.map((product) => ({
+      ...product,
+      image: normalizeProductImage(product.image),
+    })),
+  ]),
+)
 
 export const allProducts = productsByPage.allProducts;
 
@@ -1943,6 +1963,5 @@ export const getProductMeta = (product) => {
   if (!product) return null
   return productMetaByName[product.name] || getFallbackMeta(product)
 }
-
 
 

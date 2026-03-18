@@ -1,0 +1,64 @@
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .admin-shell {
+    @apply min-h-screen bg-slate-100 text-slate-900;
+  }
+
+  .admin-card {
+    @apply rounded-3xl border border-slate-200 bg-white shadow-sm;
+  }
+
+  .admin-panel {
+    @apply admin-card p-5 md:p-6;
+  }
+
+  .admin-input {
+    @apply w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100;
+  }
+
+  .admin-select {
+    @apply admin-input appearance-none;
+  }
+
+  .admin-label {
+    @apply mb-2 block text-sm font-medium text-slate-700;
+  }
+
+  .admin-button {
+    @apply inline-flex items-center justify-center rounded-2xl px-4 py-2.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .admin-button-primary {
+    @apply admin-button bg-slate-950 text-white hover:bg-slate-800;
+  }
+
+  .admin-button-secondary {
+    @apply admin-button border border-slate-200 bg-white text-slate-700 hover:bg-slate-50;
+  }
+
+  .admin-button-danger {
+    @apply admin-button bg-rose-600 text-white hover:bg-rose-500;
+  }
+
+  .admin-button-ghost {
+    @apply admin-button text-slate-600 hover:bg-slate-100;
+  }
+
+  .admin-badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold;
+  }
+
+  .admin-table {
+    @apply min-w-full divide-y divide-slate-200;
+  }
+
+  .admin-th {
+    @apply px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.16em] text-slate-500;
+  }
+
+  .admin-td {
+    @apply px-4 py-4 align-top text-sm text-slate-700;
+  }
+}
