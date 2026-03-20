@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { allProducts, productsByPage } from '../data/products'
 import { addCartItem, clearCart, getCart, getCartCount, getCurrentUser, removeCartItem, updateCartItem } from '../utils/cart'
-import { getWishlist, isWishlisted, toggleWishlistItem } from '../utils/wishlist'
+import { useWishlist } from '../hooks/useWishlist'
 import { readStorage, removeStorage, writeStorage } from '../utils/storage'
 
 const AppContext = createContext(null)
@@ -43,7 +43,6 @@ export function AppProvider({ children }) {
   const [user, setUser] = useState(() => getCurrentUser())
   const [authOpen, setAuthOpen] = useState(false)
   const [cartVersion, setCartVersion] = useState(0)
-  const [wishlistVersion, setWishlistVersion] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
@@ -57,8 +56,6 @@ export function AppProvider({ children }) {
   }, [])
 
   const refreshCart = () => setCartVersion((value) => value + 1)
-  const refreshWishlist = () => setWishlistVersion((value) => value + 1)
-
   const productSourceMap = useMemo(() => {
     const sourceMap = new Map()
 
@@ -194,7 +191,7 @@ export function AppProvider({ children }) {
   }, [])
 
   const cartItems = useMemo(() => getCart(user), [user, cartVersion])
-  const wishlistItems = useMemo(() => getWishlist(user), [user, wishlistVersion])
+  const { items: wishlistItems, count: wishlistCount, toggleItem, hasItem } = useWishlist(user)
   const isInCart = useCallback((id) => cartItems.some((item) => item.id === id), [cartItems])
 
   const login = (email, password) => {
@@ -209,7 +206,6 @@ export function AppProvider({ children }) {
     setUser(validUser)
     setAuthOpen(false)
     refreshCart()
-    refreshWishlist()
     return validUser
   }
 
@@ -225,7 +221,6 @@ export function AppProvider({ children }) {
     setUser(newUser)
     setAuthOpen(false)
     refreshCart()
-    refreshWishlist()
     return newUser
   }
 
@@ -233,7 +228,6 @@ export function AppProvider({ children }) {
     removeStorage('ntLoggedInUser')
     setUser(null)
     refreshCart()
-    refreshWishlist()
   }
 
   const ensureUser = () => {
@@ -275,8 +269,7 @@ export function AppProvider({ children }) {
       return false
     }
 
-    toggleWishlistItem(product)
-    refreshWishlist()
+    toggleItem(product)
     return true
   }
 
@@ -293,14 +286,13 @@ export function AppProvider({ children }) {
     removeFromCart,
     emptyCart,
     toggleWishlist,
-    isWishlisted: (id) => isWishlisted(id),
+    isWishlisted: hasItem,
     isInCart,
     cartItems,
     cartCount: getCartCount(user),
     wishlistItems,
-    wishlistCount: wishlistItems.length,
+    wishlistCount,
     cartVersion,
-    wishlistVersion,
     searchQuery,
     searchResults,
     isSearching,
@@ -317,7 +309,7 @@ export function AppProvider({ children }) {
     resetListingFilters,
     filterProducts,
     searchProducts,
-  }), [user, authOpen, cartVersion, wishlistVersion, isInCart, cartItems, wishlistItems, searchQuery, searchResults, isSearching, executeSearch, clearSearch, lastBrowsePath, filterVersion, getListingFilters, applyListingFilters, resetListingFilters, filterProducts, searchProducts])
+  }), [user, authOpen, cartVersion, toggleWishlist, hasItem, isInCart, cartItems, wishlistItems, wishlistCount, searchQuery, searchResults, isSearching, executeSearch, clearSearch, lastBrowsePath, filterVersion, getListingFilters, applyListingFilters, resetListingFilters, filterProducts, searchProducts])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

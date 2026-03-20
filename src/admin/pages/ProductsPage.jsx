@@ -90,7 +90,10 @@ export default function ProductsPage() {
   return (
     <>
       <div className="topbar">
-        <h1>Products</h1>
+        <div>
+          <h1>Products</h1>
+          <p className="page-sub">Manage catalog items from local admin data and the shared storefront catalog.</p>
+        </div>
         <button type="button" className="add-btn" onClick={openCreateForm}>
           + Add Product
         </button>

@@ -1,11 +1,16 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { useWishlist } from '../hooks/useWishlist'
 import { formatPrice } from '../utils/storage'
 
+const FALLBACK_IMAGE = '/vite.svg'
+
 export default function Wishlist() {
-  const { user, wishlistItems, toggleWishlist, addToCart } = useApp()
+  const { user, addToCart } = useApp()
+  const { items: wishlistItems, removeItem } = useWishlist(user)
   const navigate = useNavigate()
+  const rawWishlist = typeof window !== 'undefined' ? JSON.parse(window.localStorage.getItem('ntWishlist') || '[]') : []
 
   useEffect(() => {
     if (!user) {
@@ -13,23 +18,28 @@ export default function Wishlist() {
     }
   }, [navigate, user])
 
+  useEffect(() => {
+    console.log('Wishlist:', wishlistItems)
+    console.log('ntWishlist:', rawWishlist)
+  }, [wishlistItems, rawWishlist])
+
   if (!user) return null
 
   const handleRemove = (item) => {
-    toggleWishlist(item)
+    removeItem(item.id)
   }
 
   const handleMoveToCart = (item) => {
     const added = addToCart({
       id: item.id,
-      name: item.name,
-      price: item.price || Number(String(item.priceLabel).replace(/[^0-9]/g, '')),
-      image: item.image,
+      name: item?.name,
+      price: item?.price || Number(String(item?.priceLabel).replace(/[^0-9]/g, '')),
+      image: item?.image || FALLBACK_IMAGE,
       quantity: 1,
     })
 
     if (added) {
-      toggleWishlist(item)
+      removeItem(item.id)
     }
   }
 
@@ -64,19 +74,19 @@ export default function Wishlist() {
             {wishlistItems.map((item) => (
               <div className="wishlist-card active" key={item.id}>
                 <div className="wishlist-image">
-                  <img src={item.image} alt={item.name} />
+                  <img src={item?.image || FALLBACK_IMAGE} alt={item?.name || 'Wishlist product'} />
                   <button
                     className="remove-btn"
                     onClick={() => handleRemove(item)}
-                    aria-label={`Remove ${item.name} from wishlist`}
+                    aria-label={`Remove ${item?.name || 'item'} from wishlist`}
                   >
                     &times;
                   </button>
                 </div>
 
                 <div className="wishlist-info">
-                  <h3>{item.name}</h3>
-                  <p className="price">{formatPrice(item.price || Number(String(item.priceLabel).replace(/[^0-9]/g, '')) || 0)}</p>
+                  <h3>{item?.name || 'Unnamed Product'}</h3>
+                  <p className="price">{formatPrice(item?.price || Number(String(item?.priceLabel).replace(/[^0-9]/g, '')) || 0)}</p>
                   <button className="move-btn" onClick={() => handleMoveToCart(item)}>
                     Move to Cart
                   </button>
@@ -86,7 +96,7 @@ export default function Wishlist() {
           </div>
         ) : (
           <div className="wishlist-empty" id="wishlistEmpty">
-            <h2>Your wishlist is waiting &#x1F49B;</h2>
+            <h2>Your wishlist is empty</h2>
             <p>Save your favorite lehengas here.</p>
             <br />
             <Link to="/" className="hero-btn">Explore Collections</Link>

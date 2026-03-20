@@ -1,21 +1,22 @@
-﻿import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { useApp } from '../context/AppContext'
-import { readStorage, writeStorage, formatPrice } from '../utils/storage'
+import { useOrders } from '../hooks/useOrders'
+import { formatPrice } from '../utils/storage'
+
+const FALLBACK_IMAGE = '/vite.svg'
 
 export default function Orders() {
   const { user } = useApp()
+  const { orders, removeOrder } = useOrders(user)
   const [selectedCancelOrderId, setSelectedCancelOrderId] = useState(null)
-  const [version, setVersion] = useState(0)
-  const orders = useMemo(() => {
-    if (!user) return []
-    return readStorage(`ntOrders_${user.email}`, []).slice().reverse()
-  }, [user, version])
+  const rawOrders = typeof window !== 'undefined' ? JSON.parse(window.localStorage.getItem('ntOrders') || '[]') : []
+
+  console.log('Orders:', orders)
+  console.log('ntOrders:', rawOrders)
 
   const cancelOrder = () => {
-    const nextOrders = readStorage(`ntOrders_${user.email}`, []).filter((order) => order.orderId !== selectedCancelOrderId)
-    writeStorage(`ntOrders_${user.email}`, nextOrders)
+    removeOrder(selectedCancelOrderId)
     setSelectedCancelOrderId(null)
-    setVersion((value) => value + 1)
   }
 
   return (
@@ -24,21 +25,22 @@ export default function Orders() {
         <section className="orders-page">
           <h1 className="orders-title">My Orders</h1>
           <div id="ordersContainer">
-            {orders.length === 0 ? <p style={{ textAlign: 'center' }}>No orders yet.</p> : null}
+            {orders.length === 0 ? <p style={{ textAlign: 'center' }}>No orders yet</p> : null}
             {orders.map((order) => {
-              const item = order.items[0]
+              const firstProduct = order?.products?.[0]
               const statusClass = order.status === 'Paid' ? 'status-paid' : 'status-processing'
               return (
-                <div className="order-card active" key={order.orderId}>
+                <div className="order-card active" key={order.id}>
                   <div className="order-flex">
-                    <div className="order-image"><img src={item.image} className="order-main-img" /></div>
+                    <div className="order-image"><img src={firstProduct?.image || FALLBACK_IMAGE} className="order-main-img" /></div>
                     <div className="order-details">
-                      <div className="order-id"><strong>Order ID:</strong> {order.orderId}</div>
-                      <div className="order-date">{order.date}</div>
-                      <div className="order-meta"><span><strong>{item.name}</strong></span><span>Qty: {item.quantity}</span><span>{formatPrice(item.price * item.quantity)}</span></div>
+                      <div className="order-id"><strong>Order ID:</strong> {order?.id}</div>
+                      <div className="order-date">{new Date(order?.date).toLocaleString()}</div>
+                      <div className="order-meta"><span><strong>{order?.products?.map((product) => product?.name || 'Unnamed Product').join(', ')}</strong></span><span>Total Items: {order?.products?.reduce((sum, product) => sum + (product?.quantity || 1), 0)}</span><span>{formatPrice(order?.total || 0)}</span></div>
+                      <div className="order-meta"><span>{order?.address?.address1}{order?.address?.address2 ? `, ${order.address.address2}` : ''}</span><span>{order?.address?.city}, {order?.address?.state} - {order?.address?.pincode}</span><span>{order?.address?.phone}</span></div>
                       <div className="order-bottom">
-                        <div className={`order-status-badge ${statusClass}`}>{order.status}</div>
-                        {order.status === 'Processing' ? <button className="cancel-order-btn" onClick={() => setSelectedCancelOrderId(order.orderId)}>Cancel Order</button> : null}
+                        <div className={`order-status-badge ${statusClass}`}>{order?.status}</div>
+                        {order?.status === 'Placed' ? <button className="cancel-order-btn" onClick={() => setSelectedCancelOrderId(order?.id)}>Cancel Order</button> : null}
                       </div>
                     </div>
                   </div>
@@ -66,4 +68,3 @@ export default function Orders() {
     </>
   )
 }
-

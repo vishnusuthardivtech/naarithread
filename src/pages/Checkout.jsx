@@ -1,17 +1,38 @@
-﻿import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { getCurrentUser } from '../utils/cart'
-import { readStorage, writeStorage, formatPrice } from '../utils/storage'
+import { useAddress } from '../hooks/useAddress'
+import { useOrders } from '../hooks/useOrders'
+import { formatPrice } from '../utils/storage'
 import { states } from '../data/site'
 
 export default function Checkout() {
-  const { cartItems, emptyCart } = useApp()
+  const { user, cartItems, emptyCart } = useApp()
   const navigate = useNavigate()
+  const { defaultAddress } = useAddress(user)
+  const { addOrder } = useOrders(user)
   const [payment, setPayment] = useState('cod')
   const [errors, setErrors] = useState({})
   const [form, setForm] = useState({ fullName: '', phone: '', email: '', address1: '', address2: '', city: '', state: '', pincode: '', upiId: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+
+  useEffect(() => {
+    if (!defaultAddress) {
+      return
+    }
+
+    setForm((current) => ({
+      ...current,
+      fullName: current.fullName || defaultAddress.name || '',
+      phone: current.phone || defaultAddress.phone || '',
+      address1: current.address1 || defaultAddress.line1 || defaultAddress.address || '',
+      address2: current.address2 || defaultAddress.line2 || '',
+      city: current.city || defaultAddress.city || '',
+      state: current.state || defaultAddress.state || '',
+      pincode: current.pincode || defaultAddress.pincode || '',
+      email: current.email || user?.email || '',
+    }))
+  }, [defaultAddress, user])
 
   const placeOrder = () => {
     const nextErrors = {}
@@ -28,23 +49,20 @@ export default function Checkout() {
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length) return
 
-    const user = getCurrentUser()
-    const orderKey = `ntOrders_${user.email}`
-    const existingOrders = readStorage(orderKey, [])
-    const newOrders = cartItems.map((item) => ({
-      orderId: `NT_${Date.now()}_${Math.floor(Math.random() * 1000000)}`,
-      createdAt: new Date().toISOString(),
-      items: [item],
-      total: item.price * item.quantity,
-      paymentMethod: payment,
-      customerName: form.fullName.trim() || user.name,
-      customerEmail: form.email.trim() || user.email,
-      userEmail: user.email,
-      address: { ...form },
-      date: new Date().toLocaleDateString(),
-      status: 'Processing',
-    }))
-    writeStorage(orderKey, [...existingOrders, ...newOrders])
+    addOrder({
+      products: cartItems,
+      total,
+      address: {
+        fullName: form.fullName.trim() || user?.name || '',
+        phone: form.phone.trim(),
+        email: form.email.trim() || user?.email || '',
+        address1: form.address1.trim(),
+        address2: form.address2.trim(),
+        city: form.city.trim(),
+        state: form.state,
+        pincode: form.pincode.trim(),
+      },
+    })
     emptyCart()
     navigate('/orders')
   }
@@ -67,7 +85,7 @@ export default function Checkout() {
 
         <div className="checkout-summary">
           <h2>Order Summary</h2>
-          <div id="checkoutItems">{cartItems.map((item) => <div className="checkout-item" key={item.id}><span>{item.name} × {item.quantity}</span><span>{formatPrice(item.price * item.quantity)}</span></div>)}</div>
+          <div id="checkoutItems">{cartItems.map((item) => <div className="checkout-item" key={item.id}><span>{item.name} x {item.quantity}</span><span>{formatPrice(item.price * item.quantity)}</span></div>)}</div>
           <h3 id="checkoutTotal">{cartItems.length ? `Total: ${formatPrice(total)}` : ''}</h3>
           <hr style={{ margin: '25px 0', borderColor: 'rgba(212,175,55,0.2)' }} />
           <h2>Payment Method</h2>
@@ -84,4 +102,3 @@ export default function Checkout() {
     </section>
   )
 }
-

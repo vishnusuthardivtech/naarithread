@@ -1,5 +1,4 @@
 import { NavLink } from 'react-router-dom'
-import { logoPath } from '../../data/site'
 import { useAdminAuth } from '../hooks/useAdminAuth'
 
 function SidebarLink({ to, children, onClose }) {
@@ -16,40 +15,65 @@ export default function AdminSidebar({ open, onClose }) {
   return (
     <aside className={`admin-sidebar${open ? ' show' : ''}`} id="sidebar">
       <div className="sidebar-logo">
-        <img src={logoPath} alt="Naarithread" />
+        <div className="sidebar-brand">
+          <strong>Naarithread</strong>
+          <span>Dashboard</span>
+        </div>
+        <button type="button" className="sidebar-collapse-btn" onClick={onClose} aria-label="Close sidebar">
+          x
+        </button>
       </div>
 
       <nav className="sidebar-menu">
-        <SidebarLink to="/admin/dashboard" onClose={onClose}>
-          Dashboard
-        </SidebarLink>
-        <SidebarLink to="/admin/products" onClose={onClose}>
-          Products
-        </SidebarLink>
-        <SidebarLink to="/admin/orders" onClose={onClose}>
-          Orders
-        </SidebarLink>
-        <SidebarLink to="/admin/users" onClose={onClose}>
-          Users
-        </SidebarLink>
-        <a href="#reports" onClick={(event) => event.preventDefault()}>
-          Reports
-        </a>
-        <a href="#subscriptions" onClick={(event) => event.preventDefault()}>
-          Subscriptions
-        </a>
-        <a
-          href="#logout"
-          className="logout"
-          onClick={(event) => {
-            event.preventDefault()
-            onClose()
-            logout()
-          }}
-        >
-          Logout
-        </a>
+        <div className="sidebar-section">
+          <p className="sidebar-label">General</p>
+          <SidebarLink to="/admin/dashboard" onClose={onClose}>
+            Dashboard
+          </SidebarLink>
+          <SidebarLink to="/admin/orders" onClose={onClose}>
+            Orders
+          </SidebarLink>
+          <SidebarLink to="/admin/users" onClose={onClose}>
+            Users
+          </SidebarLink>
+        </div>
+
+        <div className="sidebar-section">
+          <p className="sidebar-label">Catalog</p>
+          <SidebarLink to="/admin/products" onClose={onClose}>
+            Products
+          </SidebarLink>
+          <SidebarLink to="/admin/reports" onClose={onClose}>
+            Reports
+          </SidebarLink>
+          <SidebarLink to="/admin/subscriptions" onClose={onClose}>
+            Subscriptions
+          </SidebarLink>
+        </div>
+
+        <div className="sidebar-section sidebar-support">
+          <p className="sidebar-label">Support</p>
+          <a
+            href="#logout"
+            className="logout"
+            onClick={(event) => {
+              event.preventDefault()
+              onClose()
+              logout()
+            }}
+          >
+            Logout
+          </a>
+        </div>
       </nav>
+
+      <div className="sidebar-plan-card">
+        <div className="sidebar-plan-icon">NT</div>
+        <div>
+          <strong>Naarithread</strong>
+          <span>Admin workspace</span>
+        </div>
+      </div>
     </aside>
   )
 }

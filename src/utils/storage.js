@@ -1,30 +1,41 @@
-﻿export function readStorage(key, fallback) {
-  if (typeof window === 'undefined') {
-    return fallback
-  }
+import { getData, removeData, setData } from './localStorage'
 
-  try {
-    const value = window.localStorage.getItem(key)
-    return value ? JSON.parse(value) : fallback
-  } catch {
-    return fallback
-  }
+export function getDataFromStorage(key, fallback) {
+  return getData(key, fallback)
+}
+
+export function setDataInStorage(key, value) {
+  setData(key, value)
+}
+
+export { getData, setData }
+
+export function getStorageData(key, fallback) {
+  return getData(key, fallback)
+}
+
+export function setStorageData(key, value) {
+  setData(key, value)
+}
+
+export function readStorage(key, fallback) {
+  return getData(key, fallback)
 }
 
 export function writeStorage(key, value) {
-  if (typeof window === 'undefined') {
-    return
-  }
+  setData(key, value)
+}
 
-  window.localStorage.setItem(key, JSON.stringify(value))
+export function getDataValue(key, fallback) {
+  return getData(key, fallback)
+}
+
+export function setDataValue(key, value) {
+  setData(key, value)
 }
 
 export function removeStorage(key) {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  window.localStorage.removeItem(key)
+  removeData(key)
 }
 
 export function formatPrice(value) {
@@ -34,4 +45,3 @@ export function formatPrice(value) {
     maximumFractionDigits: 0,
   }).format(value)
 }
-

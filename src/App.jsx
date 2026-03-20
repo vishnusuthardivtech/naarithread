@@ -6,6 +6,8 @@ import AdminLoginPage from './admin/pages/AdminLoginPage'
 import DashboardPage from './admin/pages/DashboardPage'
 import OrdersPage from './admin/pages/OrdersPage'
 import ProductsPage from './admin/pages/ProductsPage'
+import ReportsPage from './admin/pages/ReportsPage'
+import SubscriptionsPage from './admin/pages/SubscriptionsPage'
 import UsersPage from './admin/pages/UsersPage'
 import { AppProvider } from './context/AppContext'
 import MainLayout from './layouts/MainLayout'
@@ -50,6 +52,8 @@ export default function App() {
             <Route path="products" element={<ProductsPage />} />
             <Route path="orders" element={<OrdersPage />} />
             <Route path="users" element={<UsersPage />} />
+            <Route path="reports" element={<ReportsPage />} />
+            <Route path="subscriptions" element={<SubscriptionsPage />} />
           </Route>
 
           <Route element={<MainLayout />}>

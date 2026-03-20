@@ -1,9 +1,15 @@
 import { ADMIN_PRODUCTS_STORAGE_KEY, createAdminId, readAdminStorage, writeAdminStorage } from '../api/storage'
+import { allProducts } from '../../data/products'
 
 const CHANNEL = 'products'
 
 function getProducts() {
-  return readAdminStorage(ADMIN_PRODUCTS_STORAGE_KEY, [])
+  const storedProducts = readAdminStorage(ADMIN_PRODUCTS_STORAGE_KEY, [])
+  if (Array.isArray(storedProducts) && storedProducts.length > 0) {
+    return storedProducts
+  }
+
+  return Array.isArray(allProducts) ? allProducts : []
 }
 
 function persistProducts(products) {

@@ -1,13 +1,93 @@
-﻿import { useMemo } from 'react'
-import { getWishlist } from '../utils/wishlist'
+import { useEffect, useMemo, useState } from 'react'
+import { getData, setData, subscribeToStorage } from '../utils/localStorage'
 
-export function useWishlist(user, version) {
-  return useMemo(() => {
-    const items = getWishlist(user)
-    return {
-      items,
-      count: items.length,
-    }
-  }, [user, version])
+const WISHLIST_KEY = 'ntWishlist'
+
+const getWishlistEntries = () => getData(WISHLIST_KEY, [])
+
+const toPriceNumber = (value, fallback = 0) => {
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : fallback
 }
 
+const normalizeWishlistItem = (product, user) => ({
+  id: product?.id,
+  name: product?.name || product?.title || '',
+  price: toPriceNumber(product?.price, Number(String(product?.priceLabel ?? '').replace(/[^0-9]/g, '')) || 0),
+  image: product?.image || product?.img || '',
+  userEmail: product?.userEmail || user.email,
+})
+
+const getUserWishlist = (user) => {
+  if (!user?.email) {
+    return []
+  }
+
+  const legacyKey = `wishlist_${user.email}`
+  const entries = getWishlistEntries()
+  const hasCurrentUserEntries = entries.some((item) => !item?.userEmail || item.userEmail === user.email)
+
+  if (!hasCurrentUserEntries) {
+    const legacyItems = getData(legacyKey, [])
+
+    if (legacyItems.length > 0) {
+      const migratedEntries = [...entries, ...legacyItems.map((item) => normalizeWishlistItem(item, user))]
+      setData(WISHLIST_KEY, migratedEntries)
+      return migratedEntries
+        .filter((item) => item.userEmail === user.email)
+        .map(({ userEmail, ...item }) => item)
+    }
+  }
+
+  return entries
+    .filter((item) => !item?.userEmail || item.userEmail === user.email)
+    .map(({ userEmail, ...item }) => item)
+}
+
+export function useWishlist(user) {
+  const [items, setItems] = useState(() => getUserWishlist(user))
+
+  useEffect(() => {
+    setItems(getUserWishlist(user))
+  }, [user])
+
+  useEffect(() => subscribeToStorage(WISHLIST_KEY, () => {
+    setItems(getUserWishlist(user))
+  }), [user])
+
+  const toggleItem = (product) => {
+    if (!user?.email) {
+      return []
+    }
+
+    const entries = getWishlistEntries()
+    const itemExists = entries.some((item) => (!item?.userEmail || item.userEmail === user.email) && item.id === product.id)
+    const nextEntries = itemExists
+      ? entries.filter((item) => !((!item?.userEmail || item.userEmail === user.email) && item.id === product.id))
+      : [...entries, normalizeWishlistItem(product, user)]
+
+    setData(WISHLIST_KEY, nextEntries)
+    return nextEntries
+      .filter((item) => !item?.userEmail || item.userEmail === user.email)
+      .map(({ userEmail, ...item }) => item)
+  }
+
+  const removeItem = (id) => {
+    if (!user?.email) {
+      return
+    }
+
+    const nextEntries = getWishlistEntries().filter((item) => !((!item?.userEmail || item.userEmail === user.email) && item.id === id))
+    setData(WISHLIST_KEY, nextEntries)
+  }
+
+  const hasItem = (id) => items.some((item) => item.id === id)
+
+  return useMemo(() => ({
+    items,
+    count: items.length,
+    toggleItem,
+    removeItem,
+    hasItem,
+  }), [items])
+}

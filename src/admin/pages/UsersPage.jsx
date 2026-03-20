@@ -23,7 +23,12 @@ export default function UsersPage() {
 
   return (
     <>
-      <h1 className="page-title">Users</h1>
+      <div className="topbar">
+        <div>
+          <h1>Users</h1>
+          <p className="page-sub">Customer records built from registered accounts and order activity.</p>
+        </div>
+      </div>
 
       {error ? <div className="error-banner">{error}</div> : null}
 
@@ -40,7 +45,7 @@ export default function UsersPage() {
 
               <div className="user-meta">
                 <span>
-                  <strong>Joined:</strong> {formatJoinedDate(user.createdAt)}
+                  <strong>Joined:</strong> {formatJoinedDate(user.createdAt || user.joinedAt)}
                 </span>
                 <span>
                   <strong>Orders:</strong> {user.orderCount || 0}
