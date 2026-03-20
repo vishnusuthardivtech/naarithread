@@ -1,38 +1,8 @@
-import { allProducts } from '../../data/products'
-import {
-  ADMIN_PRODUCTS_STORAGE_KEY,
-  createAdminId,
-  hasAdminStorageKey,
-  readAdminStorage,
-  writeAdminStorage,
-} from '../api/storage'
+import { ADMIN_PRODUCTS_STORAGE_KEY, createAdminId, readAdminStorage, writeAdminStorage } from '../api/storage'
 
 const CHANNEL = 'products'
 
-function buildSeedProducts() {
-  const uniqueProducts = Array.from(new Map(allProducts.map((product) => [product.id, product])).values())
-  const now = new Date().toISOString()
-
-  return uniqueProducts.map((product, index) => ({
-    id: product.id || createAdminId('product'),
-    name: product.name,
-    category: product.category || 'Lehenga',
-    price: Number(product.price) || 0,
-    image: product.image || '',
-    sku: `NT-${String(index + 1).padStart(4, '0')}`,
-    stock: 1,
-    status: 'active',
-    description: '',
-    createdAt: now,
-    updatedAt: now,
-  }))
-}
-
-function ensureProducts() {
-  if (!hasAdminStorageKey(ADMIN_PRODUCTS_STORAGE_KEY)) {
-    writeAdminStorage(ADMIN_PRODUCTS_STORAGE_KEY, buildSeedProducts(), CHANNEL)
-  }
-
+function getProducts() {
   return readAdminStorage(ADMIN_PRODUCTS_STORAGE_KEY, [])
 }
 
@@ -43,15 +13,17 @@ function persistProducts(products) {
 
 export const productService = {
   async getAll() {
-    return ensureProducts().slice().sort((left, right) => right.updatedAt.localeCompare(left.updatedAt))
+    return getProducts()
+      .slice()
+      .sort((left, right) => String(right.updatedAt || '').localeCompare(String(left.updatedAt || '')))
   },
 
   async getById(id) {
-    return ensureProducts().find((product) => product.id === id) ?? null
+    return getProducts().find((product) => product.id === id) ?? null
   },
 
   async create(payload) {
-    const products = ensureProducts()
+    const products = getProducts()
     const now = new Date().toISOString()
     const product = {
       id: createAdminId('product'),
@@ -59,9 +31,9 @@ export const productService = {
       category: payload.category.trim(),
       price: Number(payload.price) || 0,
       image: payload.image.trim(),
-      sku: payload.sku.trim() || `NT-${Math.floor(Math.random() * 100000)}`,
+      sku: payload.sku.trim(),
       stock: Number(payload.stock) || 0,
-      status: payload.status || 'draft',
+      status: payload.status || 'active',
       description: payload.description.trim(),
       createdAt: now,
       updatedAt: now,
@@ -72,7 +44,7 @@ export const productService = {
   },
 
   async update(id, payload) {
-    const products = ensureProducts()
+    const products = getProducts()
     let updatedProduct = null
 
     const nextProducts = products.map((product) => {
@@ -83,6 +55,11 @@ export const productService = {
       updatedProduct = {
         ...product,
         ...payload,
+        name: String(payload.name ?? product.name).trim(),
+        category: String(payload.category ?? product.category).trim(),
+        image: String(payload.image ?? product.image).trim(),
+        sku: String(payload.sku ?? product.sku).trim(),
+        description: String(payload.description ?? product.description).trim(),
         price: Number(payload.price ?? product.price) || 0,
         stock: Number(payload.stock ?? product.stock) || 0,
         updatedAt: new Date().toISOString(),
@@ -100,7 +77,7 @@ export const productService = {
   },
 
   async delete(id) {
-    const products = ensureProducts()
+    const products = getProducts()
     const nextProducts = products.filter((product) => product.id !== id)
 
     if (nextProducts.length === products.length) {

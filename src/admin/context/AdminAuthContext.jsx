@@ -8,19 +8,19 @@ import {
 
 const AdminAuthContext = createContext(null)
 
-const FIXED_ADMIN_USERNAME = 'admin'
+const FIXED_ADMIN_EMAIL = 'admin@naarithread.com'
 const FIXED_ADMIN_PASSWORD = 'admin123'
 
 export function AdminAuthProvider({ children }) {
   const [session, setSession] = useState(() => readAdminStorage(ADMIN_AUTH_STORAGE_KEY, null))
 
-  const login = async (username, password) => {
-    if (username.trim() !== FIXED_ADMIN_USERNAME || password !== FIXED_ADMIN_PASSWORD) {
-      throw new Error('Invalid admin credentials')
+  const login = async (email, password) => {
+    if (email.trim().toLowerCase() !== FIXED_ADMIN_EMAIL || password !== FIXED_ADMIN_PASSWORD) {
+      throw new Error('Invalid admin email or password')
     }
 
     const nextSession = {
-      username: FIXED_ADMIN_USERNAME,
+      email: FIXED_ADMIN_EMAIL,
       loggedInAt: new Date().toISOString(),
     }
 
@@ -41,7 +41,7 @@ export function AdminAuthProvider({ children }) {
       isAuthenticated: Boolean(session),
       login,
       logout,
-      fixedUsername: FIXED_ADMIN_USERNAME,
+      fixedEmail: FIXED_ADMIN_EMAIL,
     }),
     [session],
   )

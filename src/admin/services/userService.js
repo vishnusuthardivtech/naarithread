@@ -29,7 +29,7 @@ export const userService = {
   async getAll() {
     return readAdminStorage(USERS_KEY, [])
       .map(buildUserRecord)
-      .sort((left, right) => left.name.localeCompare(right.name))
+      .sort((left, right) => (left.name || left.email || '').localeCompare(right.name || right.email || ''))
   },
 
   async getById(id) {
