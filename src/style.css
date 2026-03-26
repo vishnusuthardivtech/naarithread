@@ -1723,6 +1723,24 @@ section, footer {
   gap: 28px;
 }
 
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.products-grid > .product-card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.products-grid > .product-card .product-info {
+  flex: 1;
+}
+
 /* CARD */
 .lehenga-card {
   background: linear-gradient(180deg, #120000, #0b0b0b);
@@ -2046,6 +2064,17 @@ body {
   .product-card:hover img {
     transform: none !important;
     box-shadow: none !important;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .products-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -4528,6 +4557,329 @@ body.auth-lock {
 
 
 
+
+/* ==========================================
+   STOREFRONT PRODUCT CARD RESTORE
+   UI-only fix for featured + best seller cards
+========================================== */
+
+.featured-lehengas .products-grid,
+.featured-lehengas .lehenga-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.featured-lehengas .product-card,
+.best-seller-section .product-card,
+.search-results-page .product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 100%;
+  background: linear-gradient(180deg, #050505 0%, #000000 100%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 18px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.featured-lehengas .product-card > a,
+.best-seller-section .product-card > a,
+.search-results-page .product-card > a {
+  display: block;
+  flex: 0 0 auto;
+  background: #000;
+  line-height: 0;
+}
+
+.featured-lehengas .product-image,
+.best-seller-section .product-image,
+.search-results-page .product-image {
+  position: relative;
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  background: #000;
+  display: block;
+}
+
+.featured-lehengas .product-image img,
+.best-seller-section .product-image img,
+.search-results-page .product-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  background: #000;
+}
+
+.featured-lehengas .product-info,
+.best-seller-section .product-info,
+.search-results-page .product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 14px 16px 16px;
+  background: #000;
+  text-align: center;
+}
+
+.featured-lehengas .product-info h3,
+.featured-lehengas .product-info .category,
+.best-seller-section .product-info h3,
+.best-seller-section .product-info .category,
+.search-results-page .product-info h3,
+.search-results-page .product-info .category {
+  margin: 0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.featured-lehengas .product-info .price,
+.best-seller-section .product-info .price,
+.search-results-page .product-info .price {
+  margin: 0;
+  color: #d4af37;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.best-seller-section,
+.best-seller-section .slider-wrapper,
+.best-seller-section .slider-track {
+  background: linear-gradient(180deg, #120404 0%, #000000 100%);
+}
+
+.best-seller-section .slider-wrapper {
+  overflow: hidden;
+  padding: 18px 0;
+}
+
+.best-seller-section .slider-track {
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 24px;
+  padding: 6px 0;
+}
+
+.best-seller-section .product-card {
+  flex: 0 0 280px !important;
+  width: 280px !important;
+  min-width: 280px !important;
+  max-width: 280px !important;
+  margin: 0 !important;
+}
+
+.best-seller-section .product-info {
+  min-height: 86px;
+}
+
+@media (max-width: 1024px) {
+  .featured-lehengas .products-grid,
+  .featured-lehengas .lehenga-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .featured-lehengas .product-card,
+  .best-seller-section .product-card,
+  .search-results-page .product-card {
+    border-radius: 16px;
+  }
+
+  .featured-lehengas .product-image,
+  .best-seller-section .product-image,
+  .search-results-page .product-image {
+    height: 320px;
+  }
+
+  .featured-lehengas .product-info,
+  .best-seller-section .product-info,
+  .search-results-page .product-info {
+    padding: 12px 14px 14px;
+  }
+
+  .best-seller-section .slider-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 14px 0 18px;
+  }
+
+  .best-seller-section .product-card {
+    flex: 0 0 calc(50vw - 24px) !important;
+    width: calc(50vw - 24px) !important;
+    min-width: calc(50vw - 24px) !important;
+    max-width: calc(50vw - 24px) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .featured-lehengas .products-grid,
+  .featured-lehengas .lehenga-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .featured-lehengas .product-image,
+  .best-seller-section .product-image,
+  .search-results-page .product-image {
+    height: 340px;
+  }
+}
+
+/* ==========================================
+   FINAL STOREFRONT POLISH
+   Quick View + Signature Lehengas
+========================================== */
+
+.product-card .quick-view-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 10px 20px;
+  border: 1px solid rgba(212, 175, 55, 0.32);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #d4af37 0%, #f5d76e 55%, #c7961f 100%);
+  color: #120700;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  box-shadow: 0 16px 38px rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0.94);
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+  z-index: 3;
+}
+
+.product-card .quick-view-btn:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+  box-shadow: 0 20px 44px rgba(212, 175, 55, 0.32);
+  filter: brightness(1.03);
+}
+
+.product-card:hover .quick-view-btn {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.product-card:hover .quick-view-btn:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+
+.signature-section .lehenga-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  align-items: stretch;
+}
+
+.signature-section .product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: linear-gradient(180deg, #050505 0%, #000000 100%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 18px;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding-bottom: 0;
+}
+
+.signature-section .product-image {
+  width: 100%;
+  height: 420px;
+  overflow: hidden;
+  background: #000;
+  display: block;
+}
+
+.signature-section .product-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  background: #000;
+}
+
+.signature-section .product-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  flex: 1 1 auto;
+  margin: 0;
+  padding: 14px 16px 16px;
+  background: #000;
+  text-align: center;
+}
+
+.signature-section .product-info h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.signature-section .product-info span {
+  margin: 0;
+  color: #d4af37;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .signature-section .lehenga-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .product-card .quick-view-btn {
+    min-height: 38px;
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+
+  .signature-section .product-card {
+    border-radius: 16px;
+  }
+
+  .signature-section .product-image {
+    height: 320px;
+  }
+
+  .signature-section .product-info {
+    padding: 12px 14px 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .signature-section .lehenga-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .signature-section .product-image {
+    height: 340px;
+  }
+}
 
 
 
@@ -7714,6 +8066,33 @@ transform: translateY(-6px);
 
 
 /* my account page css  */
+
+/* GLOBAL QUICK VIEW ALIGNMENT FIX */
+.product-card .product-image {
+  position: relative !important;
+}
+
+.product-card .product-actions {
+  position: absolute !important;
+  inset: 0 !important;
+}
+
+.product-card .quick-view-btn {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  right: auto !important;
+  bottom: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.product-card:hover .quick-view-btn,
+.product-card .quick-view-btn:hover {
+  transform: translate(-50%, -50%) !important;
+}
 /* my account page css  */
 /* my account page css  */
 /* my account page css  *//* my account page css  */

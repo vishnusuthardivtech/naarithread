@@ -4,7 +4,8 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
 import './style.css'
-import './admin/admin.css'
+// import './admin/admin.css'  // Disabled - using admin-new.css only
+
 
 const routerBase = import.meta.env.BASE_URL.endsWith('/') && import.meta.env.BASE_URL !== '/'
   ? import.meta.env.BASE_URL.slice(0, -1)

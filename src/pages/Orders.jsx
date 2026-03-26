@@ -1,9 +1,42 @@
 import { useState } from 'react'
 import { useApp } from '../context/AppContext'
+import { allProducts } from '../data/products'
+import { assetPath } from '../data/site'
 import { useOrders } from '../hooks/useOrders'
 import { formatPrice } from '../utils/storage'
 
 const FALLBACK_IMAGE = '/vite.svg'
+
+const resolveProductImage = (item = {}) => {
+  const matchedProduct =
+    allProducts.find((product) => product.id === item?.id) ||
+    allProducts.find((product) => product.name === item?.name) ||
+    allProducts.find((product) => product.category === item?.name)
+
+  if (matchedProduct?.image) {
+    return matchedProduct.image
+  }
+
+  const directImage = item?.image || item?.img
+  if (directImage) {
+    if (/^(https?:)?\/\//.test(directImage) || directImage.startsWith('data:')) {
+      return directImage
+    }
+
+    if (directImage.startsWith(import.meta.env.BASE_URL)) {
+      return directImage
+    }
+
+    if (directImage.includes('/images/')) {
+      const normalizedImage = directImage.replace(/^.*\/images\//, '')
+      return `${import.meta.env.BASE_URL}images/${normalizedImage}`
+    }
+
+    return assetPath(directImage)
+  }
+
+  return FALLBACK_IMAGE
+}
 
 export default function Orders() {
   const { user } = useApp()
@@ -32,7 +65,7 @@ export default function Orders() {
               return (
                 <div className="order-card active" key={order.id}>
                   <div className="order-flex">
-                    <div className="order-image"><img src={firstProduct?.image || FALLBACK_IMAGE} className="order-main-img" /></div>
+                    <div className="order-image"><img src={resolveProductImage(firstProduct)} className="order-main-img" /></div>
                     <div className="order-details">
                       <div className="order-id"><strong>Order ID:</strong> {order?.id}</div>
                       <div className="order-date">{new Date(order?.date).toLocaleString()}</div>

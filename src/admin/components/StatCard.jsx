@@ -1,9 +1,11 @@
-export default function StatCard({ label, value, hint }) {
+// Legacy StatCard - replaced by new Card component
+// Kept for compatibility
+export default function StatCard({ label, value, hint, className = '' }) {
   return (
-    <div className="admin-panel">
-      <p className="text-sm font-medium text-slate-500">{label}</p>
-      <p className="mt-3 text-3xl font-semibold tracking-tight text-slate-950">{value}</p>
-      <p className="mt-2 text-sm text-slate-500">{hint}</p>
+    <div className={`admin-card p-6 rounded-xl border bg-bg-card ${className}`}>
+      <p className="text-text-secondary text-sm font-medium mb-2">{label}</p>
+      <p className="text-3xl font-bold text-text-primary mb-1">{value}</p>
+      <p className="text-text-secondary text-sm">{hint}</p>
     </div>
   )
 }

@@ -6,7 +6,7 @@ export default function ProductGrid({ products = [], cardClassName = 'product-ca
   }
 
   return (
-    <div className="lehenga-grid">
+    <div className="lehenga-grid products-grid">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} className={cardClassName} showRating={showRating} />
       ))}

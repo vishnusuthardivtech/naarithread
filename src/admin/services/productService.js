@@ -3,6 +3,42 @@ import { allProducts } from '../../data/products'
 
 const CHANNEL = 'products'
 
+function normalizeStatus(status, stock) {
+  if (status) {
+    return status
+  }
+
+  return Number(stock) > 0 ? 'In Stock' : 'Out of Stock'
+}
+
+function validateProductPayload(payload) {
+  const name = String(payload.name ?? '').trim()
+  const category = String(payload.category ?? '').trim()
+  const image = String(payload.image ?? '').trim()
+  const description = String(payload.description ?? '').trim()
+  const price = Number(payload.price)
+
+  if (!name) {
+    throw new Error('Product name is required')
+  }
+
+  if (!category) {
+    throw new Error('Category is required')
+  }
+
+  if (!Number.isFinite(price) || price <= 0) {
+    throw new Error('Price must be greater than zero')
+  }
+
+  if (!image) {
+    throw new Error('Image URL is required')
+  }
+
+  if (!description) {
+    throw new Error('Description is required')
+  }
+}
+
 function getProducts() {
   const storedProducts = readAdminStorage(ADMIN_PRODUCTS_STORAGE_KEY, [])
   if (Array.isArray(storedProducts) && storedProducts.length > 0) {
@@ -29,6 +65,7 @@ export const productService = {
   },
 
   async create(payload) {
+    validateProductPayload(payload)
     const products = getProducts()
     const now = new Date().toISOString()
     const product = {
@@ -39,7 +76,7 @@ export const productService = {
       image: payload.image.trim(),
       sku: payload.sku.trim(),
       stock: Number(payload.stock) || 0,
-      status: payload.status || 'active',
+      status: normalizeStatus(payload.status, payload.stock),
       description: payload.description.trim(),
       createdAt: now,
       updatedAt: now,
@@ -50,6 +87,7 @@ export const productService = {
   },
 
   async update(id, payload) {
+    validateProductPayload(payload)
     const products = getProducts()
     let updatedProduct = null
 
@@ -68,6 +106,7 @@ export const productService = {
         description: String(payload.description ?? product.description).trim(),
         price: Number(payload.price ?? product.price) || 0,
         stock: Number(payload.stock ?? product.stock) || 0,
+        status: normalizeStatus(payload.status ?? product.status, payload.stock ?? product.stock),
         updatedAt: new Date().toISOString(),
       }
 

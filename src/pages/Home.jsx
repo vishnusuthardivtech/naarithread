@@ -54,7 +54,7 @@ export default function Home() {
           <div className="featured-container">
             <h2 className="section-title">Featured Lehengas</h2>
             <p className="section-subtitle">Handpicked styles for modern elegance</p>
-            <div className="lehenga-grid">{productsByPage.homeFeatured.map((product) => <ProductCard key={product.id} product={product} />)}</div>
+            <div className="lehenga-grid products-grid">{productsByPage.homeFeatured.map((product) => <ProductCard key={product.id} product={product} />)}</div>
           </div>
         </div>
       </section>

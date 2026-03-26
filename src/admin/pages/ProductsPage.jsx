@@ -1,6 +1,13 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { formatPrice } from '../../utils/storage'
+import Badge from '../components/Badge'
+import Button from '../components/Button'
+import Card from '../components/Card'
+import EmptyState from '../components/EmptyState'
 import LoadingState from '../components/LoadingState'
+import Modal from '../components/Modal'
+import Table from '../components/Table'
+import { useAdminPageSearch } from '../context/AdminPageSearchContext'
 import { useAdminCollection } from '../hooks/useAdminCollection'
 import { productService } from '../services/productService'
 
@@ -15,56 +22,99 @@ const emptyForm = {
   description: '',
 }
 
+function getInitialForm(product) {
+  if (!product) {
+    return emptyForm
+  }
+
+  return {
+    name: product.name || '',
+    category: product.category || '',
+    price: String(product.price ?? ''),
+    image: product.image || '',
+    sku: product.sku || '',
+    stock: String(product.stock ?? ''),
+    status: product.status || 'In Stock',
+    description: product.description || '',
+  }
+}
+
+function validateForm(form) {
+  if (!form.name.trim()) return 'Product name is required'
+  if (!form.price || Number(form.price) <= 0) return 'Price must be greater than zero'
+  if (!form.image.trim()) return 'Image URL is required'
+  if (!form.category.trim()) return 'Category is required'
+  if (!form.description.trim()) return 'Description is required'
+  return ''
+}
+
 export default function ProductsPage() {
-  const { data: products, loading, error, reload } = useAdminCollection(productService.getAll)
+  const { data: products = [], loading, error, reload } = useAdminCollection(productService.getAll)
+  const { getQuery } = useAdminPageSearch()
+  const [viewMode, setViewMode] = useState('table')
   const [isFormOpen, setIsFormOpen] = useState(false)
-  const [editingId, setEditingId] = useState('')
+  const [editingProduct, setEditingProduct] = useState(null)
   const [form, setForm] = useState(emptyForm)
   const [saveError, setSaveError] = useState('')
   const [actionError, setActionError] = useState('')
+  const searchQuery = getQuery('/admin/products').trim().toLowerCase()
+
+  const filteredProducts = useMemo(
+    () =>
+      products.filter((product) => {
+        if (!searchQuery) return true
+        return [product.name, product.category, product.sku, product.status].some((value) =>
+          String(value || '')
+            .toLowerCase()
+            .includes(searchQuery),
+        )
+      }),
+    [products, searchQuery],
+  )
 
   if (loading) {
     return <LoadingState label="Loading products..." />
   }
 
-  const closeForm = () => {
+  function closeForm() {
     setIsFormOpen(false)
-    setEditingId('')
+    setEditingProduct(null)
     setForm(emptyForm)
     setSaveError('')
   }
 
-  const openCreateForm = () => {
-    setEditingId('')
+  function openCreateForm() {
+    setEditingProduct(null)
     setForm(emptyForm)
     setSaveError('')
     setIsFormOpen(true)
   }
 
-  const openEditForm = (product) => {
-    setEditingId(product.id)
-    setForm({
-      name: product.name || '',
-      category: product.category || '',
-      price: String(product.price ?? ''),
-      image: product.image || '',
-      sku: product.sku || '',
-      stock: String(product.stock ?? ''),
-      status: product.status || 'In Stock',
-      description: product.description || '',
-    })
+  function openEditForm(product) {
+    setEditingProduct(product)
+    setForm(getInitialForm(product))
     setSaveError('')
     setIsFormOpen(true)
   }
 
-  const handleSubmit = async (event) => {
+  function updateField(key, value) {
+    setForm((current) => ({ ...current, [key]: value }))
+  }
+
+  async function handleSubmit(event) {
     event.preventDefault()
     setSaveError('')
     setActionError('')
 
+    const validationError = validateForm(form)
+    if (validationError) {
+      setSaveError(validationError)
+      return
+    }
+
     try {
-      if (editingId) {
-        await productService.update(editingId, form)
+      if (editingProduct) {
+        await productService.update(editingProduct.id, form)
       } else {
         await productService.create(form)
       }
@@ -76,9 +126,8 @@ export default function ProductsPage() {
     }
   }
 
-  const handleDelete = async (productId) => {
+  async function handleDelete(productId) {
     setActionError('')
-
     try {
       await productService.delete(productId)
       await reload()
@@ -87,134 +136,229 @@ export default function ProductsPage() {
     }
   }
 
+  const columns = [
+    { header: 'Product', accessor: 'name' },
+    { header: 'Category', accessor: 'category' },
+    { header: 'Price', accessor: 'price', render: (price) => formatPrice(price || 0) },
+    { header: 'Stock', accessor: 'stock', render: (stock) => stock || 0 },
+    {
+      header: 'Status',
+      accessor: 'status',
+      render: (status) => <Badge variant={status === 'In Stock' ? 'success' : status === 'Out of Stock' ? 'danger' : 'processing'}>{status}</Badge>,
+    },
+    { header: 'SKU', accessor: 'sku', render: (sku) => sku || 'Not set' },
+  ]
+
   return (
-    <>
-      <div className="topbar">
+    <div className="space-y-6">
+      <div className="page-header">
         <div>
-          <h1>Products</h1>
-          <p className="page-sub">Manage catalog items from local admin data and the shared storefront catalog.</p>
+          <h1 className="page-title">Products</h1>
+          <p className="page-sub">Manage the admin catalog with validated inputs, cleaner spacing, and stable editing.</p>
         </div>
-        <button type="button" className="add-btn" onClick={openCreateForm}>
-          + Add Product
-        </button>
+        <div className="flex items-center gap-3">
+          <Button variant="secondary" size="sm" onClick={() => setViewMode(viewMode === 'table' ? 'grid' : 'table')}>
+            {viewMode === 'table' ? 'Grid View' : 'Table View'}
+          </Button>
+          <Button variant="primary" onClick={openCreateForm}>
+            Add Product
+          </Button>
+        </div>
       </div>
 
-      {error || actionError ? <div className="error-banner">{error || actionError}</div> : null}
+      {error || actionError ? (
+        <div className="p-4 bg-danger/10 border-danger rounded-xl text-danger">{error || actionError}</div>
+      ) : null}
 
-      {products.length === 0 ? (
-        <div className="empty-panel">No products found.</div>
+      {filteredProducts.length === 0 ? (
+        <EmptyState title="No Products" description="No products match the current page search." />
+      ) : viewMode === 'table' ? (
+        <Table columns={columns} data={filteredProducts} onRowClick={openEditForm} />
       ) : (
-        <div className="product-grid">
-          {products.map((product) => (
-            <div className="product-card" key={product.id}>
-              <div className="product-image">
-                {product.image ? <img src={product.image} alt={product.name} /> : <div className="product-image-fallback">No Image</div>}
+        <div className="grid-cols-3">
+          {filteredProducts.map((product) => (
+            <Card key={product.id}>
+              <div className="relative overflow-hidden rounded-xl mb-4">
+                {product.image ? (
+                  <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+                ) : (
+                  <div className="w-full h-48 flex items-center justify-center admin-surface">
+                    <span className="text-text-secondary">No Image</span>
+                  </div>
+                )}
               </div>
-              <div className="product-info">
-                <h3>{product.name}</h3>
-                <p>Category: {product.category || 'N/A'}</p>
-                <div className="price">{formatPrice(product.price || 0)}</div>
+              <div className="space-y-4">
+                <div>
+                  <h3 className="font-semibold">{product.name}</h3>
+                  <p className="text-sm text-text-secondary">{product.category || 'Uncategorized'}</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="font-bold text-gold">{formatPrice(product.price || 0)}</div>
+                  <Badge variant={product.status === 'In Stock' ? 'success' : product.status === 'Out of Stock' ? 'danger' : 'processing'}>
+                    {product.stock || 0} in stock
+                  </Badge>
+                </div>
+                <div className="admin-action-row">
+                  <Button size="sm" variant="secondary" onClick={() => openEditForm(product)}>
+                    Edit
+                  </Button>
+                  <Button size="sm" variant="danger" onClick={() => handleDelete(product.id)}>
+                    Delete
+                  </Button>
+                </div>
               </div>
-              <div className="actions">
-                <button type="button" className="edit" onClick={() => openEditForm(product)}>
-                  Edit
-                </button>
-                <button type="button" className="delete" onClick={() => handleDelete(product.id)}>
-                  Delete
-                </button>
-              </div>
-            </div>
+            </Card>
           ))}
         </div>
       )}
 
-      {isFormOpen ? (
-        <div className="modal-overlay" onClick={closeForm}>
-          <div className="modal-card" onClick={(event) => event.stopPropagation()}>
-            <div className="modal-header">
-              <h1 className="page-title">{editingId ? 'Edit Product' : 'Add New Product'}</h1>
-              <button type="button" className="modal-close" onClick={closeForm}>
-                Close
-              </button>
+      <Modal
+        isOpen={isFormOpen}
+        onClose={closeForm}
+        title={editingProduct ? 'Edit Product' : 'Add Product'}
+        footer={
+          <>
+            <Button variant="secondary" onClick={closeForm}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" form="admin-product-form">
+              {editingProduct ? 'Update Product' : 'Publish Product'}
+            </Button>
+          </>
+        }
+      >
+        {saveError ? <div className="p-4 bg-danger/10 border-danger rounded-xl text-danger">{saveError}</div> : null}
+
+        <form id="admin-product-form" onSubmit={handleSubmit} className="space-y-6">
+          <div className="admin-product-form-grid">
+            <section className="admin-form-section">
+              <h3 className="admin-form-section-title">Product Details</h3>
+              <div className="admin-form-grid-two">
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-name">
+                    Product Name
+                  </label>
+                  <input
+                    id="product-name"
+                    className="admin-input"
+                    value={form.name}
+                    onChange={(event) => updateField('name', event.target.value)}
+                    required
+                  />
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-category">
+                    Category
+                  </label>
+                  <input
+                    id="product-category"
+                    className="admin-input"
+                    value={form.category}
+                    onChange={(event) => updateField('category', event.target.value)}
+                    required
+                  />
+                </div>
+                <div className="admin-form-field admin-form-field-full">
+                  <label className="admin-label" htmlFor="product-description">
+                    Description
+                  </label>
+                  <textarea
+                    id="product-description"
+                    className="admin-textarea"
+                    value={form.description}
+                    onChange={(event) => updateField('description', event.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="admin-form-section">
+              <h3 className="admin-form-section-title">Pricing & Inventory</h3>
+              <div className="admin-form-grid-two">
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-price">
+                    Price
+                  </label>
+                  <input
+                    id="product-price"
+                    className="admin-input"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={form.price}
+                    onChange={(event) => updateField('price', event.target.value)}
+                    required
+                  />
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-stock">
+                    Stock
+                  </label>
+                  <input
+                    id="product-stock"
+                    className="admin-input"
+                    type="number"
+                    min="0"
+                    step="1"
+                    value={form.stock}
+                    onChange={(event) => updateField('stock', event.target.value)}
+                  />
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-sku">
+                    SKU
+                  </label>
+                  <input
+                    id="product-sku"
+                    className="admin-input"
+                    value={form.sku}
+                    onChange={(event) => updateField('sku', event.target.value)}
+                  />
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-status">
+                    Status
+                  </label>
+                  <select
+                    id="product-status"
+                    className="admin-select"
+                    value={form.status}
+                    onChange={(event) => updateField('status', event.target.value)}
+                  >
+                    <option value="In Stock">In Stock</option>
+                    <option value="Low Stock">Low Stock</option>
+                    <option value="Out of Stock">Out of Stock</option>
+                  </select>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <section className="admin-form-section">
+            <h3 className="admin-form-section-title">Media</h3>
+            <div className="admin-form-field">
+              <label className="admin-label" htmlFor="product-image">
+                Image URL
+              </label>
+              <input
+                id="product-image"
+                className="admin-input"
+                type="url"
+                value={form.image}
+                onChange={(event) => updateField('image', event.target.value)}
+                required
+              />
             </div>
 
-            <form className="pro-form" onSubmit={handleSubmit}>
-              <div className="form-section">
-                <h2>Basic Information</h2>
-                <input
-                  type="text"
-                  placeholder="Product Name"
-                  value={form.name}
-                  onChange={(event) => setForm((current) => ({ ...current, name: event.target.value }))}
-                  required
-                />
-                <input
-                  type="text"
-                  placeholder="SKU Code"
-                  value={form.sku}
-                  onChange={(event) => setForm((current) => ({ ...current, sku: event.target.value }))}
-                />
-                <textarea
-                  placeholder="Short Description"
-                  value={form.description}
-                  onChange={(event) => setForm((current) => ({ ...current, description: event.target.value }))}
-                />
+            {form.image ? (
+              <div className="admin-image-preview mt-6">
+                <img src={form.image} alt="Product preview" className="admin-image-preview-img" />
               </div>
-
-              <div className="form-section">
-                <h2>Pricing</h2>
-                <input
-                  type="number"
-                  placeholder="Final Price (₹)"
-                  value={form.price}
-                  onChange={(event) => setForm((current) => ({ ...current, price: event.target.value }))}
-                  required
-                />
-                <input
-                  type="number"
-                  placeholder="Stock Quantity"
-                  value={form.stock}
-                  onChange={(event) => setForm((current) => ({ ...current, stock: event.target.value }))}
-                  required
-                />
-              </div>
-
-              <div className="form-section">
-                <h2>Category &amp; Placement</h2>
-                <input
-                  type="text"
-                  placeholder="Category"
-                  value={form.category}
-                  onChange={(event) => setForm((current) => ({ ...current, category: event.target.value }))}
-                  required
-                />
-                <select value={form.status} onChange={(event) => setForm((current) => ({ ...current, status: event.target.value }))}>
-                  <option value="In Stock">In Stock</option>
-                  <option value="Out of Stock">Out of Stock</option>
-                </select>
-              </div>
-
-              <div className="form-section">
-                <h2>Product Images</h2>
-                <label>Main Image URL</label>
-                <input
-                  type="text"
-                  placeholder="https://example.com/image.jpg"
-                  value={form.image}
-                  onChange={(event) => setForm((current) => ({ ...current, image: event.target.value }))}
-                  required
-                />
-              </div>
-
-              {saveError ? <div className="error-banner">{saveError}</div> : null}
-
-              <button type="submit" className="submit-btn">
-                {editingId ? 'Update Product' : 'Publish Product'}
-              </button>
-            </form>
-          </div>
-        </div>
-      ) : null}
-    </>
+            ) : null}
+          </section>
+        </form>
+      </Modal>
+    </div>
   )
 }
