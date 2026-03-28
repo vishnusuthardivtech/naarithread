@@ -9,7 +9,13 @@ export default function ProductCard({ product, className = 'product-card', showR
   const cardClassName = `${className} reveal`.replace(/\s+/g, ' ').trim()
 
   return (
-    <div className={cardClassName}>
+    <div
+      className={cardClassName}
+      data-id={product.id}
+      data-name={product.name}
+      data-price={product.price}
+      data-image={product.image}
+    >
       <Link to={`/product?id=${product.id}`}>
         <div className="product-image">
           <img src={product.image} alt={product.category} />
@@ -39,7 +45,14 @@ export default function ProductCard({ product, className = 'product-card', showR
               </svg>
             </button>
 
-            <button className="quick-view-btn" onClick={(event) => event.preventDefault()}>
+            <button
+              className="quick-view-btn"
+              data-id={product.id}
+              data-name={product.name}
+              data-price={product.price}
+              data-image={product.image}
+              onClick={(event) => event.preventDefault()}
+            >
               <span className="quick-text">Quick View</span>
               <span className="quick-icon">
                 <svg viewBox="0 0 24 24" className="icon-svg">

@@ -32,11 +32,13 @@ import Contact from './pages/Contact'
 import Faq from './pages/Faq'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
+import QuickViewModal from './components/QuickViewModal'
 
 export default function App() {
   return (
     <AdminProviders>
       <AppProvider>
+        <QuickViewModal />
         <Routes>
           <Route path="/admin/login" element={<AdminLoginPage />} />
           <Route
