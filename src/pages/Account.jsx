@@ -5,12 +5,10 @@ import { useAddress } from '../hooks/useAddress'
 import { useOrders } from '../hooks/useOrders'
 import { useWishlist } from '../hooks/useWishlist'
 import { states } from '../data/site'
-import { allProducts } from '../data/products'
-import { assetPath } from '../data/site'
 import { readStorage, writeStorage, formatPrice } from '../utils/storage'
+import { resolveProductImage } from '../utils/productImages'
 
 const emptyAddressForm = { fullName: '', phone: '', line1: '', line2: '', city: '', state: '', pincode: '' }
-const FALLBACK_IMAGE = '/vite.svg'
 
 const toAddressForm = (address) => ({
   fullName: address.name || '',
@@ -21,29 +19,6 @@ const toAddressForm = (address) => ({
   state: address.state || '',
   pincode: address.pincode || '',
 })
-
-const resolveProductImage = (item = {}) => {
-  const directImage = item?.image || item?.img
-  if (directImage) {
-    if (/^(https?:)?\/\//.test(directImage) || directImage.startsWith('data:')) {
-      return directImage
-    }
-
-    if (directImage.startsWith(import.meta.env.BASE_URL)) {
-      return directImage
-    }
-
-    if (directImage.includes('/images/')) {
-      const normalizedImage = directImage.replace(/^.*\/images\//, '')
-      return `${import.meta.env.BASE_URL}images/${normalizedImage}`
-    }
-
-    return assetPath(directImage)
-  }
-
-  const matchedProduct = allProducts.find((product) => product.id === item?.id)
-  return matchedProduct?.image || FALLBACK_IMAGE
-}
 
 export default function Account() {
   const { user, logout } = useApp()

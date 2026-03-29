@@ -1,26 +1,9 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { allProducts } from '../data/products'
-import { assetPath } from '../data/site'
 import { useWishlist } from '../hooks/useWishlist'
+import { resolveProductImage } from '../utils/productImages'
 import { formatPrice } from '../utils/storage'
-
-const FALLBACK_IMAGE = '/vite.svg'
-
-const resolveProductImage = (item = {}) => {
-  const directImage = item?.image || item?.img
-  if (directImage) {
-    if (/^(https?:)?\/\//.test(directImage) || directImage.startsWith('data:')) {
-      return directImage
-    }
-
-    return assetPath(directImage)
-  }
-
-  const matchedProduct = allProducts.find((product) => product.id === item?.id)
-  return matchedProduct?.image || FALLBACK_IMAGE
-}
 
 export default function Wishlist() {
   const { user, addToCart } = useApp()
