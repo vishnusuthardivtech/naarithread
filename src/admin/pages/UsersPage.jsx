@@ -24,6 +24,7 @@ export default function UsersPage() {
   const { getQuery } = useAdminPageSearch()
   const [selectedUser, setSelectedUser] = useState(null)
   const searchQuery = getQuery('/admin/users').trim().toLowerCase()
+  const handleRefreshPage = () => window.location.reload()
 
   const filteredUsers = useMemo(
     () =>
@@ -67,7 +68,7 @@ export default function UsersPage() {
           <p className="page-sub">Working refresh and view actions with topbar-only current-page search.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="secondary" size="sm" onClick={reload}>
+          <Button variant="secondary" size="sm" onClick={handleRefreshPage}>
             Refresh
           </Button>
         </div>

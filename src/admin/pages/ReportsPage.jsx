@@ -32,6 +32,7 @@ export default function ReportsPage() {
   const { getQuery } = useAdminPageSearch()
   const [range, setRange] = useState('30')
   const searchQuery = getQuery('/admin/reports').trim().toLowerCase()
+  const handleRefreshPage = () => window.location.reload()
   const orders = ordersState.data || []
   const products = productsState.data || []
   const filteredProducts = useMemo(
@@ -105,6 +106,9 @@ export default function ReportsPage() {
           <p className="page-sub">Stable analytics view with clean charts, rate summaries, and searchable product reporting.</p>
         </div>
         <div className="flex items-center gap-3">
+          <Button variant="secondary" size="sm" onClick={handleRefreshPage}>
+            Refresh
+          </Button>
           <Button variant={range === '7' ? 'primary' : 'secondary'} size="sm" onClick={() => setRange('7')}>
             7 Days
           </Button>

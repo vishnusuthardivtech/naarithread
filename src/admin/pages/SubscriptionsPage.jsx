@@ -29,6 +29,7 @@ export default function SubscriptionsPage() {
   const { getQuery } = useAdminPageSearch()
   const [selectedSubscriber, setSelectedSubscriber] = useState(null)
   const searchQuery = getQuery('/admin/subscriptions').trim().toLowerCase()
+  const handleRefreshPage = () => window.location.reload()
 
   const filteredSubscribers = useMemo(
     () =>
@@ -81,7 +82,7 @@ export default function SubscriptionsPage() {
           <p className="page-sub">Refresh, export, and view actions now work with page-only topbar filtering.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="secondary" size="sm" onClick={reload}>
+          <Button variant="secondary" size="sm" onClick={handleRefreshPage}>
             Refresh
           </Button>
           <Button variant="secondary" size="sm" onClick={handleExport}>

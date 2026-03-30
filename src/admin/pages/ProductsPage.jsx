@@ -11,6 +11,28 @@ import { useAdminPageSearch } from '../context/AdminPageSearchContext'
 import { useAdminCollection } from '../hooks/useAdminCollection'
 import { productService } from '../services/productService'
 
+const adminProductSelectStyle = {
+  padding: '12px 44px 12px 16px',
+  borderRadius: '14px',
+  border: '1px solid rgba(212, 175, 55, 0.4)',
+  background: 'linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.98))',
+  color: '#fff',
+  appearance: 'none',
+  WebkitAppearance: 'none',
+  MozAppearance: 'none',
+  backgroundImage:
+    `linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.98)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20'%3E%3Cpath fill='%23f3ddac' d='M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.12l3.71-3.89a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z'/%3E%3C/svg%3E")`,
+  backgroundRepeat: 'no-repeat, no-repeat',
+  backgroundPosition: '0 0, right 14px center',
+  backgroundSize: '100% 100%, 16px 16px',
+}
+
+const adminProductOptionStyle = {
+  background: '#111',
+  color: '#fff',
+}
+
 const emptyForm = {
   name: '',
   category: '',
@@ -58,6 +80,7 @@ export default function ProductsPage() {
   const [saveError, setSaveError] = useState('')
   const [actionError, setActionError] = useState('')
   const searchQuery = getQuery('/admin/products').trim().toLowerCase()
+  const handleRefreshPage = () => window.location.reload()
 
   const filteredProducts = useMemo(
     () =>
@@ -157,6 +180,9 @@ export default function ProductsPage() {
           <p className="page-sub">Manage the admin catalog with validated inputs, cleaner spacing, and stable editing.</p>
         </div>
         <div className="flex items-center gap-3">
+          <Button variant="secondary" size="sm" onClick={handleRefreshPage}>
+            Refresh
+          </Button>
           <Button variant="secondary" size="sm" onClick={() => setViewMode(viewMode === 'table' ? 'grid' : 'table')}>
             {viewMode === 'table' ? 'Grid View' : 'Table View'}
           </Button>
@@ -323,12 +349,13 @@ export default function ProductsPage() {
                   <select
                     id="product-status"
                     className="admin-select"
+                    style={adminProductSelectStyle}
                     value={form.status}
                     onChange={(event) => updateField('status', event.target.value)}
                   >
-                    <option value="In Stock">In Stock</option>
-                    <option value="Low Stock">Low Stock</option>
-                    <option value="Out of Stock">Out of Stock</option>
+                    <option value="In Stock" style={adminProductOptionStyle}>In Stock</option>
+                    <option value="Low Stock" style={adminProductOptionStyle}>Low Stock</option>
+                    <option value="Out of Stock" style={adminProductOptionStyle}>Out of Stock</option>
                   </select>
                 </div>
               </div>

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { formatPrice } from '../../utils/storage'
-import Badge from '../components/Badge'
 import Button from '../components/Button'
 import Card from '../components/Card'
 import EmptyState from '../components/EmptyState'
@@ -9,6 +8,43 @@ import Modal from '../components/Modal'
 import { useAdminPageSearch } from '../context/AdminPageSearchContext'
 import { useAdminCollection } from '../hooks/useAdminCollection'
 import { orderService } from '../services/orderService'
+
+const statusFilterOptions = [
+  'all',
+  'Placed',
+  'Processing',
+  'Paid',
+  'Shipped',
+  'Out for Delivery',
+  'Delivered',
+  'Cancelled',
+]
+
+const adminStatusSelectStyle = {
+  minWidth: '240px',
+  padding: '14px 44px 14px 18px',
+  borderRadius: '22px',
+  border: '1px solid rgba(212, 175, 55, 0.35)',
+  background: 'linear-gradient(180deg, rgba(38, 21, 12, 0.96), rgba(22, 10, 8, 0.96))',
+  color: '#f6ead2',
+  fontWeight: 600,
+  lineHeight: 1.25,
+  appearance: 'none',
+  WebkitAppearance: 'none',
+  MozAppearance: 'none',
+  boxShadow: 'inset 0 1px 0 rgba(255, 240, 212, 0.05), 0 10px 24px rgba(0, 0, 0, 0.28)',
+  backgroundImage:
+    `linear-gradient(180deg, rgba(38, 21, 12, 0.96), rgba(22, 10, 8, 0.96)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20'%3E%3Cpath fill='%23f3ddac' d='M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.12l3.71-3.89a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z'/%3E%3C/svg%3E")`,
+  backgroundRepeat: 'no-repeat, no-repeat',
+  backgroundPosition: '0 0, right 16px center',
+  backgroundSize: '100% 100%, 16px 16px',
+}
+
+const adminStatusOptionStyle = {
+  background: '#17110d',
+  color: '#f6ead2',
+}
 
 function formatOrderDate(value) {
   if (!value) return 'Not available'
@@ -19,15 +55,9 @@ function formatOrderDate(value) {
   })
 }
 
-function getBadgeVariant(status) {
-  if (status === 'Delivered' || status === 'Paid') return 'success'
-  if (status === 'Cancelled') return 'danger'
-  return 'processing'
-}
-
 function OrderActions({ order, isOpen, onToggle, onClose, onAction }) {
   const dropdownRef = useRef(null)
-  const normalizedStatus = order.status === 'Shipped' ? 'Shipped' : order.status
+  const normalizedStatus = order.status || 'Placed'
 
   useEffect(() => {
     if (!isOpen) return undefined
@@ -45,9 +75,32 @@ function OrderActions({ order, isOpen, onToggle, onClose, onAction }) {
   const options = [
     { label: 'View', action: 'view' },
     {
-      label: normalizedStatus === 'Shipped' || normalizedStatus === 'Delivered' ? 'Already Shipped' : 'Mark as Shipped',
+      label:
+        normalizedStatus === 'Shipped' || normalizedStatus === 'Out for Delivery' || normalizedStatus === 'Delivered'
+          ? 'Already Shipped'
+          : 'Mark as Shipped',
       action: 'ship',
-      disabled: normalizedStatus === 'Shipped' || normalizedStatus === 'Delivered' || normalizedStatus === 'Cancelled',
+      disabled:
+        normalizedStatus === 'Shipped' ||
+        normalizedStatus === 'Out for Delivery' ||
+        normalizedStatus === 'Delivered' ||
+        normalizedStatus === 'Cancelled',
+    },
+    {
+      label:
+        normalizedStatus === 'Out for Delivery' || normalizedStatus === 'Delivered'
+          ? 'Already Out for Delivery'
+          : 'Mark as Out for Delivery',
+      action: 'out-for-delivery',
+      disabled:
+        normalizedStatus === 'Out for Delivery' ||
+        normalizedStatus === 'Delivered' ||
+        normalizedStatus === 'Cancelled',
+    },
+    {
+      label: normalizedStatus === 'Delivered' ? 'Already Delivered' : 'Mark as Delivered',
+      action: 'deliver',
+      disabled: normalizedStatus === 'Delivered' || normalizedStatus === 'Cancelled',
     },
     {
       label: normalizedStatus === 'Cancelled' ? 'Already Cancelled' : 'Cancel Order',
@@ -100,11 +153,12 @@ export default function OrdersPage() {
   const [openMenuId, setOpenMenuId] = useState('')
   const [selectedOrder, setSelectedOrder] = useState(null)
   const searchQuery = getQuery('/admin/orders').trim().toLowerCase()
+  const handleRefreshPage = () => window.location.reload()
 
   const filteredOrders = useMemo(
     () =>
       orders.filter((order) => {
-        const normalizedStatus = order.status === 'Shipped' ? 'Shipped' : order.status
+        const normalizedStatus = order.status || 'Placed'
         const matchesStatus = selectedStatus === 'all' || normalizedStatus === selectedStatus
         const matchesSearch =
           !searchQuery ||
@@ -140,6 +194,16 @@ export default function OrdersPage() {
       return
     }
 
+    if (action === 'out-for-delivery') {
+      updateStatus(order.id, 'Out for Delivery')
+      return
+    }
+
+    if (action === 'deliver') {
+      updateStatus(order.id, 'Delivered')
+      return
+    }
+
     if (action === 'cancel') {
       updateStatus(order.id, 'Cancelled')
     }
@@ -157,21 +221,24 @@ export default function OrdersPage() {
           <p className="page-sub">Protected order operations with compact action dropdowns and working status updates.</p>
         </div>
         <div className="flex items-center gap-3">
-          <Button variant="secondary" size="sm" onClick={reload}>
+          <Button variant="secondary" size="sm" onClick={handleRefreshPage}>
             Refresh
           </Button>
         </div>
       </div>
 
       <div className="flex items-center gap-3">
-        <select className="admin-select" value={selectedStatus} onChange={(event) => setSelectedStatus(event.target.value)}>
-          <option value="all">All Status</option>
-          <option value="Placed">Placed</option>
-          <option value="Processing">Processing</option>
-          <option value="Paid">Paid</option>
-          <option value="Shipped">Shipped</option>
-          <option value="Delivered">Delivered</option>
-          <option value="Cancelled">Cancelled</option>
+        <select
+          className="admin-select"
+          style={adminStatusSelectStyle}
+          value={selectedStatus}
+          onChange={(event) => setSelectedStatus(event.target.value)}
+        >
+          {statusFilterOptions.map((status) => (
+            <option key={status} value={status} style={adminStatusOptionStyle}>
+              {status === 'all' ? 'All Status' : status}
+            </option>
+          ))}
         </select>
         <span className="admin-pill">{filteredOrders.length} matching orders</span>
       </div>
@@ -194,7 +261,6 @@ export default function OrdersPage() {
                   </div>
 
                   <div className="admin-order-actions">
-                    <Badge variant={getBadgeVariant(order.status)}>{order.status || 'Placed'}</Badge>
                     <OrderActions
                       order={order}
                       isOpen={openMenuId === order.id}

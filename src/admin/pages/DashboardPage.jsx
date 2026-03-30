@@ -44,6 +44,7 @@ export default function DashboardPage() {
   const { getQuery } = useAdminPageSearch()
   const [range, setRange] = useState('30')
   const searchQuery = getQuery('/admin/dashboard').trim().toLowerCase()
+  const handleRefreshPage = () => window.location.reload()
   const orders = ordersState.data || []
   const products = productsState.data || []
   const users = usersState.data || []
@@ -132,6 +133,9 @@ export default function DashboardPage() {
           <p className="page-sub">Working filters, export, page-scoped search, and safer chart rendering.</p>
         </div>
         <div className="flex items-center gap-3">
+          <Button variant="secondary" size="sm" onClick={handleRefreshPage}>
+            Refresh
+          </Button>
           <Button variant={range === '7' ? 'primary' : 'secondary'} size="sm" onClick={() => setRange('7')}>
             7 Days
           </Button>

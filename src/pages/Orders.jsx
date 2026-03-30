@@ -88,7 +88,10 @@ export default function Orders() {
             {orders.length === 0 ? <p style={{ textAlign: 'center' }}>No orders yet</p> : null}
             {orders.map((order) => {
               const firstProduct = order?.products?.[0]
-              const statusClass = order.status === 'Paid' ? 'status-paid' : 'status-processing'
+              const statusClass =
+                order?.status === 'Paid' || order?.status === 'Out for Delivery' || order?.status === 'Delivered'
+                  ? 'status-paid'
+                  : 'status-processing'
               return (
                 <div className="order-card active" key={order.id}>
                   <div className="order-flex">

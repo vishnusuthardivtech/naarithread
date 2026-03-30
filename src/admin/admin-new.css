@@ -397,13 +397,15 @@ textarea {
   position: fixed;
   inset: 0 auto 0 0;
   width: 284px;
-  padding: 24px 18px;
+  padding: 24px 18px 32px;
   background:
     linear-gradient(180deg, rgba(20, 12, 6, 0.98), rgba(8, 8, 8, 0.98));
   display: flex;
   flex-direction: column;
   gap: 24px;
   z-index: 30;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .admin-sidebar-header {
@@ -487,10 +489,12 @@ textarea {
 }
 
 .admin-sidebar-footer {
+  margin-top: auto;
   padding: 18px;
   border-radius: 18px;
   border: 1px solid rgba(212, 175, 55, 0.14);
   background: rgba(255, 255, 255, 0.03);
+  margin-bottom: max(8px, env(safe-area-inset-bottom, 0px));
 }
 
 .admin-sidebar-footer-title {
@@ -498,6 +502,8 @@ textarea {
   color: #fff2d1;
   font-weight: 600;
   overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.45;
 }
 
 .admin-sidebar-footer-copy {
