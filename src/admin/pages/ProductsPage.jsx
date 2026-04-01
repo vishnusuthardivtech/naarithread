@@ -11,6 +11,9 @@ import { useAdminPageSearch } from '../context/AdminPageSearchContext'
 import { useAdminCollection } from '../hooks/useAdminCollection'
 import { productService } from '../services/productService'
 
+const CATEGORY_OPTIONS = ['Mirror Lehenga', 'Sequence Lehenga', 'Party Lehenga']
+const COLLECTION_OPTIONS = ['Collection 1', 'Collection 2', 'Collection 3']
+
 const adminProductSelectStyle = {
   padding: '12px 44px 12px 16px',
   borderRadius: '14px',
@@ -33,14 +36,37 @@ const adminProductOptionStyle = {
   color: '#fff',
 }
 
+const adminCheckboxGroupStyle = {
+  display: 'grid',
+  gap: '12px',
+}
+
+const adminCheckboxLabelStyle = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '10px',
+  color: '#f6ead2',
+  fontSize: '14px',
+  fontWeight: 500,
+}
+
+const adminCheckboxStyle = {
+  width: '16px',
+  height: '16px',
+  accentColor: '#d4af37',
+}
+
 const emptyForm = {
   name: '',
   category: '',
+  collection: '',
   price: '',
   image: '',
   sku: '',
   stock: '',
   status: 'In Stock',
+  showInNewArrival: false,
+  showInBestSeller: false,
   description: '',
 }
 
@@ -52,11 +78,14 @@ function getInitialForm(product) {
   return {
     name: product.name || '',
     category: product.category || '',
+    collection: product.collection || '',
     price: String(product.price ?? ''),
     image: product.image || '',
     sku: product.sku || '',
     stock: String(product.stock ?? ''),
     status: product.status || 'In Stock',
+    showInNewArrival: Boolean(product.showInNewArrival),
+    showInBestSeller: Boolean(product.showInBestSeller),
     description: product.description || '',
   }
 }
@@ -122,6 +151,10 @@ export default function ProductsPage() {
 
   function updateField(key, value) {
     setForm((current) => ({ ...current, [key]: value }))
+  }
+
+  function updateCheckboxField(key) {
+    setForm((current) => ({ ...current, [key]: !current[key] }))
   }
 
   async function handleSubmit(event) {
@@ -276,13 +309,40 @@ export default function ProductsPage() {
                   <label className="admin-label" htmlFor="product-category">
                     Category
                   </label>
-                  <input
+                  <select
                     id="product-category"
-                    className="admin-input"
+                    className="admin-select"
+                    style={adminProductSelectStyle}
                     value={form.category}
                     onChange={(event) => updateField('category', event.target.value)}
                     required
-                  />
+                  >
+                    <option value="" style={adminProductOptionStyle}>Select category</option>
+                    {CATEGORY_OPTIONS.map((category) => (
+                      <option key={category} value={category} style={adminProductOptionStyle}>
+                        {category}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-collection">
+                    Collection
+                  </label>
+                  <select
+                    id="product-collection"
+                    className="admin-select"
+                    style={adminProductSelectStyle}
+                    value={form.collection}
+                    onChange={(event) => updateField('collection', event.target.value)}
+                  >
+                    <option value="" style={adminProductOptionStyle}>Select collection</option>
+                    {COLLECTION_OPTIONS.map((collection) => (
+                      <option key={collection} value={collection} style={adminProductOptionStyle}>
+                        {collection}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="admin-form-field admin-form-field-full">
                   <label className="admin-label" htmlFor="product-description">
@@ -357,6 +417,31 @@ export default function ProductsPage() {
                     <option value="Low Stock" style={adminProductOptionStyle}>Low Stock</option>
                     <option value="Out of Stock" style={adminProductOptionStyle}>Out of Stock</option>
                   </select>
+                </div>
+                <div className="admin-form-field admin-form-field-full">
+                  <span className="admin-label">Display Sections</span>
+                  <div style={adminCheckboxGroupStyle}>
+                    <label htmlFor="product-show-new-arrival" style={adminCheckboxLabelStyle}>
+                      <input
+                        id="product-show-new-arrival"
+                        type="checkbox"
+                        checked={form.showInNewArrival}
+                        onChange={() => updateCheckboxField('showInNewArrival')}
+                        style={adminCheckboxStyle}
+                      />
+                      <span>Show in New Arrival</span>
+                    </label>
+                    <label htmlFor="product-show-best-seller" style={adminCheckboxLabelStyle}>
+                      <input
+                        id="product-show-best-seller"
+                        type="checkbox"
+                        checked={form.showInBestSeller}
+                        onChange={() => updateCheckboxField('showInBestSeller')}
+                        style={adminCheckboxStyle}
+                      />
+                      <span>Show in Best Seller</span>
+                    </label>
+                  </div>
                 </div>
               </div>
             </section>
