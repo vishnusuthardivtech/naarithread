@@ -9,6 +9,7 @@ export default function NewArrival() {
       products={productsByPage.newArrival || []}
       cardClassName="product-card new-product-card"
       listingKey="newArrival"
+      showNewBadge
     />
   )
 }

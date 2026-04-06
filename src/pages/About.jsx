@@ -71,21 +71,83 @@ const aboutItems = [
 export default function About() {
   return (
     <section className="about-luxury">
+      <style>{`
+        .about-grid {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 30px;
+          margin-top: 28px;
+        }
+
+        .about-luxury .about-grid .about-row {
+          height: 100%;
+          align-items: flex-start;
+          gap: 22px;
+          padding: 26px 24px;
+          border-radius: 18px;
+          background: linear-gradient(180deg, #120000, #0b0b0b);
+          border: 1px solid rgba(212, 175, 55, 0.25);
+          box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24);
+        }
+
+        .about-luxury .about-grid .about-row:hover {
+          transform: translateY(-8px);
+          box-shadow: 0 20px 50px rgba(212, 175, 55, 0.25);
+          border-color: #d4af37;
+        }
+
+        .about-luxury .about-grid .about-icon {
+          min-width: 58px;
+          width: 58px;
+          height: 58px;
+          font-size: 24px;
+        }
+
+        .about-luxury .about-grid .about-text h2 {
+          font-size: 20px;
+          margin-bottom: 10px;
+        }
+
+        .about-luxury .about-grid .about-text p {
+          color: #ccc;
+          font-size: 14px;
+          line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+          .about-grid {
+            grid-template-columns: 1fr;
+            gap: 22px;
+          }
+
+          .about-luxury .about-grid .about-row {
+            text-align: left;
+            flex-direction: row;
+          }
+
+          .about-luxury .about-grid .about-icon {
+            margin-bottom: 0;
+          }
+        }
+      `}</style>
+
       <section className="about-hero">
         <img src={logoPath} alt="Naarithread logo" className="about-logo" />
         <h1>Why Naarithread?</h1>
         <p>Crafted for modern celebrations with timeless elegance</p>
       </section>
 
-      {aboutItems.map((item) => (
-        <div className="about-row" key={item.title}>
-          <div className="about-icon">{item.icon}</div>
-          <div className="about-text">
-            <h2>{item.title}</h2>
-            <p>{item.text}</p>
+      <div className="about-grid">
+        {aboutItems.map((item) => (
+          <div className="about-row reveal active" key={item.title}>
+            <div className="about-icon">{item.icon}</div>
+            <div className="about-text">
+              <h2>{item.title}</h2>
+              <p>{item.text}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </section>
   )
 }

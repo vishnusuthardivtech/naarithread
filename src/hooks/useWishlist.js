@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { getData, setData, subscribeToStorage } from '../utils/localStorage'
+import { getData, removeData, setData, subscribeToStorage } from '../utils/localStorage'
 
 const WISHLIST_KEY = 'ntWishlist'
 
@@ -33,6 +33,7 @@ const getUserWishlist = (user) => {
     if (legacyItems.length > 0) {
       const migratedEntries = [...entries, ...legacyItems.map((item) => normalizeWishlistItem(item, user))]
       setData(WISHLIST_KEY, migratedEntries)
+      removeData(legacyKey)
       return migratedEntries
         .filter((item) => item.userEmail === user.email)
         .map(({ userEmail, ...item }) => item)
@@ -65,11 +66,13 @@ export function useWishlist(user) {
     const nextEntries = itemExists
       ? entries.filter((item) => !((!item?.userEmail || item.userEmail === user.email) && item.id === product.id))
       : [...entries, normalizeWishlistItem(product, user)]
-
-    setData(WISHLIST_KEY, nextEntries)
-    return nextEntries
+    const nextItems = nextEntries
       .filter((item) => !item?.userEmail || item.userEmail === user.email)
       .map(({ userEmail, ...item }) => item)
+
+    setItems(nextItems)
+    setData(WISHLIST_KEY, nextEntries)
+    return nextItems
   }
 
   const removeItem = (id) => {
@@ -78,6 +81,11 @@ export function useWishlist(user) {
     }
 
     const nextEntries = getWishlistEntries().filter((item) => !((!item?.userEmail || item.userEmail === user.email) && item.id === id))
+    const nextItems = nextEntries
+      .filter((item) => !item?.userEmail || item.userEmail === user.email)
+      .map(({ userEmail, ...item }) => item)
+
+    setItems(nextItems)
     setData(WISHLIST_KEY, nextEntries)
   }
 

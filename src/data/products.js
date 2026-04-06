@@ -1907,11 +1907,25 @@ const normalizeProductImage = (imagePath) => {
   return assetPath(imagePath)
 }
 
+const fallbackRatings = [3.8, 4.5, 3.5, 2.5, 5, 4, 3, 2, 1, 1.5, 4.2, 4.7]
+
+const getFallbackRating = (product) => {
+  const idText = String(product.id || '')
+  const numericPart = Number.parseInt(idText.replace(/\D/g, ''), 10)
+  const index = Number.isNaN(numericPart) ? product.name.length % fallbackRatings.length : numericPart % fallbackRatings.length
+  return fallbackRatings[index]
+}
+
+const normalizeRating = (product) => ({
+  ...product,
+  rating: typeof product.rating === 'number' ? product.rating : getFallbackRating(product),
+})
+
 export const productsByPage = Object.fromEntries(
   Object.entries(rawProductsByPage).map(([page, items]) => [
     page,
     items.map((product) => ({
-      ...product,
+      ...normalizeRating(product),
       image: normalizeProductImage(product.image),
     })),
   ]),
@@ -1963,5 +1977,4 @@ export const getProductMeta = (product) => {
   if (!product) return null
   return productMetaByName[product.name] || getFallbackMeta(product)
 }
-
 

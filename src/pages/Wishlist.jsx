@@ -1,15 +1,12 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { useWishlist } from '../hooks/useWishlist'
 import { resolveProductImage } from '../utils/productImages'
 import { formatPrice } from '../utils/storage'
 
 export default function Wishlist() {
-  const { user, addToCart } = useApp()
-  const { items: wishlistItems, removeItem } = useWishlist(user)
+  const { user, addToCart, wishlistItems, removeFromWishlist } = useApp()
   const navigate = useNavigate()
-  const rawWishlist = typeof window !== 'undefined' ? JSON.parse(window.localStorage.getItem('ntWishlist') || '[]') : []
 
   useEffect(() => {
     if (!user) {
@@ -17,15 +14,10 @@ export default function Wishlist() {
     }
   }, [navigate, user])
 
-  useEffect(() => {
-    console.log('Wishlist:', wishlistItems)
-    console.log('ntWishlist:', rawWishlist)
-  }, [wishlistItems, rawWishlist])
-
   if (!user) return null
 
-  const handleRemove = (item) => {
-    removeItem(item.id)
+  const handleRemove = (id) => {
+    removeFromWishlist(id)
   }
 
   const handleMoveToCart = (item) => {
@@ -38,7 +30,7 @@ export default function Wishlist() {
     })
 
     if (added) {
-      removeItem(item.id)
+      removeFromWishlist(item.id)
     }
   }
 
@@ -76,7 +68,7 @@ export default function Wishlist() {
                   <img src={resolveProductImage(item)} alt={item?.name || 'Wishlist product'} />
                   <button
                     className="remove-btn"
-                    onClick={() => handleRemove(item)}
+                    onClick={() => handleRemove(item.id)}
                     aria-label={`Remove ${item?.name || 'item'} from wishlist`}
                   >
                     &times;

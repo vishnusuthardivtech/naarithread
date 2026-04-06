@@ -191,7 +191,7 @@ export function AppProvider({ children }) {
   }, [])
 
   const cartItems = useMemo(() => getCart(user), [user, cartVersion])
-  const { items: wishlistItems, count: wishlistCount, toggleItem, hasItem } = useWishlist(user)
+  const { items: wishlistItems, count: wishlistCount, toggleItem, removeItem, hasItem } = useWishlist(user)
   const isInCart = useCallback((id) => cartItems.some((item) => item.id === id), [cartItems])
 
   const login = (email, password) => {
@@ -273,6 +273,10 @@ export function AppProvider({ children }) {
     return true
   }
 
+  const removeFromWishlist = (id) => {
+    removeItem(id)
+  }
+
   const value = useMemo(() => ({
     user,
     authOpen,
@@ -286,6 +290,7 @@ export function AppProvider({ children }) {
     removeFromCart,
     emptyCart,
     toggleWishlist,
+    removeFromWishlist,
     isWishlisted: hasItem,
     isInCart,
     cartItems,
@@ -309,7 +314,7 @@ export function AppProvider({ children }) {
     resetListingFilters,
     filterProducts,
     searchProducts,
-  }), [user, authOpen, cartVersion, toggleWishlist, hasItem, isInCart, cartItems, wishlistItems, wishlistCount, searchQuery, searchResults, isSearching, executeSearch, clearSearch, lastBrowsePath, filterVersion, getListingFilters, applyListingFilters, resetListingFilters, filterProducts, searchProducts])
+  }), [user, authOpen, cartVersion, toggleWishlist, removeFromWishlist, hasItem, isInCart, cartItems, wishlistItems, wishlistCount, searchQuery, searchResults, isSearching, executeSearch, clearSearch, lastBrowsePath, filterVersion, getListingFilters, applyListingFilters, resetListingFilters, filterProducts, searchProducts])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

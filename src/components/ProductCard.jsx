@@ -4,9 +4,46 @@ import { useApp } from '../context/AppContext'
 import { formatPrice } from '../utils/storage'
 import WishlistButton from './WishlistButton'
 
-export default function ProductCard({ product, className = 'product-card', showRating = false }) {
-  const { addToCart } = useApp()
+export default function ProductCard({ product, className = 'product-card', showRating = false, showNewBadge = false }) {
+  const { addToCart, removeFromCart, isInCart } = useApp()
   const cardClassName = `${className} reveal`.replace(/\s+/g, ' ').trim()
+  const inCart = isInCart(product.id)
+  const rating = typeof product.rating === 'number' ? product.rating : 0
+
+  const renderStars = (value) => Array.from({ length: 5 }, (_, index) => {
+    const starValue = index + 1
+    let state = 'empty'
+
+    if (starValue <= Math.floor(value)) {
+      state = 'full'
+    } else if (starValue - value < 1) {
+      state = 'half'
+    }
+
+    return (
+      <span key={starValue} className={`rating-star ${state}`} aria-hidden="true">
+        ★
+      </span>
+    )
+  })
+
+  const handleCartClick = (event) => {
+    event.preventDefault()
+    event.stopPropagation()
+
+    if (inCart) {
+      removeFromCart(product.id)
+      return
+    }
+
+    addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+    })
+  }
 
   return (
     <div
@@ -18,25 +55,17 @@ export default function ProductCard({ product, className = 'product-card', showR
     >
       <Link to={`/product?id=${product.id}`}>
         <div className="product-image">
+          {showNewBadge ? <span className="new-badge">NEW</span> : null}
           <img src={product.image} alt={product.category} />
           <div className="product-actions">
 
             <WishlistButton product={product} />
 
             <button
-              className="cart-btn"
-              onClick={(event) => {
-                event.preventDefault()
-                event.stopPropagation()
-                addToCart({
-                  id: product.id,
-                  name: product.name,
-                  price: product.price,
-                  image: product.image,
-                  quantity: 1,
-
-                })
-              }}
+              className={`cart-btn${inCart ? ' active' : ''}`}
+              onClick={handleCartClick}
+              aria-label={inCart ? 'Remove from cart' : 'Add to cart'}
+              aria-pressed={inCart}
             >
               <svg viewBox="0 0 24 24" className="icon-svg">
                 <circle cx="9" cy="20" r="1.5" />
@@ -68,18 +97,10 @@ export default function ProductCard({ product, className = 'product-card', showR
       <div className="product-info">
         <h3 className="category">{product.category}</h3>
         <p className="price">{formatPrice(product.price)}</p>
-        {showRating && product.rating ? (
-          <div className="product-rating" data-rating={product.rating}>
-            <div className="stars">
-              {[0, 1, 2, 3, 4].map((value) => (
-                <svg key={value} viewBox="0 0 24 24" className={`star${value < Math.floor(product.rating) ? ' active' : ''}`}>
-                  <path d="M12 .587l3.668 7.431L24 9.75l-6 5.847 1.417 8.268L12 19.771l-7.417 4.094L6 15.597 0 9.75l8.332-1.732z" />
-                </svg>
-              ))}
-            </div>
-            <div className="rating-text">{product.ratingText}</div>
-          </div>
-        ) : null}
+        <div className="product-rating" aria-label={`Rated ${rating} out of 5`}>
+          <div className="rating-stars">{renderStars(rating)}</div>
+          <span className="rating-value">{rating.toFixed(1).replace('.0', '')}</span>
+        </div>
       </div>
     </div>
   )

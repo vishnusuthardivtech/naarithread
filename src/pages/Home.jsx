@@ -16,9 +16,65 @@ export default function Home() {
   }, [])
 
   const bestSellerSlider = [...productsByPage.homeBestSellers, ...productsByPage.homeBestSellers]
+  const mobileBestSellerProducts = productsByPage.homeBestSellers || []
+  const mobileBestSellerSlider = [...mobileBestSellerProducts, ...mobileBestSellerProducts]
 
   return (
     <>
+      <style>{`
+        .best-seller-mobile {
+          display: none;
+        }
+
+        @media (max-width: 768px) {
+          .best-seller-desktop {
+            display: none;
+          }
+
+          .best-seller-mobile {
+            display: block;
+          }
+
+          .best-seller-mobile .slider-wrapper {
+            overflow: hidden !important;
+            padding: 18px 0 22px !important;
+          }
+
+          .best-seller-mobile .slider-track {
+            display: flex !important;
+            align-items: stretch !important;
+            gap: 20px !important;
+            width: max-content;
+            animation: infiniteScroll 20s linear infinite !important;
+            will-change: transform;
+          }
+
+          .best-seller-mobile .slide-item {
+            flex: 0 0 280px;
+            width: 280px;
+            min-width: 280px;
+            max-width: 280px;
+          }
+
+          .best-seller-mobile .slide-item .product-card {
+            width: 100% !important;
+            min-width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
+            transform: none !important;
+          }
+
+          .best-seller-mobile .slide-item .product-image {
+            height: 320px !important;
+          }
+
+          .best-seller-mobile .slide-item .product-info {
+            min-height: 86px !important;
+            padding: 12px 14px 14px !important;
+          }
+        }
+      `}</style>
+
       <section className="hero-slider">
         <div className="container">
           {heroSlides.map((slide, index) => (
@@ -62,7 +118,24 @@ export default function Home() {
       <section className="best-seller-section">
         <div className="container">
           <h2 className="section-title">Best Sellers</h2>
-          <div className="slider-wrapper"><div className="slider-track" id="bestSellerTrack">{bestSellerSlider.map((product, index) => <ProductCard key={`${product.id}-${index}`} product={product} />)}</div></div>
+          <div className="best-seller-desktop">
+            <div className="slider-wrapper">
+              <div className="slider-track" id="bestSellerTrack">
+                {bestSellerSlider.map((product, index) => <ProductCard key={`${product.id}-${index}`} product={product} />)}
+              </div>
+            </div>
+          </div>
+          <div className="best-seller-mobile">
+            <div className="slider-wrapper">
+              <div className="slider-track">
+                {mobileBestSellerSlider.map((product, index) => (
+                  <div className="slide-item" key={`mobile-${product.id}-${index}`}>
+                    <ProductCard product={product} className="product-card no-reveal" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
