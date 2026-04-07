@@ -45,15 +45,16 @@ export default function DashboardPage() {
   const [range, setRange] = useState('30')
   const searchQuery = getQuery('/admin/dashboard').trim().toLowerCase()
   const handleRefreshPage = () => window.location.reload()
-  const orders = ordersState.data || []
-  const products = productsState.data || []
-  const users = usersState.data || []
+  const orders = useMemo(() => ordersState.data || [], [ordersState.data])
+  const products = useMemo(() => productsState.data || [], [productsState.data])
+  const users = useMemo(() => usersState.data || [], [usersState.data])
   const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0)
   const averageOrderValue = orders.length ? revenue / orders.length : 0
-  const activeUsers = users.filter((user) => Number(user.orderCount || 0) > 0).length
+  const totalUsers = users.length
+  const purchasingUsers = users.filter((user) => Number(user.orderCount || 0) > 0).length
   const lowStockProducts = products.filter((product) => Number(product.stock || 0) <= 5).length
   const repeatCustomers = users.filter((user) => Number(user.orderCount || 0) > 1).length
-  const repeatRate = activeUsers ? (repeatCustomers / activeUsers) * 100 : 0
+  const repeatRate = purchasingUsers ? (repeatCustomers / purchasingUsers) * 100 : 0
 
   const revenueData = Array.from({ length: range === '7' ? 7 : 6 }, (_, index) => ({
     label: range === '7' ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index] : ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'][index],
@@ -104,7 +105,7 @@ export default function DashboardPage() {
       ['Type', 'Label', 'Value'],
       ['Metric', 'Revenue', revenue],
       ['Metric', 'Orders', orders.length],
-      ['Metric', 'Users', activeUsers],
+      ['Metric', 'Users', totalUsers],
       ['Metric', 'Products', products.length],
     ])
 
@@ -114,7 +115,7 @@ export default function DashboardPage() {
   const stats = [
     { title: 'Revenue', value: formatPrice(revenue), meta: 'Gross sales captured' },
     { title: 'Orders', value: String(orders.length), meta: 'Across all recent sessions' },
-    { title: 'Users', value: String(activeUsers), meta: 'Customers with purchases' },
+    { title: 'Users', value: String(totalUsers), meta: 'Total customers' },
     { title: 'Products', value: String(products.length), meta: `${lowStockProducts} running low` },
   ]
 

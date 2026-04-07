@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { formatPrice } from '../../utils/storage'
 import Badge from '../components/Badge'
 import Button from '../components/Button'
@@ -9,8 +9,58 @@ import LoadingState from '../components/LoadingState'
 import Table from '../components/Table'
 import { useAdminPageSearch } from '../context/AdminPageSearchContext'
 import { useAdminCollection } from '../hooks/useAdminCollection'
-import { orderService } from '../services/orderService'
 import { productService } from '../services/productService'
+import { reportService } from '../services/reportService'
+
+const DAY_MS = 24 * 60 * 60 * 1000
+
+function toInputDate(date) {
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+  return offsetDate.toISOString().slice(0, 10)
+}
+
+function getPresetRange(preset) {
+  const today = new Date()
+  const start = new Date(today)
+  const end = new Date(today)
+
+  if (preset === 'today') {
+    return { startDate: toInputDate(start), endDate: toInputDate(end) }
+  }
+
+  if (preset === '30') {
+    start.setDate(today.getDate() - 29)
+    return { startDate: toInputDate(start), endDate: toInputDate(end) }
+  }
+
+  if (preset === 'this-month') {
+    start.setDate(1)
+    return { startDate: toInputDate(start), endDate: toInputDate(end) }
+  }
+
+  if (preset === 'last-month') {
+    start.setMonth(today.getMonth() - 1, 1)
+    end.setDate(0)
+    return { startDate: toInputDate(start), endDate: toInputDate(end) }
+  }
+
+  if (preset === 'this-year') {
+    start.setMonth(0, 1)
+    return { startDate: toInputDate(start), endDate: toInputDate(end) }
+  }
+
+  start.setDate(today.getDate() - 6)
+  return { startDate: toInputDate(start), endDate: toInputDate(end) }
+}
+
+function formatRangeLabel(startDate, endDate) {
+  const options = { day: '2-digit', month: 'short' }
+  return `${new Date(startDate).toLocaleDateString('en-GB', options)} - ${new Date(endDate).toLocaleDateString('en-GB', options)}`
+}
+
+function getRangeDays(startDate, endDate) {
+  return Math.max(1, Math.round((new Date(endDate).getTime() - new Date(startDate).getTime()) / DAY_MS) + 1)
+}
 
 function buildCsv(rows) {
   return rows.map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\n')
@@ -27,14 +77,40 @@ function downloadFile(filename, content, type) {
 }
 
 export default function ReportsPage() {
-  const ordersState = useAdminCollection(orderService.getAll)
   const productsState = useAdminCollection(productService.getAll)
   const { getQuery } = useAdminPageSearch()
-  const [range, setRange] = useState('30')
+  const defaultRange = useMemo(() => getPresetRange('7'), [])
+  const [range, setRange] = useState('7')
+  const [dateRange, setDateRange] = useState(defaultRange)
+  const [draftRange, setDraftRange] = useState(defaultRange)
+  const [showCustomRange, setShowCustomRange] = useState(false)
+  const [report, setReport] = useState({ totalRevenue: 0, totalOrders: 0, avgOrderValue: 0, conversionRate: null, orders: [] })
+  const [reportLoading, setReportLoading] = useState(true)
+  const [reportError, setReportError] = useState('')
   const searchQuery = getQuery('/admin/reports').trim().toLowerCase()
   const handleRefreshPage = () => window.location.reload()
-  const orders = ordersState.data || []
-  const products = productsState.data || []
+  const products = useMemo(() => productsState.data || [], [productsState.data])
+  const rangeIsInvalid = new Date(draftRange.endDate) < new Date(draftRange.startDate)
+
+  const loadReport = useCallback(async () => {
+    setReportLoading(true)
+    setReportError('')
+
+    try {
+      const nextReport = await reportService.getSummary(dateRange)
+      setReport(nextReport)
+    } catch (error) {
+      setReportError(error instanceof Error ? error.message : 'Unable to load report data')
+    } finally {
+      setReportLoading(false)
+    }
+  }, [dateRange])
+
+  useEffect(() => {
+    loadReport()
+  }, [loadReport])
+
+  const orders = useMemo(() => report.orders || [], [report.orders])
   const filteredProducts = useMemo(
     () =>
       products.filter((product) => {
@@ -48,23 +124,29 @@ export default function ReportsPage() {
     [products, searchQuery],
   )
 
-  const revenue = orders.reduce((sum, order) => sum + Number(order.total || 0), 0)
-  const averageOrder = orders.length ? revenue / orders.length : 0
+  const revenue = report.totalRevenue
+  const averageOrder = report.avgOrderValue
   const deliveredOrders = orders.filter((order) => order.status === 'Delivered').length
   const processingOrders = orders.filter((order) => ['Processing', 'Shipped'].includes(order.status)).length
   const deliveryRate = orders.length ? Math.round((deliveredOrders / orders.length) * 100) : 0
   const processingRate = orders.length ? Math.round((processingOrders / orders.length) * 100) : 0
+  const rangeLabel = formatRangeLabel(dateRange.startDate, dateRange.endDate)
+  const chartPoints = Math.min(6, getRangeDays(dateRange.startDate, dateRange.endDate))
 
-  const revenueData = Array.from({ length: 6 }, (_, index) => ({
-    label: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'][index],
-    value: Math.max(1, Math.round((revenue / 6) * (0.72 + index * 0.08))),
-  }))
+  const revenueData = useMemo(
+    () =>
+      Array.from({ length: chartPoints }, (_, index) => ({
+        label: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][index] || `P${index + 1}`,
+        value: orders.length ? Math.max(1, Math.round((revenue / chartPoints) * (0.72 + index * 0.08))) : 0,
+      })),
+    [chartPoints, orders.length, revenue],
+  )
 
   const stats = [
-    { title: 'Revenue', value: formatPrice(revenue), change: range === '7' ? '+6.2%' : '+18.2%' },
-    { title: 'Orders', value: String(orders.length), change: '+12%' },
-    { title: 'Avg Order Value', value: formatPrice(averageOrder), change: '+3.8%' },
-    { title: 'Delivered', value: String(deliveredOrders), change: `${deliveryRate}% rate` },
+    { title: 'Revenue', value: formatPrice(revenue), change: rangeLabel },
+    { title: 'Orders', value: String(report.totalOrders), change: `${getRangeDays(dateRange.startDate, dateRange.endDate)} day range` },
+    { title: 'Avg Order Value', value: formatPrice(averageOrder), change: 'Filtered orders' },
+    { title: 'Conversion Rate', value: report.conversionRate == null ? 'N/A' : `${report.conversionRate}%`, change: report.conversionRate == null ? 'Not tracked' : 'Available' },
   ]
 
   const productColumns = [
@@ -81,20 +163,45 @@ export default function ReportsPage() {
 
   function handleExport() {
     const csv = buildCsv([
-      ['Product', 'Category', 'Price', 'Stock', 'Status'],
-      ...filteredProducts.map((product) => [
-        product.name || '',
-        product.category || '',
-        product.price || 0,
-        product.stock || 0,
-        product.status || '',
+      ['Report Range', dateRange.startDate, dateRange.endDate],
+      ['Metric', 'Total Revenue', revenue],
+      ['Metric', 'Total Orders', report.totalOrders],
+      ['Metric', 'Average Order Value', averageOrder],
+      ['Metric', 'Conversion Rate', report.conversionRate ?? 'Not tracked'],
+      [],
+      ['Order ID', 'Customer', 'Email', 'Status', 'Total', 'Created At'],
+      ...orders.map((order) => [
+        order.id || order.orderId || '',
+        order.customerName || '',
+        order.customerEmail || order.userEmail || '',
+        order.status || '',
+        order.total || 0,
+        order.createdAt || '',
       ]),
     ])
 
-    downloadFile('admin-report-products.csv', csv, 'text/csv;charset=utf-8;')
+    downloadFile(`admin-report-${dateRange.startDate}-to-${dateRange.endDate}.csv`, csv, 'text/csv;charset=utf-8;')
   }
 
-  if (ordersState.loading || productsState.loading) {
+  function applyPreset(preset) {
+    const nextRange = getPresetRange(preset)
+    setRange(preset)
+    setDateRange(nextRange)
+    setDraftRange(nextRange)
+    setShowCustomRange(false)
+  }
+
+  function applyCustomRange() {
+    if (rangeIsInvalid) {
+      return
+    }
+
+    setRange('custom')
+    setDateRange(draftRange)
+    setShowCustomRange(false)
+  }
+
+  if ((reportLoading && report.totalOrders === 0 && orders.length === 0) || productsState.loading) {
     return <LoadingState label="Loading reports..." />
   }
 
@@ -105,28 +212,80 @@ export default function ReportsPage() {
           <h1 className="page-title">Analytics & Reports</h1>
           <p className="page-sub">Stable analytics view with clean charts, rate summaries, and searchable product reporting.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="admin-report-filter-bar">
           <Button variant="secondary" size="sm" onClick={handleRefreshPage}>
             Refresh
           </Button>
-          <Button variant={range === '7' ? 'primary' : 'secondary'} size="sm" onClick={() => setRange('7')}>
+          <Button variant={range === 'today' ? 'primary' : 'secondary'} size="sm" onClick={() => applyPreset('today')}>
+            Today
+          </Button>
+          <Button variant={range === '7' ? 'primary' : 'secondary'} size="sm" onClick={() => applyPreset('7')}>
             7 Days
           </Button>
-          <Button variant={range === '30' ? 'primary' : 'secondary'} size="sm" onClick={() => setRange('30')}>
+          <Button variant={range === '30' ? 'primary' : 'secondary'} size="sm" onClick={() => applyPreset('30')}>
             30 Days
           </Button>
+          <Button variant={range === 'this-month' ? 'primary' : 'secondary'} size="sm" onClick={() => applyPreset('this-month')}>
+            This Month
+          </Button>
+          <Button variant={range === 'last-month' ? 'primary' : 'secondary'} size="sm" onClick={() => applyPreset('last-month')}>
+            Last Month
+          </Button>
+          <Button variant={range === 'this-year' ? 'primary' : 'secondary'} size="sm" onClick={() => applyPreset('this-year')}>
+            This Year
+          </Button>
+          <div className="admin-date-range-shell">
+            <Button variant={range === 'custom' ? 'primary' : 'secondary'} size="sm" onClick={() => setShowCustomRange((isOpen) => !isOpen)}>
+              {range === 'custom' ? rangeLabel : 'Custom Range'}
+            </Button>
+            {showCustomRange ? (
+              <div className="admin-date-range-popover">
+                <div>
+                  <p className="admin-date-range-title">Custom Range</p>
+                  <p className="admin-date-range-copy">Choose the order window for this report.</p>
+                </div>
+                <label className="admin-date-field">
+                  <span>Start Date</span>
+                  <input
+                    type="date"
+                    value={draftRange.startDate}
+                    onChange={(event) => setDraftRange((current) => ({ ...current, startDate: event.target.value }))}
+                  />
+                </label>
+                <label className="admin-date-field">
+                  <span>End Date</span>
+                  <input
+                    type="date"
+                    min={draftRange.startDate}
+                    value={draftRange.endDate}
+                    onChange={(event) => setDraftRange((current) => ({ ...current, endDate: event.target.value }))}
+                  />
+                </label>
+                {rangeIsInvalid ? <p className="admin-date-error">End date must be after start date.</p> : null}
+                <div className="admin-date-actions">
+                  <Button variant="secondary" size="sm" onClick={() => setShowCustomRange(false)}>
+                    Cancel
+                  </Button>
+                  <Button variant="primary" size="sm" onClick={applyCustomRange} disabled={rangeIsInvalid}>
+                    Apply Range
+                  </Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
           <Button variant="secondary" size="sm" onClick={handleExport}>
             Export CSV
           </Button>
         </div>
       </div>
 
-      {ordersState.error || productsState.error ? (
+      {reportError || productsState.error ? (
         <div className="p-4 bg-danger/10 border-danger rounded-xl text-danger">
-          {ordersState.error || productsState.error}
+          {reportError || productsState.error}
         </div>
       ) : null}
 
+      <div className={`admin-report-fade ${reportLoading ? 'is-updating' : ''}`}>
       <div className="admin-stat-grid">
         {stats.map((stat) => (
           <div key={stat.title} className="admin-card admin-report-stat">
@@ -140,6 +299,10 @@ export default function ReportsPage() {
           </div>
         ))}
       </div>
+
+      {orders.length === 0 ? (
+        <EmptyState title="No Orders Found" description="No orders found for selected date range." />
+      ) : null}
 
       <div className="admin-chart-grid">
         <Card title="Revenue Overview" subtitle="Chart rendering is protected against empty or zero-value datasets.">
@@ -170,6 +333,7 @@ export default function ReportsPage() {
             </div>
           </div>
         </Card>
+      </div>
       </div>
 
       <Card title="Product Performance" subtitle={searchQuery ? `Filtered by "${searchQuery}"` : 'Top searchable products'}>
