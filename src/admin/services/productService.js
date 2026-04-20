@@ -1,22 +1,13 @@
-import { ADMIN_PRODUCTS_STORAGE_KEY, createAdminId, readAdminStorage, writeAdminStorage } from '../api/storage'
-import { allProducts } from '../../data/products'
-
-const CHANNEL = 'products'
-
-function normalizeStatus(status, stock) {
-  if (status) {
-    return status
-  }
-
-  return Number(stock) > 0 ? 'In Stock' : 'Out of Stock'
-}
+import { createAdminId } from '../api/storage'
+import { getCatalogOptions, getStoredCatalogProducts, normalizeCatalogProduct, saveStoredCatalogProducts } from '../../services/catalogService'
 
 function validateProductPayload(payload) {
   const name = String(payload.name ?? '').trim()
   const category = String(payload.category ?? '').trim()
-  const image = String(payload.image ?? '').trim()
   const description = String(payload.description ?? '').trim()
   const price = Number(payload.price)
+  const stock = Number(payload.stock)
+  const images = Array.isArray(payload.images) ? payload.images.filter(Boolean) : []
 
   if (!name) {
     throw new Error('Product name is required')
@@ -30,8 +21,12 @@ function validateProductPayload(payload) {
     throw new Error('Price must be greater than zero')
   }
 
-  if (!image) {
-    throw new Error('Image URL is required')
+  if (!Number.isFinite(stock) || stock < 0) {
+    throw new Error('Stock must be zero or greater')
+  }
+
+  if (!images.length) {
+    throw new Error('At least one product image is required')
   }
 
   if (!description) {
@@ -40,16 +35,11 @@ function validateProductPayload(payload) {
 }
 
 function getProducts() {
-  const storedProducts = readAdminStorage(ADMIN_PRODUCTS_STORAGE_KEY, [])
-  if (Array.isArray(storedProducts) && storedProducts.length > 0) {
-    return storedProducts
-  }
-
-  return Array.isArray(allProducts) ? allProducts : []
+  return getStoredCatalogProducts()
 }
 
 function persistProducts(products) {
-  writeAdminStorage(ADMIN_PRODUCTS_STORAGE_KEY, products, CHANNEL)
+  saveStoredCatalogProducts(products)
   return products
 }
 
@@ -64,26 +54,29 @@ export const productService = {
     return getProducts().find((product) => product.id === id) ?? null
   },
 
+  async getOptions() {
+    return getCatalogOptions(getProducts())
+  },
+
   async create(payload) {
     validateProductPayload(payload)
     const products = getProducts()
     const now = new Date().toISOString()
-    const product = {
+    const product = normalizeCatalogProduct({
       id: createAdminId('product'),
       name: payload.name.trim(),
       category: payload.category.trim(),
       collection: String(payload.collection ?? '').trim(),
       price: Number(payload.price) || 0,
-      image: payload.image.trim(),
-      sku: payload.sku.trim(),
+      images: payload.images,
       stock: Number(payload.stock) || 0,
-      status: normalizeStatus(payload.status, payload.stock),
-      showInNewArrival: Boolean(payload.showInNewArrival),
-      showInBestSeller: Boolean(payload.showInBestSeller),
+      isNewArrival: Boolean(payload.isNewArrival),
+      isBestSeller: Boolean(payload.isBestSeller),
       description: payload.description.trim(),
       createdAt: now,
       updatedAt: now,
-    }
+      sku: String(payload.sku ?? '').trim(),
+    })
 
     persistProducts([product, ...products])
     return product
@@ -99,22 +92,21 @@ export const productService = {
         return product
       }
 
-      updatedProduct = {
+      updatedProduct = normalizeCatalogProduct({
         ...product,
         ...payload,
         name: String(payload.name ?? product.name).trim(),
         category: String(payload.category ?? product.category).trim(),
         collection: String(payload.collection ?? product.collection).trim(),
-        image: String(payload.image ?? product.image).trim(),
-        sku: String(payload.sku ?? product.sku).trim(),
         description: String(payload.description ?? product.description).trim(),
         price: Number(payload.price ?? product.price) || 0,
         stock: Number(payload.stock ?? product.stock) || 0,
-        status: normalizeStatus(payload.status ?? product.status, payload.stock ?? product.stock),
-        showInNewArrival: Boolean(payload.showInNewArrival ?? product.showInNewArrival),
-        showInBestSeller: Boolean(payload.showInBestSeller ?? product.showInBestSeller),
+        images: payload.images ?? product.images,
+        isNewArrival: Boolean(payload.isNewArrival ?? product.isNewArrival),
+        isBestSeller: Boolean(payload.isBestSeller ?? product.isBestSeller),
+        sku: String(payload.sku ?? product.sku).trim(),
         updatedAt: new Date().toISOString(),
-      }
+      })
 
       return updatedProduct
     })

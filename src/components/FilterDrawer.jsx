@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useApp } from '../context/AppContext'
 
 const colorOptions = ['Red', 'Pink', 'Green', 'Gold', 'Black']
-const categoryOptions = ['Lehenga', 'Mirror Work', 'Bridal', 'Party Wear']
 const formatRupees = (value) => `\u20B9${Number(value).toLocaleString('en-IN')}`
 
 export default function FilterDrawer({ open, onOpen, onClose, listingKey }) {
@@ -10,6 +9,7 @@ export default function FilterDrawer({ open, onOpen, onClose, listingKey }) {
     defaultFilters,
     minFilterPrice,
     maxFilterPrice,
+    categoryOptions,
     getListingFilters,
     applyListingFilters,
     resetListingFilters,

@@ -1,12 +1,14 @@
 import SharedCatalogPage from './SharedCatalogPage'
-import { productsByPage } from '../data/products'
+import { useApp } from '../context/AppContext'
 
 export default function Collection2() {
+  const { getProductsForPage } = useApp()
+
   return (
     <SharedCatalogPage
       title="Sequence Lehenga"
       subtitle="Handpicked styles for modern elegance"
-      products={productsByPage.collection2 || []}
+      products={getProductsForPage('collection2')}
       showRating
       listingKey="collection2"
     />

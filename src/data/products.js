@@ -1904,6 +1904,17 @@ const normalizeProductImage = (imagePath) => {
     return imagePath
   }
 
+  const normalizedPath = String(imagePath).replace(/\\/g, '/').trim()
+  const featuredMatch = normalizedPath.match(/(?:^|\/)(?:featured|featured lehengas)\/(\d+)\.(jpg|jpeg|png|webp)$/i)
+
+  if (featuredMatch) {
+    return `${import.meta.env.BASE_URL}images/products/lehenga${featuredMatch[1]}.jpg`
+  }
+
+  if (/^\/images\/featured\/(\d+)\.(jpg|jpeg|png|webp)$/i.test(normalizedPath)) {
+    return `${import.meta.env.BASE_URL}${normalizedPath.replace(/^\/+/, '').replace(/images\/featured\/(\d+)\.(jpg|jpeg|png|webp)$/i, 'images/products/lehenga$1.jpg')}`
+  }
+
   return assetPath(imagePath)
 }
 
@@ -1977,4 +1988,3 @@ export const getProductMeta = (product) => {
   if (!product) return null
   return productMetaByName[product.name] || getFallbackMeta(product)
 }
-

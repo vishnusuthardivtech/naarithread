@@ -1592,3 +1592,60 @@ textarea {
     width: 100%;
   }
 }
+
+.admin-review-filter-row,
+.admin-review-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.admin-review-meta {
+  margin-top: 6px;
+  color: #94a3b8;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-inline-badge-row {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+}
+
+.admin-image-dropzone {
+  border: 1px dashed rgba(212,175,55,0.35);
+  border-radius: 18px;
+  padding: 28px 20px;
+  text-align: center;
+  color: #f6ead2;
+  background: linear-gradient(180deg, rgba(31, 31, 31, 0.84), rgba(17, 17, 17, 0.9));
+  cursor: pointer;
+}
+
+.admin-hidden-input {
+  display: none;
+}
+
+.admin-image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 16px;
+  margin-top: 18px;
+}
+
+.admin-image-preview-card {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-image-remove-btn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(212,175,55,0.25);
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+  cursor: pointer;
+}

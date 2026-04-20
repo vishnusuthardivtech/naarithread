@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { heroSlides, signatureProducts, assetPath } from '../data/site'
-import { productsByPage } from '../data/products'
 import ProductCard from '../components/ProductCard'
+import { useApp } from '../context/AppContext'
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(0)
+  const { products, getProductsForPage } = useApp()
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -15,8 +16,10 @@ export default function Home() {
     return () => window.clearInterval(timer)
   }, [])
 
-  const bestSellerSlider = [...productsByPage.homeBestSellers, ...productsByPage.homeBestSellers]
-  const mobileBestSellerProducts = productsByPage.homeBestSellers || []
+  const featuredProducts = products.slice(0, 4)
+  const bestSellerProducts = getProductsForPage('bestSeller').slice(0, 8)
+  const bestSellerSlider = [...bestSellerProducts, ...bestSellerProducts]
+  const mobileBestSellerProducts = bestSellerProducts
   const mobileBestSellerSlider = [...mobileBestSellerProducts, ...mobileBestSellerProducts]
 
   return (
@@ -110,7 +113,7 @@ export default function Home() {
           <div className="featured-container">
             <h2 className="section-title">Featured Lehengas</h2>
             <p className="section-subtitle">Handpicked styles for modern elegance</p>
-            <div className="lehenga-grid products-grid">{productsByPage.homeFeatured.map((product) => <ProductCard key={product.id} product={product} />)}</div>
+            <div className="lehenga-grid products-grid">{featuredProducts.map((product) => <ProductCard key={product.id} product={product} />)}</div>
           </div>
         </div>
       </section>

@@ -30,6 +30,15 @@ const NAV_ITEMS = [
     ),
   },
   {
+    label: 'Reviews',
+    to: '/admin/reviews',
+    icon: (
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+        <path fill="currentColor" d="m12 17.27 4.15 2.51-1.1-4.72 3.67-3.18-4.83-.41L12 7l-1.89 4.47-4.83.41 3.67 3.18-1.1 4.72L12 17.27Z" />
+      </svg>
+    ),
+  },
+  {
     label: 'Users',
     to: '/admin/users',
     icon: (

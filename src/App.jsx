@@ -7,6 +7,7 @@ import DashboardPage from './admin/pages/DashboardPage'
 import OrdersPage from './admin/pages/OrdersPage'
 import ProductsPage from './admin/pages/ProductsPage'
 import ReportsPage from './admin/pages/ReportsPage'
+import ReviewsPage from './admin/pages/ReviewsPage'
 import SubscriptionsPage from './admin/pages/SubscriptionsPage'
 import UsersPage from './admin/pages/UsersPage'
 import { AppProvider } from './context/AppContext'
@@ -52,6 +53,7 @@ export default function App() {
             <Route index element={<Navigate to="/admin/dashboard" replace />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="reviews" element={<ReviewsPage />} />
             <Route path="orders" element={<OrdersPage />} />
             <Route path="users" element={<UsersPage />} />
             <Route path="reports" element={<ReportsPage />} />

@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { allProducts, getProductMeta } from '../data/products'
+import { getProductMeta } from '../data/products'
+import { catalogConstants } from '../services/catalogService'
 import { formatPrice } from '../utils/storage'
 
 const QUICK_VIEW_SIZES = ['S', 'M', 'L', 'XL']
@@ -11,11 +12,11 @@ const getDatasetValue = (button, card, key) => button?.dataset?.[key] || card?.d
 
 export default function QuickViewModal() {
   const navigate = useNavigate()
-  const { addToCart, toggleWishlist, isWishlisted } = useApp()
+  const { addToCart, toggleWishlist, isWishlisted, products } = useApp()
   const [activeProduct, setActiveProduct] = useState(null)
   const [selectedSize, setSelectedSize] = useState('M')
 
-  const productMap = useMemo(() => new Map(allProducts.map((product) => [String(product.id), product])), [])
+  const productMap = useMemo(() => new Map(products.map((product) => [String(product.id), product])), [products])
   const isOpen = Boolean(activeProduct)
   const productMeta = activeProduct ? getProductMeta(activeProduct) : null
 
@@ -73,20 +74,26 @@ export default function QuickViewModal() {
     return null
   }
 
+  const imageToShow = activeProduct.images?.[0] || activeProduct.image || catalogConstants.PLACEHOLDER_IMAGE
+
   const closeModal = () => setActiveProduct(null)
 
   const handleAddToCart = () => {
-    const added = addToCart({
-      id: activeProduct.id,
-      name: activeProduct.name,
-      price: activeProduct.price,
-      image: activeProduct.image,
-      quantity: 1,
-      size: selectedSize,
-    })
+    try {
+      const added = addToCart({
+        id: activeProduct.id,
+        name: activeProduct.name,
+        price: activeProduct.price,
+        image: activeProduct.image,
+        quantity: 1,
+        size: selectedSize,
+      })
 
-    if (added) {
-      closeModal()
+      if (added) {
+        closeModal()
+      }
+    } catch {
+      // Keep modal open and preserve existing layout when stock validation fails.
     }
   }
 
@@ -110,7 +117,15 @@ export default function QuickViewModal() {
       >
         <div className="quick-view-panel quick-view-panel-media">
           <div className="quick-view-image-shell">
-            <img src={activeProduct.image} alt={activeProduct.name} className="quick-view-image" />
+            <img
+              src={imageToShow}
+              alt={activeProduct.name}
+              className="quick-view-image"
+              loading="lazy"
+              onError={(event) => {
+                event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
+              }}
+            />
           </div>
         </div>
 
@@ -145,8 +160,8 @@ export default function QuickViewModal() {
           </div>
 
           <div className="quick-view-actions">
-            <button type="button" className="quick-view-cart-btn" onClick={handleAddToCart}>
-              Add to Cart
+            <button type="button" className="quick-view-cart-btn" onClick={handleAddToCart} disabled={Number(activeProduct.stock) <= 0}>
+              {Number(activeProduct.stock) > 0 ? 'Add to Cart' : 'Out of Stock'}
             </button>
             <button
               type="button"

@@ -1,5 +1,6 @@
-﻿import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import { catalogConstants } from '../services/catalogService'
 import { formatPrice } from '../utils/storage'
 
 export default function Cart() {
@@ -24,7 +25,14 @@ export default function Cart() {
             <div className="cart-container" id="cartContainer">
               {cartItems.map((item) => (
                 <div className="cart-card" key={`${item.id}-${item.size || ''}`}>
-                  <div className="cart-image"><img src={item.image} /></div>
+                  <div className="cart-image">
+                    <img
+                      src={item.images?.[0] || item.image || catalogConstants.PLACEHOLDER_IMAGE}
+                      onError={(event) => {
+                        event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
+                      }}
+                    />
+                  </div>
                   <div className="cart-details">
                     <h3>{item.name}</h3>
                     <p className="cart-price">{formatPrice(item.price)}</p>
@@ -46,6 +54,3 @@ export default function Cart() {
     </>
   )
 }
-
-
-

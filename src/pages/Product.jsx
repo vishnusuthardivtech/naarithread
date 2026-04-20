@@ -1,34 +1,53 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import StarRating from '../components/StarRating'
 import { useApp } from '../context/AppContext'
 import { findProductById, getProductMeta } from '../data/products'
+import { useReviews } from '../hooks/useReviews'
+import { reviewService } from '../services/reviewService'
 import { formatPrice } from '../utils/storage'
 
-const reviewCountByRating = {
-  4.8: 126,
-  4.7: 94,
-  4.6: 81,
-  4.5: 67,
-}
-
 const getOriginalPrice = (price) => Math.ceil((price * 1.35) / 100) * 100
+
+function formatReviewDate(value) {
+  return new Date(value).toLocaleDateString('en-IN', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  })
+}
 
 export default function Product() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { addToCart } = useApp()
+  const { addToCart, ensureUser, user, products } = useApp()
   const selectedId = searchParams.get('id')
-  const product = useMemo(() => findProductById(selectedId), [selectedId])
+  const product = useMemo(
+    () => products.find((item) => item.id === selectedId) || findProductById(selectedId),
+    [products, selectedId],
+  )
   const [quantity, setQuantity] = useState(1)
   const [selectedSize, setSelectedSize] = useState('')
   const [tab, setTab] = useState('desc')
   const [stickyVisible, setStickyVisible] = useState(false)
+  const [activeImage, setActiveImage] = useState('')
+  const [cartError, setCartError] = useState('')
+  const [reviewForm, setReviewForm] = useState({ rating: 0, comment: '' })
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false)
+  const [reviewFormMessage, setReviewFormMessage] = useState('')
+  const [reviewFormError, setReviewFormError] = useState('')
+  const { reviews, summary, loading: reviewsLoading, error: reviewsError, reload: reloadReviews } = useReviews(selectedId)
 
   useEffect(() => {
     setQuantity(1)
     setSelectedSize('')
     setTab('desc')
-  }, [selectedId])
+    setActiveImage(product?.images?.[0] || product?.image || '')
+    setCartError('')
+    setReviewForm({ rating: 0, comment: '' })
+    setReviewFormMessage('')
+    setReviewFormError('')
+  }, [selectedId, product?.image, product?.images])
 
   useEffect(() => {
     const onScroll = () => {
@@ -54,21 +73,75 @@ export default function Product() {
   }
 
   const productMeta = getProductMeta(product)
-  const image = product.image
+  const images = product.images?.length ? product.images : [product.image].filter(Boolean)
+  const image = activeImage || images[0] || product.image
   const originalPrice = getOriginalPrice(product.price)
   const discount = Math.max(1, Math.round(((originalPrice - product.price) / originalPrice) * 100))
-  const rating = product.rating || 4.8
-  const reviewCount = reviewCountByRating[rating] || 126
+  const rating = summary.totalReviews ? summary.averageRating : 0
+  const reviewCount = summary.totalReviews
+  const inStock = Number(product.stock) > 0
 
-  const submitCart = () =>
-    addToCart({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image,
-      quantity,
-      size: selectedSize,
-    })
+  const submitCart = () => {
+    setCartError('')
+
+    try {
+      addToCart({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image,
+        quantity,
+        size: selectedSize,
+      })
+    } catch (error) {
+      setCartError(error instanceof Error ? error.message : 'Unable to add to cart')
+    }
+  }
+
+  const handleBuyNow = () => {
+    if (!inStock || !selectedSize) {
+      return
+    }
+
+    submitCart()
+    navigate('/cart')
+  }
+
+  const canSubmitReview = Boolean(reviewForm.rating && reviewForm.comment.trim() && !isSubmittingReview)
+
+  const handleReviewSubmit = async (event) => {
+    event.preventDefault()
+    setReviewFormError('')
+    setReviewFormMessage('')
+
+    if (!ensureUser()) {
+      return
+    }
+
+    if (!reviewForm.rating || !reviewForm.comment.trim()) {
+      setReviewFormError('Please add both a rating and review comment')
+      return
+    }
+
+    setIsSubmittingReview(true)
+
+    try {
+      await reviewService.postReview({
+        productId: product.id,
+        rating: reviewForm.rating,
+        comment: reviewForm.comment,
+        user,
+      })
+
+      setReviewForm({ rating: 0, comment: '' })
+      setReviewFormMessage('Review submitted successfully. It will appear after admin approval.')
+      await reloadReviews()
+    } catch (submitError) {
+      setReviewFormError(submitError instanceof Error ? submitError.message : 'Unable to submit review')
+    } finally {
+      setIsSubmittingReview(false)
+    }
+  }
 
   return (
     <>
@@ -76,14 +149,31 @@ export default function Product() {
         <section className="pdp-container">
           <div className="pdp-gallery">
             <div className="pdp-main-image">
-              <img src={image} alt={product.name} />
+              <img src={image} alt={product.name} loading="lazy" />
             </div>
+            {images.length > 1 ? (
+              <div className="pdp-thumbnails">
+                {images.map((thumbnail) => (
+                  <button
+                    key={thumbnail}
+                    type="button"
+                    className={`pdp-thumb-btn${thumbnail === image ? ' active' : ''}`}
+                    onClick={() => setActiveImage(thumbnail)}
+                  >
+                    <img src={thumbnail} alt={product.name} loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
 
           <div className="pdp-details">
             <h1 className="pdp-title">{product.name}</h1>
             <div className="pdp-rating">
-              {rating} <span>({reviewCount} Reviews)</span>
+              {reviewCount ? `${rating.toFixed(1)} ⭐` : 'No reviews yet'} <span>({reviewCount} Reviews)</span>
+            </div>
+            <div className={`pdp-stock-pill${inStock ? ' in-stock' : ' out-of-stock'}`}>
+              {inStock ? `In Stock (${product.stock} available)` : 'Out of Stock'}
             </div>
             <div className="pdp-price-box">
               <span className="pdp-mrp">{formatPrice(originalPrice)}</span>
@@ -100,6 +190,7 @@ export default function Product() {
                     key={size}
                     className={`size-btn${selectedSize === size ? ' active' : ''}`}
                     onClick={() => setSelectedSize(size)}
+                    disabled={!inStock}
                   >
                     {size}
                   </button>
@@ -108,22 +199,23 @@ export default function Product() {
             </div>
 
             <div className="pdp-quantity">
-              <button onClick={() => setQuantity((value) => Math.max(1, value - 1))}>-</button>
+              <button onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={!inStock}>-</button>
               <span id="qty">{quantity}</span>
-              <button onClick={() => setQuantity((value) => value + 1)}>+</button>
+              <button onClick={() => setQuantity((value) => value + 1)} disabled={!inStock || quantity >= Number(product.stock)}>+</button>
             </div>
 
             <div className="pdp-buttons">
-              <button className="royal-btn royal-outline" id="mainAddBtn" disabled={!selectedSize} onClick={submitCart}>
-                Add to Cart
+              <button className="royal-btn royal-outline" id="mainAddBtn" disabled={!selectedSize || !inStock} onClick={submitCart}>
+                {inStock ? 'Add to Cart' : 'Out of Stock'}
               </button>
-              <button className="royal-btn royal-gold" onClick={() => navigate('/cart')}>
-                Buy Now
+              <button className="royal-btn royal-gold" onClick={handleBuyNow} disabled={!selectedSize || !inStock}>
+                {inStock ? 'Buy Now' : 'Unavailable'}
               </button>
               <button className="pdp-wishlist">
                 <span>+</span>
               </button>
             </div>
+            {cartError ? <p className="product-card-error">{cartError}</p> : null}
 
             <div className="pdp-trust">
               <div className="trust-item">
@@ -164,21 +256,118 @@ export default function Product() {
               {productMeta.details.map((detail) => (
                 <li key={detail}>{detail}</li>
               ))}
+              <li>Category: {product.category}</li>
+              <li>Collection: {product.collection || 'Not assigned'}</li>
+              <li>Stock: {inStock ? `${product.stock} available` : 'Out of Stock'}</li>
             </ul>
           </div>
 
           <div className={`tab-content${tab === 'reviews' ? ' active' : ''}`} id="reviews">
-            <p>
-              {rating} out of 5 based on {reviewCount} reviews.
-            </p>
+            <section className="customer-reviews">
+              <div className="customer-reviews-summary">
+                <div className="customer-reviews-summary-main">
+                  <h3>Customer Reviews</h3>
+                  {reviewsLoading ? (
+                    <div className="reviews-skeleton reviews-summary-skeleton" />
+                  ) : reviewCount ? (
+                    <>
+                      <div className="customer-reviews-average">{rating.toFixed(1)} ⭐</div>
+                      <p>{reviewCount} approved review{reviewCount > 1 ? 's' : ''}</p>
+                    </>
+                  ) : (
+                    <p>Be the first to review this product.</p>
+                  )}
+                </div>
+
+                <div className="customer-reviews-breakdown">
+                  {summary.breakdown.map((item) => {
+                    const percent = reviewCount ? (item.count / reviewCount) * 100 : 0
+
+                    return (
+                      <div className="review-breakdown-row" key={item.stars}>
+                        <span>{item.stars} Star</span>
+                        <div className="review-breakdown-bar">
+                          <span style={{ width: `${percent}%` }} />
+                        </div>
+                        <strong>{item.count}</strong>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+
+              <div className="customer-reviews-list">
+                {reviewsLoading ? (
+                  <>
+                    <div className="reviews-skeleton review-card-skeleton" />
+                    <div className="reviews-skeleton review-card-skeleton" />
+                  </>
+                ) : reviewsError ? (
+                  <p className="review-feedback review-feedback-error">{reviewsError}</p>
+                ) : reviews.length === 0 ? (
+                  <p className="review-feedback">Be the first to review this product.</p>
+                ) : (
+                  reviews.map((review) => (
+                    <article className="review-card" key={review.id}>
+                      <div className="review-card-top">
+                        <div>
+                          <h4>{review.userName}</h4>
+                          <p>{formatReviewDate(review.createdAt)}</p>
+                        </div>
+                        {review.isVerifiedPurchase ? <span className="verified-badge">Verified Buyer</span> : null}
+                      </div>
+                      <StarRating value={review.rating} className="review-card-rating" />
+                      <p className="review-card-comment">{review.comment}</p>
+                    </article>
+                  ))
+                )}
+              </div>
+
+              <div className="customer-review-form-wrap">
+                <h3>Write a Review</h3>
+                {!user ? (
+                  <p className="review-feedback">Login to write a review</p>
+                ) : (
+                  <form className="customer-review-form" onSubmit={handleReviewSubmit}>
+                    <div className="customer-review-form-field">
+                      <label>Your Rating</label>
+                      <StarRating
+                        value={reviewForm.rating}
+                        interactive
+                        onChange={(value) => setReviewForm((current) => ({ ...current, rating: value }))}
+                        className="customer-review-rating-picker"
+                      />
+                    </div>
+
+                    <div className="customer-review-form-field">
+                      <label htmlFor="review-comment">Your Review</label>
+                      <textarea
+                        id="review-comment"
+                        value={reviewForm.comment}
+                        onChange={(event) => setReviewForm((current) => ({ ...current, comment: event.target.value }))}
+                        placeholder="Share your experience with the product"
+                        rows={5}
+                      />
+                    </div>
+
+                    {reviewFormError ? <p className="review-feedback review-feedback-error">{reviewFormError}</p> : null}
+                    {reviewFormMessage ? <p className="review-feedback review-feedback-success">{reviewFormMessage}</p> : null}
+
+                    <button className="royal-btn royal-gold review-submit-btn" type="submit" disabled={!canSubmitReview}>
+                      {isSubmittingReview ? 'Submitting...' : 'Submit Review'}
+                    </button>
+                  </form>
+                )}
+              </div>
+            </section>
           </div>
         </section>
       </main>
 
       <div className={`sticky-cart-bar${stickyVisible ? ' active' : ''}`}>
         <div className="sticky-price">{formatPrice(product.price)}</div>
-        <button className="sticky-add-btn" id="stickyAddBtn" disabled={!selectedSize} onClick={submitCart}>
-          Add to Cart
+        <button className="sticky-add-btn" id="stickyAddBtn" disabled={!selectedSize || !inStock} onClick={submitCart}>
+          {inStock ? 'Add to Cart' : 'Out of Stock'}
         </button>
       </div>
 

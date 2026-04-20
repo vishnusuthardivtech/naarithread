@@ -3,16 +3,18 @@ import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { useAddress } from '../hooks/useAddress'
 import { useOrders } from '../hooks/useOrders'
+import { updateCatalogStockLevels } from '../services/catalogService'
 import { formatPrice } from '../utils/storage'
 import { states } from '../data/site'
 
 export default function Checkout() {
-  const { user, cartItems, emptyCart } = useApp()
+  const { user, cartItems, emptyCart, validateCartItemsAgainstStock } = useApp()
   const navigate = useNavigate()
   const { defaultAddress } = useAddress(user)
   const { addOrder } = useOrders(user)
   const [payment, setPayment] = useState('cod')
   const [errors, setErrors] = useState({})
+  const [checkoutError, setCheckoutError] = useState('')
   const [form, setForm] = useState({ fullName: '', phone: '', email: '', address1: '', address2: '', city: '', state: '', pincode: '', upiId: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
 
@@ -35,6 +37,7 @@ export default function Checkout() {
   }, [defaultAddress, user])
 
   const placeOrder = () => {
+    setCheckoutError('')
     const nextErrors = {}
     if (!form.fullName.trim()) nextErrors.fullName = 'Full name is required'
     if (!/^\d{10}$/.test(form.phone)) nextErrors.phone = 'Enter valid phone number'
@@ -48,6 +51,18 @@ export default function Checkout() {
     if (payment === 'card' && form.cardCvv.length !== 3) nextErrors.cardCvv = 'Enter valid card details'
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length) return
+
+    const stockValidation = validateCartItemsAgainstStock(cartItems)
+    if (!stockValidation.valid) {
+      setCheckoutError(stockValidation.error)
+      return
+    }
+
+    const stockUpdate = updateCatalogStockLevels(cartItems)
+    if (!stockUpdate.success) {
+      setCheckoutError(stockUpdate.error || 'Unable to place order')
+      return
+    }
 
     addOrder({
       products: cartItems,
@@ -85,6 +100,7 @@ export default function Checkout() {
 
         <div className="checkout-summary">
           <h2>Order Summary</h2>
+          {checkoutError ? <p className="product-card-error">{checkoutError}</p> : null}
           <div id="checkoutItems">{cartItems.map((item) => <div className="checkout-item" key={item.id}><span>{item.name} x {item.quantity}</span><span>{formatPrice(item.price * item.quantity)}</span></div>)}</div>
           <h3 id="checkoutTotal">{cartItems.length ? `Total: ${formatPrice(total)}` : ''}</h3>
           <hr style={{ margin: '25px 0', borderColor: 'rgba(212,175,55,0.2)' }} />

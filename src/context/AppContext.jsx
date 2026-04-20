@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { allProducts, productsByPage } from '../data/products'
+import { reviewService } from '../services/reviewService'
 import { addCartItem, clearCart, getCart, getCartCount, getCurrentUser, removeCartItem, updateCartItem } from '../utils/cart'
+import { catalogConstants, getCatalogOptions, getProductsForListing, getStoredCatalogProducts, normalizeCatalogProduct, subscribeCatalogProducts, validateCartItemsAgainstStock } from '../services/catalogService'
 import { useWishlist } from '../hooks/useWishlist'
 import { readStorage, removeStorage, writeStorage } from '../utils/storage'
 
@@ -30,65 +31,63 @@ const inferColor = (product) => {
 }
 
 const inferCategory = (product, sourcePage) => {
-  const text = `${product.name} ${product.category}`.toLowerCase()
+  const normalizedCategory = String(product.category || '').trim()
 
-  if (text.includes('bridal')) return 'Bridal'
-  if (sourcePage === 'collection3' || text.includes('party')) return 'Party Wear'
-  if (sourcePage === 'collection1' || text.includes('mirror')) return 'Mirror Work'
+  if (catalogConstants.CATEGORY_OPTIONS.includes(normalizedCategory)) {
+    return normalizedCategory
+  }
 
-  return 'Lehenga'
+  if (sourcePage === 'collection1') return 'Mirror Lehenga'
+  if (sourcePage === 'collection2') return 'Sequence Lehenga'
+  if (sourcePage === 'collection3') return 'Party Lehenga'
+
+  return catalogConstants.CATEGORY_OPTIONS[0]
 }
 
 export function AppProvider({ children }) {
   const [user, setUser] = useState(() => getCurrentUser())
   const [authOpen, setAuthOpen] = useState(false)
   const [cartVersion, setCartVersion] = useState(0)
+  const [catalogVersion, setCatalogVersion] = useState(0)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
   const [lastBrowsePath, setLastBrowsePath] = useState('/')
   const [listingFilters, setListingFilters] = useState({})
   const [filterVersion, setFilterVersion] = useState(0)
+  const [reviewsVersion, setReviewsVersion] = useState(0)
 
   useEffect(() => {
     const loggedInUser = getCurrentUser()
     setUser(loggedInUser)
   }, [])
 
+  useEffect(() => reviewService.subscribe(() => {
+    setReviewsVersion((value) => value + 1)
+  }), [])
+
+  useEffect(() => subscribeCatalogProducts(() => {
+    setCatalogVersion((value) => value + 1)
+  }), [])
+
   const refreshCart = () => setCartVersion((value) => value + 1)
-  const productSourceMap = useMemo(() => {
-    const sourceMap = new Map()
-
-    Object.entries(productsByPage).forEach(([pageKey, products]) => {
-      if (pageKey === 'allProducts') {
-        return
-      }
-
-      products.forEach((product) => {
-        if (!sourceMap.has(product.id)) {
-          sourceMap.set(product.id, pageKey)
-        }
-      })
-    })
-
-    return sourceMap
-  }, [])
 
   const enrichedProducts = useMemo(() => {
-    const uniqueProducts = Array.from(new Map(allProducts.map((product) => [product.id, product])).values())
+    const uniqueProducts = getStoredCatalogProducts()
+    const ratedProducts = reviewService.getProductsWithRatings(uniqueProducts)
+    const { categories, collections } = getCatalogOptions(ratedProducts)
 
-    return uniqueProducts.map((product) => {
-      const sourcePage = productSourceMap.get(product.id) ?? 'allProducts'
+    const products = ratedProducts.map((product) => ({
+      ...product,
+      inStock: Number(product.stock) > 0,
+      color: inferColor(product),
+      filterCategory: inferCategory(product, product.sourcePage),
+    }))
 
-      return {
-        ...product,
-        inStock: true,
-        color: inferColor(product),
-        filterCategory: inferCategory(product, sourcePage),
-        sourcePage,
-      }
-    })
-  }, [productSourceMap])
+    products.categoryOptions = categories
+    products.collectionOptions = collections
+    return products
+  }, [catalogVersion, reviewsVersion])
 
   const enrichedProductMap = useMemo(() => new Map(enrichedProducts.map((product) => [product.id, product])), [enrichedProducts])
 
@@ -125,14 +124,26 @@ export function AppProvider({ children }) {
 
   const filterProducts = useCallback((products, listingKey) => {
     const filters = listingFilters[listingKey] ?? defaultFilters
+    const filtersActive =
+      filters.availability
+      || filters.priceMin !== MIN_FILTER_PRICE
+      || filters.priceMax !== MAX_FILTER_PRICE
+      || filters.colors.length > 0
+      || filters.categories.length > 0
 
-    return products
+    const normalizedProducts = products
       .map((product) => enrichedProductMap.get(product.id) ?? {
-        ...product,
-        inStock: true,
+        ...normalizeCatalogProduct(product),
+        inStock: Number(product.stock) > 0,
         color: inferColor(product),
-        filterCategory: inferCategory(product, 'allProducts'),
+        filterCategory: inferCategory(product, product.sourcePage || 'allProducts'),
       })
+
+    if (!filtersActive) {
+      return normalizedProducts
+    }
+
+    return normalizedProducts
       .filter((product) => {
         if (filters.availability && !product.inStock) {
           return false
@@ -244,12 +255,29 @@ export function AppProvider({ children }) {
       return false
     }
 
+    const stockCheck = validateCartItemsAgainstStock([
+      {
+        id: product.id,
+        quantity: Math.max(1, Number(product.quantity) || 1),
+        name: product.name,
+      },
+    ])
+
+    if (!stockCheck.valid) {
+      throw new Error(stockCheck.error)
+    }
+
     addCartItem(product)
     refreshCart()
     return true
   }
 
   const changeCartQuantity = (id, quantity, size) => {
+    const stockCheck = validateCartItemsAgainstStock([{ id, quantity }])
+    if (!stockCheck.valid) {
+      throw new Error(stockCheck.error)
+    }
+
     updateCartItem(id, quantity, size)
     refreshCart()
   }
@@ -276,6 +304,29 @@ export function AppProvider({ children }) {
   const removeFromWishlist = (id) => {
     removeItem(id)
   }
+
+  const getProductsForPage = useCallback((listingKey) => getProductsForListing(enrichedProducts, listingKey), [enrichedProducts])
+  const categoryOptions = enrichedProducts.categoryOptions || catalogConstants.CATEGORY_OPTIONS
+  const collectionOptions = enrichedProducts.collectionOptions || catalogConstants.COLLECTION_OPTIONS
+
+  useEffect(() => {
+    if (typeof window === 'undefined') {
+      return
+    }
+
+    console.log('[catalog-debug]', {
+      productsLength: enrichedProducts.length,
+      sampleImage: enrichedProducts[0]?.imageToShow || enrichedProducts[0]?.image || null,
+      filtersActive: Object.keys(listingFilters).some((listingKey) => {
+        const filters = listingFilters[listingKey]
+        return filters?.availability
+          || filters?.priceMin !== MIN_FILTER_PRICE
+          || filters?.priceMax !== MAX_FILTER_PRICE
+          || (filters?.colors?.length ?? 0) > 0
+          || (filters?.categories?.length ?? 0) > 0
+      }),
+    })
+  }, [enrichedProducts, listingFilters])
 
   const value = useMemo(() => ({
     user,
@@ -314,7 +365,12 @@ export function AppProvider({ children }) {
     resetListingFilters,
     filterProducts,
     searchProducts,
-  }), [user, authOpen, cartVersion, toggleWishlist, removeFromWishlist, hasItem, isInCart, cartItems, wishlistItems, wishlistCount, searchQuery, searchResults, isSearching, executeSearch, clearSearch, lastBrowsePath, filterVersion, getListingFilters, applyListingFilters, resetListingFilters, filterProducts, searchProducts])
+    products: enrichedProducts,
+    getProductsForPage,
+    categoryOptions,
+    collectionOptions,
+    validateCartItemsAgainstStock,
+  }), [user, authOpen, cartVersion, toggleWishlist, removeFromWishlist, hasItem, isInCart, cartItems, wishlistItems, wishlistCount, searchQuery, searchResults, isSearching, executeSearch, clearSearch, lastBrowsePath, filterVersion, getListingFilters, applyListingFilters, resetListingFilters, filterProducts, searchProducts, enrichedProducts])
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>
 }

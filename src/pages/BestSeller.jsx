@@ -1,12 +1,14 @@
 import SharedCatalogPage from './SharedCatalogPage'
-import { productsByPage } from '../data/products'
+import { useApp } from '../context/AppContext'
 
 export default function BestSeller() {
+  const { getProductsForPage } = useApp()
+
   return (
     <SharedCatalogPage
       title="Our Best Sellers"
       subtitle="Where elegance meets demand"
-      products={productsByPage.bestSeller || []}
+      products={getProductsForPage('bestSeller')}
       listingKey="bestSeller"
     />
   )
