@@ -6,7 +6,7 @@ import { formatPrice } from '../utils/storage'
 import StarRating from './StarRating'
 import WishlistButton from './WishlistButton'
 
-export default function ProductCard({ product, className = 'product-card', showRating = false, showNewBadge = false, showStock = false }) {
+export default function ProductCard({ product, className = 'product-card', showNewBadge = false, showStock = false }) {
   const { addToCart, removeFromCart, isInCart } = useApp()
   const cardClassName = `${className} reveal`.replace(/\s+/g, ' ').trim()
   const inCart = isInCart(product.id)
@@ -14,7 +14,10 @@ export default function ProductCard({ product, className = 'product-card', showR
   const reviewCount = Number(product.reviewCount) || 0
   const inStock = Number(product.stock) > 0
   const [cartError, setCartError] = useState('')
-  const imageToShow = product.imageToShow || product.images?.[0] || product.image || catalogConstants.PLACEHOLDER_IMAGE
+  const imageToShow = product.images?.[0] || product.image || catalogConstants.PLACEHOLDER_IMAGE
+
+  // Debug: log product image data to verify uniqueness
+  console.log(product.id, product.images)
 
   const handleCartClick = (event) => {
     event.preventDefault()
@@ -36,6 +39,7 @@ export default function ProductCard({ product, className = 'product-card', showR
         id: product.id,
         name: product.name,
         price: product.price,
+        images: product.images?.length ? [...product.images] : [imageToShow],
         image: imageToShow,
         quantity: 1,
       })

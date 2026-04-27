@@ -1905,14 +1905,17 @@ const normalizeProductImage = (imagePath) => {
   }
 
   const normalizedPath = String(imagePath).replace(/\\/g, '/').trim()
-  const featuredMatch = normalizedPath.match(/(?:^|\/)(?:featured|featured lehengas)\/(\d+)\.(jpg|jpeg|png|webp)$/i)
 
-  if (featuredMatch) {
-    return `${import.meta.env.BASE_URL}images/products/lehenga${featuredMatch[1]}.jpg`
+  if (/^(https?:)?\/\//.test(normalizedPath)) {
+    return normalizedPath
   }
 
-  if (/^\/images\/featured\/(\d+)\.(jpg|jpeg|png|webp)$/i.test(normalizedPath)) {
-    return `${import.meta.env.BASE_URL}${normalizedPath.replace(/^\/+/, '').replace(/images\/featured\/(\d+)\.(jpg|jpeg|png|webp)$/i, 'images/products/lehenga$1.jpg')}`
+  if (normalizedPath.startsWith('/images/')) {
+    return `${import.meta.env.BASE_URL}${normalizedPath.replace(/^\/+/, '')}`
+  }
+
+  if (normalizedPath.startsWith('/assets/')) {
+    return assetPath(normalizedPath.replace(/^\/+/, ''))
   }
 
   return assetPath(imagePath)
@@ -1932,13 +1935,34 @@ const normalizeRating = (product) => ({
   rating: typeof product.rating === 'number' ? product.rating : getFallbackRating(product),
 })
 
+const pageToCollection = {
+  collection1: 'collection1',
+  collection2: 'collection2',
+  collection3: 'collection3',
+}
+
+const pageToCategory = {
+  collection1: 'Mirror Lehenga',
+  collection2: 'Sequence Lehenga',
+  collection3: 'Party Lehenga',
+}
+
 export const productsByPage = Object.fromEntries(
   Object.entries(rawProductsByPage).map(([page, items]) => [
     page,
-    items.map((product) => ({
-      ...normalizeRating(product),
-      image: normalizeProductImage(product.image),
-    })),
+    items.map((product) => {
+      const image = normalizeProductImage(product.image)
+
+      return {
+        ...normalizeRating(product),
+        category: pageToCategory[page] || product.category || '',
+        collection: pageToCollection[page] || product.collection || '',
+        image,
+        images: [image].filter(Boolean),
+        isNewArrival: Boolean(product.isNewArrival ?? (page === 'newArrival')),
+        isBestSeller: Boolean(product.isBestSeller ?? (page === 'bestSeller' || page === 'homeBestSellers')),
+      }
+    }),
   ]),
 )
 

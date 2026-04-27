@@ -1,4 +1,4 @@
-import { allProducts, findProductById } from '../data/products'
+import { getStoredCatalogProducts } from './catalogService'
 import { getCurrentUser } from '../utils/cart'
 import { getData, setData, subscribeToStorage } from '../utils/localStorage'
 
@@ -80,7 +80,7 @@ function computeRatingSummary(productId) {
 }
 
 function getProductName(productId) {
-  return findProductById(String(productId))?.name || 'Product'
+  return getStoredCatalogProducts().find((product) => product.id === String(productId))?.name || 'Product'
 }
 
 function attachReviewDisplayFields(review) {
@@ -167,7 +167,7 @@ export const reviewService = {
     return computeRatingSummary(productId)
   },
 
-  getProductsWithRatings(products = allProducts) {
+  getProductsWithRatings(products = getStoredCatalogProducts()) {
     return products.map((product) => {
       const summary = computeRatingSummary(product.id)
 

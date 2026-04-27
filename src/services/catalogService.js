@@ -1,5 +1,4 @@
 import { ADMIN_PRODUCTS_STORAGE_KEY } from '../admin/api/storage'
-import { allProducts as staticProducts, productsByPage } from '../data/products'
 import { assetPath } from '../data/site'
 import { getData, setData, subscribeToStorage } from '../utils/localStorage'
 
@@ -10,58 +9,18 @@ const PLACEHOLDER_IMAGE = toBaseImagePath('images/placeholder.jpg')
 const CATEGORY_OPTIONS = ['Mirror Lehenga', 'Sequence Lehenga', 'Party Lehenga']
 const COLLECTION_OPTIONS = ['collection1', 'collection2', 'collection3']
 
-const sourcePageToCollection = {
-  collection1: 'collection1',
-  collection2: 'collection2',
-  collection3: 'collection3',
-}
-
-const sourcePageToCategory = {
-  collection1: 'Mirror Lehenga',
-  collection2: 'Sequence Lehenga',
-  collection3: 'Party Lehenga',
-}
-
-const productSourceMap = (() => {
-  const map = new Map()
-
-  Object.entries(productsByPage || {}).forEach(([pageKey, products]) => {
-    if (!Array.isArray(products)) {
-      return
-    }
-
-    products.forEach((product) => {
-      if (!product?.id || map.has(String(product.id))) {
-        return
-      }
-
-      map.set(String(product.id), pageKey)
-    })
-  })
-
-  return map
-})()
-
 function normalizeImagePath(imagePath) {
   if (!imagePath) {
     return ''
   }
 
   const normalizedPath = String(imagePath).replace(/\\/g, '/').trim()
-  const featuredMatch = normalizedPath.match(/(?:^|\/)(?:featured|featured lehengas)\/(\d+)\.(jpg|jpeg|png|webp)$/i)
-
-  if (featuredMatch) {
-    return toBaseImagePath(`images/products/lehenga${featuredMatch[1]}.jpg`)
+  if (!normalizedPath || normalizedPath.startsWith('data:') || normalizedPath.startsWith('blob:')) {
+    return ''
   }
 
-  if (/^(https?:)?\/\//.test(normalizedPath) || normalizedPath.startsWith('data:') || normalizedPath.startsWith('blob:')) {
+  if (/^(https?:)?\/\//.test(normalizedPath)) {
     return normalizedPath
-  }
-
-  if (normalizedPath.startsWith('/images/featured/')) {
-    return toBaseImagePath(
-      normalizedPath.replace(/^\/+/, '').replace(/images\/featured\/(\d+)\.(jpg|jpeg|png|webp)$/i, 'images/products/lehenga$1.jpg'),
-    )
   }
 
   if (normalizedPath.startsWith('/images/')) {
@@ -70,6 +29,14 @@ function normalizeImagePath(imagePath) {
 
   if (/^images\//i.test(normalizedPath)) {
     return toBaseImagePath(normalizedPath)
+  }
+
+  if (normalizedPath.startsWith('/assets/')) {
+    return assetPath(normalizedPath.replace(/^\/+/, ''))
+  }
+
+  if (/^assets\//i.test(normalizedPath)) {
+    return assetPath(normalizedPath)
   }
 
   return assetPath(normalizedPath)
@@ -82,10 +49,6 @@ function inferCategory(product = {}) {
     return normalizedCategory
   }
 
-  if (product.sourcePage && sourcePageToCategory[product.sourcePage]) {
-    return sourcePageToCategory[product.sourcePage]
-  }
-
   return CATEGORY_OPTIONS[0]
 }
 
@@ -94,10 +57,6 @@ function inferCollection(product = {}) {
 
   if (COLLECTION_OPTIONS.includes(normalizedCollection)) {
     return normalizedCollection
-  }
-
-  if (product.sourcePage && sourcePageToCollection[product.sourcePage]) {
-    return sourcePageToCollection[product.sourcePage]
   }
 
   return ''
@@ -116,11 +75,14 @@ function inferImages(product = {}) {
     ? product.images
     : [product.image].filter(Boolean)
 
-  return candidateImages.map(normalizeImagePath).filter(Boolean)
+  return candidateImages
+    .filter((image) => typeof image === 'string')
+    .map((image) => normalizeImagePath(image.trim()))
+    .filter(Boolean)
 }
 
 function inferSourcePage(product = {}) {
-  return product.sourcePage || productSourceMap.get(String(product.id)) || 'allProducts'
+  return product.sourcePage || ''
 }
 
 function inferVisibilityFlag(product = {}, key, sourcePage) {
@@ -130,16 +92,18 @@ function inferVisibilityFlag(product = {}, key, sourcePage) {
   }
 
   if (key === 'isNewArrival') {
-    return product.isNewArrival
-      ?? product.showInNewArrival
-      ?? (product.tag === 'new')
-      ?? (sourcePage === 'newArrival')
+    if (typeof product.showInNewArrival === 'boolean') {
+      return product.showInNewArrival
+    }
+
+    return product.tag === 'new' || sourcePage === 'newArrival'
   }
 
-  return product.isBestSeller
-    ?? product.showInBestSeller
-    ?? (product.tag === 'best')
-    ?? (sourcePage === 'bestSeller' || sourcePage === 'homeBestSellers')
+  if (typeof product.showInBestSeller === 'boolean') {
+    return product.showInBestSeller
+  }
+
+  return product.tag === 'best' || sourcePage === 'bestSeller' || sourcePage === 'homeBestSellers'
 }
 
 export function normalizeCatalogProduct(product = {}) {
@@ -170,28 +134,56 @@ export function normalizeCatalogProduct(product = {}) {
   }
 }
 
-function buildInitialCatalog() {
-  return Array.from(new Map(staticProducts.map((product) => [product.id, normalizeCatalogProduct(product)])).values())
+export function getProductImage(product = {}) {
+  return product.images?.[0] || PLACEHOLDER_IMAGE
+}
+
+function getAdminCatalogProducts() {
+  const adminProducts = getData(PRODUCT_CHANNEL_KEY, [])
+  const normalizedAdminProducts = Array.isArray(adminProducts)
+    ? adminProducts.map(normalizeCatalogProduct).filter((product) => product.id)
+    : []
+
+  return Array.from(new Map(normalizedAdminProducts.map((product) => [product.id, product])).values())
 }
 
 export function getStoredCatalogProducts() {
-  const storedProducts = getData(PRODUCT_CHANNEL_KEY, [])
-  if (Array.isArray(storedProducts) && storedProducts.length > 0) {
-    return storedProducts.map(normalizeCatalogProduct)
+  const adminProducts = getAdminCatalogProducts()
+
+  if (!adminProducts.length) {
+    console.warn('No admin products found')
   }
 
-  return buildInitialCatalog()
+  // Debug: log each product's images to verify uniqueness
+  adminProducts.forEach((product) => {
+    console.log(product.id, product.images)
+  })
+
+  return adminProducts
 }
 
 export function saveStoredCatalogProducts(products) {
-  setData(PRODUCT_CHANNEL_KEY, products.map(normalizeCatalogProduct))
+  const adminProducts = products
+    .map(normalizeCatalogProduct)
+    .filter((product) => product.id)
+
+  setData(PRODUCT_CHANNEL_KEY, adminProducts)
+}
+
+export function saveAdminCatalogProducts(products) {
+  const normalizedProducts = products.map(normalizeCatalogProduct).filter((product) => product.id)
+  setData(PRODUCT_CHANNEL_KEY, Array.from(new Map(normalizedProducts.map((product) => [product.id, product])).values()))
+}
+
+export function getAdminCatalogProductOverrides() {
+  return getAdminCatalogProducts()
 }
 
 export function subscribeCatalogProducts(callback) {
   return subscribeToStorage(PRODUCT_CHANNEL_KEY, callback)
 }
 
-export function getCatalogOptions(products = getStoredCatalogProducts()) {
+export function getCatalogOptions() {
   return {
     categories: CATEGORY_OPTIONS,
     collections: COLLECTION_OPTIONS,
@@ -200,33 +192,29 @@ export function getCatalogOptions(products = getStoredCatalogProducts()) {
 
 export function getProductsForListing(products, listingKey) {
   const normalizedProducts = products.map(normalizeCatalogProduct)
+  const getUniquePageProducts = (items) => Array.from(new Map(items.map((product) => [product.id, product])).values())
 
   if (listingKey === 'newArrival') {
-    const taggedProducts = normalizedProducts.filter((product) => product.isNewArrival)
-    return taggedProducts.length > 0 ? taggedProducts : normalizedProducts
+    return getUniquePageProducts(normalizedProducts.filter((product) => product.isNewArrival))
   }
 
   if (listingKey === 'bestSeller') {
-    const taggedProducts = normalizedProducts.filter((product) => product.isBestSeller)
-    return taggedProducts.length > 0 ? taggedProducts : normalizedProducts
+    return getUniquePageProducts(normalizedProducts.filter((product) => product.isBestSeller))
   }
 
   if (listingKey === 'collection1') {
-    const collectionProducts = normalizedProducts.filter((product) => product.collection === 'collection1' || product.sourcePage === 'collection1')
-    return collectionProducts.length > 0 ? collectionProducts : normalizedProducts
+    return getUniquePageProducts(normalizedProducts.filter((product) => product.collection === 'collection1'))
   }
 
   if (listingKey === 'collection2') {
-    const collectionProducts = normalizedProducts.filter((product) => product.collection === 'collection2' || product.sourcePage === 'collection2')
-    return collectionProducts.length > 0 ? collectionProducts : normalizedProducts
+    return getUniquePageProducts(normalizedProducts.filter((product) => product.collection === 'collection2'))
   }
 
   if (listingKey === 'collection3') {
-    const collectionProducts = normalizedProducts.filter((product) => product.collection === 'collection3' || product.sourcePage === 'collection3')
-    return collectionProducts.length > 0 ? collectionProducts : normalizedProducts
+    return getUniquePageProducts(normalizedProducts.filter((product) => product.collection === 'collection3'))
   }
 
-  return normalizedProducts
+  return getUniquePageProducts(normalizedProducts)
 }
 
 export function updateCatalogStockLevels(orderProducts = []) {

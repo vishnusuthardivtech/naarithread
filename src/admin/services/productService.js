@@ -1,5 +1,5 @@
 import { createAdminId } from '../api/storage'
-import { getCatalogOptions, getStoredCatalogProducts, normalizeCatalogProduct, saveStoredCatalogProducts } from '../../services/catalogService'
+import { getAdminCatalogProductOverrides, getCatalogOptions, getStoredCatalogProducts, normalizeCatalogProduct, saveAdminCatalogProducts } from '../../services/catalogService'
 
 function validateProductPayload(payload) {
   const name = String(payload.name ?? '').trim()
@@ -7,7 +7,9 @@ function validateProductPayload(payload) {
   const description = String(payload.description ?? '').trim()
   const price = Number(payload.price)
   const stock = Number(payload.stock)
-  const images = Array.isArray(payload.images) ? payload.images.filter(Boolean) : []
+  const images = Array.isArray(payload.images)
+    ? payload.images.filter((image) => typeof image === 'string').map((image) => image.trim()).filter(Boolean)
+    : []
 
   if (!name) {
     throw new Error('Product name is required')
@@ -29,6 +31,10 @@ function validateProductPayload(payload) {
     throw new Error('At least one product image is required')
   }
 
+  if (images.some((image) => image.startsWith('data:') || image.startsWith('blob:'))) {
+    throw new Error('Use image URLs only, not uploaded files')
+  }
+
   if (!description) {
     throw new Error('Description is required')
   }
@@ -38,8 +44,8 @@ function getProducts() {
   return getStoredCatalogProducts()
 }
 
-function persistProducts(products) {
-  saveStoredCatalogProducts(products)
+function persistAdminProducts(products) {
+  saveAdminCatalogProducts(products)
   return products
 }
 
@@ -60,7 +66,7 @@ export const productService = {
 
   async create(payload) {
     validateProductPayload(payload)
-    const products = getProducts()
+    const adminProducts = getAdminCatalogProductOverrides()
     const now = new Date().toISOString()
     const product = normalizeCatalogProduct({
       id: createAdminId('product'),
@@ -68,7 +74,7 @@ export const productService = {
       category: payload.category.trim(),
       collection: String(payload.collection ?? '').trim(),
       price: Number(payload.price) || 0,
-      images: payload.images,
+      images: payload.images.filter((image) => typeof image === 'string').map((image) => image.trim()).filter(Boolean),
       stock: Number(payload.stock) || 0,
       isNewArrival: Boolean(payload.isNewArrival),
       isBestSeller: Boolean(payload.isBestSeller),
@@ -78,56 +84,51 @@ export const productService = {
       sku: String(payload.sku ?? '').trim(),
     })
 
-    persistProducts([product, ...products])
+    persistAdminProducts([...adminProducts, product])
     return product
   },
 
   async update(id, payload) {
     validateProductPayload(payload)
     const products = getProducts()
-    let updatedProduct = null
+    const adminProducts = getAdminCatalogProductOverrides()
+    const existingProduct = products.find((product) => product.id === id)
 
-    const nextProducts = products.map((product) => {
-      if (product.id !== id) {
-        return product
-      }
-
-      updatedProduct = normalizeCatalogProduct({
-        ...product,
-        ...payload,
-        name: String(payload.name ?? product.name).trim(),
-        category: String(payload.category ?? product.category).trim(),
-        collection: String(payload.collection ?? product.collection).trim(),
-        description: String(payload.description ?? product.description).trim(),
-        price: Number(payload.price ?? product.price) || 0,
-        stock: Number(payload.stock ?? product.stock) || 0,
-        images: payload.images ?? product.images,
-        isNewArrival: Boolean(payload.isNewArrival ?? product.isNewArrival),
-        isBestSeller: Boolean(payload.isBestSeller ?? product.isBestSeller),
-        sku: String(payload.sku ?? product.sku).trim(),
-        updatedAt: new Date().toISOString(),
-      })
-
-      return updatedProduct
-    })
-
-    if (!updatedProduct) {
+    if (!existingProduct) {
       throw new Error('Product not found')
     }
 
-    persistProducts(nextProducts)
+    const updatedProduct = normalizeCatalogProduct({
+      ...existingProduct,
+      ...payload,
+      name: String(payload.name ?? existingProduct.name).trim(),
+      category: String(payload.category ?? existingProduct.category).trim(),
+      collection: String(payload.collection ?? existingProduct.collection).trim(),
+      description: String(payload.description ?? existingProduct.description).trim(),
+      price: Number(payload.price ?? existingProduct.price) || 0,
+      stock: Number(payload.stock ?? existingProduct.stock) || 0,
+      images: payload.images?.filter((image) => typeof image === 'string').map((image) => image.trim()).filter(Boolean) ?? existingProduct.images,
+      isNewArrival: Boolean(payload.isNewArrival ?? existingProduct.isNewArrival),
+      isBestSeller: Boolean(payload.isBestSeller ?? existingProduct.isBestSeller),
+      sku: String(payload.sku ?? existingProduct.sku).trim(),
+      updatedAt: new Date().toISOString(),
+    })
+
+    const nextAdminProducts = adminProducts.map((product) => (product.id === id ? updatedProduct : product))
+
+    persistAdminProducts(nextAdminProducts)
     return updatedProduct
   },
 
   async delete(id) {
-    const products = getProducts()
-    const nextProducts = products.filter((product) => product.id !== id)
+    const adminProducts = getAdminCatalogProductOverrides()
+    const nextProducts = adminProducts.filter((product) => product.id !== id)
 
-    if (nextProducts.length === products.length) {
+    if (nextProducts.length === adminProducts.length) {
       throw new Error('Product not found')
     }
 
-    persistProducts(nextProducts)
+    persistAdminProducts(nextProducts)
     return true
   },
 }

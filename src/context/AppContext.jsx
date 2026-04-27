@@ -136,7 +136,7 @@ export function AppProvider({ children }) {
         ...normalizeCatalogProduct(product),
         inStock: Number(product.stock) > 0,
         color: inferColor(product),
-        filterCategory: inferCategory(product, product.sourcePage || 'allProducts'),
+        filterCategory: inferCategory(product, product.sourcePage || ''),
       })
 
     if (!filtersActive) {

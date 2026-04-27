@@ -17,7 +17,7 @@ export default function Home() {
   }, [])
 
   const featuredProducts = products.slice(0, 4)
-  const bestSellerProducts = getProductsForPage('bestSeller').slice(0, 8)
+  const bestSellerProducts = getProductsForPage('bestSeller')
   const bestSellerSlider = [...bestSellerProducts, ...bestSellerProducts]
   const mobileBestSellerProducts = bestSellerProducts
   const mobileBestSellerSlider = [...mobileBestSellerProducts, ...mobileBestSellerProducts]

@@ -2,12 +2,19 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import StarRating from '../components/StarRating'
 import { useApp } from '../context/AppContext'
-import { findProductById, getProductMeta } from '../data/products'
 import { useReviews } from '../hooks/useReviews'
 import { reviewService } from '../services/reviewService'
+import { catalogConstants } from '../services/catalogService'
 import { formatPrice } from '../utils/storage'
 
 const getOriginalPrice = (price) => Math.ceil((price * 1.35) / 100) * 100
+
+const getProductMeta = (product) => ({
+  description:
+    product?.description ||
+    `${product?.name || 'This product'} is designed for modern celebrations with timeless elegance, premium craftsmanship, and comfortable festive wearability.`,
+  details: product?.details || ['Fabric: Premium occasion fabric', 'Work: Signature festive detailing', 'Occasion: Celebration wear', 'Crafted in Surat'],
+})
 
 function formatReviewDate(value) {
   return new Date(value).toLocaleDateString('en-IN', {
@@ -23,7 +30,7 @@ export default function Product() {
   const { addToCart, ensureUser, user, products } = useApp()
   const selectedId = searchParams.get('id')
   const product = useMemo(
-    () => products.find((item) => item.id === selectedId) || findProductById(selectedId),
+    () => products.find((item) => item.id === selectedId),
     [products, selectedId],
   )
   const [quantity, setQuantity] = useState(1)
@@ -42,7 +49,7 @@ export default function Product() {
     setQuantity(1)
     setSelectedSize('')
     setTab('desc')
-    setActiveImage(product?.images?.[0] || product?.image || '')
+    setActiveImage(product?.images?.[0] || product?.image || catalogConstants.PLACEHOLDER_IMAGE)
     setCartError('')
     setReviewForm({ rating: 0, comment: '' })
     setReviewFormMessage('')
@@ -73,8 +80,8 @@ export default function Product() {
   }
 
   const productMeta = getProductMeta(product)
-  const images = product.images?.length ? product.images : [product.image].filter(Boolean)
-  const image = activeImage || images[0] || product.image
+  const images = product.images?.length ? product.images : []
+  const imageToShow = images.includes(activeImage) ? activeImage : product.images?.[0] || product.image || catalogConstants.PLACEHOLDER_IMAGE
   const originalPrice = getOriginalPrice(product.price)
   const discount = Math.max(1, Math.round(((originalPrice - product.price) / originalPrice) * 100))
   const rating = summary.totalReviews ? summary.averageRating : 0
@@ -89,7 +96,8 @@ export default function Product() {
         id: product.id,
         name: product.name,
         price: product.price,
-        image,
+        images: product.images?.length ? [...product.images] : [imageToShow],
+        image: imageToShow,
         quantity,
         size: selectedSize,
       })
@@ -149,7 +157,14 @@ export default function Product() {
         <section className="pdp-container">
           <div className="pdp-gallery">
             <div className="pdp-main-image">
-              <img src={image} alt={product.name} loading="lazy" />
+              <img
+                src={imageToShow}
+                alt={product.name}
+                loading="lazy"
+                onError={(event) => {
+                  event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
+                }}
+              />
             </div>
             {images.length > 1 ? (
               <div className="pdp-thumbnails">
@@ -157,10 +172,17 @@ export default function Product() {
                   <button
                     key={thumbnail}
                     type="button"
-                    className={`pdp-thumb-btn${thumbnail === image ? ' active' : ''}`}
+                    className={`pdp-thumb-btn${thumbnail === imageToShow ? ' active' : ''}`}
                     onClick={() => setActiveImage(thumbnail)}
                   >
-                    <img src={thumbnail} alt={product.name} loading="lazy" />
+                    <img
+                      src={thumbnail}
+                      alt={product.name}
+                      loading="lazy"
+                      onError={(event) => {
+                        event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
+                      }}
+                    />
                   </button>
                 ))}
               </div>

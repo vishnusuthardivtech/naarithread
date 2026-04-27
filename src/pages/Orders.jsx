@@ -1,16 +1,21 @@
 import { useState } from 'react'
 import { useApp } from '../context/AppContext'
-import { allProducts } from '../data/products'
 import { assetPath, normalizeAssetPath } from '../data/site'
 import { useOrders } from '../hooks/useOrders'
+import { getStoredCatalogProducts } from '../services/catalogService'
 import { formatPrice } from '../utils/storage'
 
-const FALLBACK_IMAGE = `${import.meta.env.BASE_URL}vite.svg`
+const FALLBACK_IMAGE = `${import.meta.env.BASE_URL}images/placeholder.jpg`
 
-const getProductMatch = (item = {}) =>
-  allProducts.find((product) => String(product.id) === String(item?.id)) ||
-  allProducts.find((product) => product.name === item?.name) ||
-  allProducts.find((product) => product.category === item?.name)
+const getProductMatch = (item = {}) => {
+  const products = getStoredCatalogProducts()
+
+  return (
+    products.find((product) => String(product.id) === String(item?.id)) ||
+    products.find((product) => product.name === item?.name) ||
+    products.find((product) => product.category === item?.name)
+  )
+}
 
 const normalizeOrderImage = (value = '') => {
   if (!value) {
@@ -58,11 +63,11 @@ const normalizeOrderImage = (value = '') => {
 
 const resolveOrderImage = (item = {}) => {
   const matchedProduct = getProductMatch(item)
-  if (matchedProduct?.image) {
-    return matchedProduct.image
+  if (matchedProduct?.images?.[0]) {
+    return matchedProduct.images[0]
   }
 
-  return normalizeOrderImage(item?.image || item?.img || item?.thumbnail || item?.photo) || FALLBACK_IMAGE
+  return normalizeOrderImage(item?.images?.[0] || item?.image || item?.img || item?.thumbnail || item?.photo) || FALLBACK_IMAGE
 }
 
 export default function Orders() {
@@ -101,7 +106,7 @@ export default function Orders() {
                         className="order-main-img"
                         alt={firstProduct?.name || 'Ordered product'}
                         onError={(event) => {
-                          const fallbackProductImage = normalizeOrderImage(firstProduct?.image || firstProduct?.img || firstProduct?.thumbnail || firstProduct?.photo)
+                          const fallbackProductImage = normalizeOrderImage(firstProduct?.images?.[0] || firstProduct?.image || firstProduct?.img || firstProduct?.thumbnail || firstProduct?.photo)
                           if (fallbackProductImage && event.currentTarget.dataset.fallbackApplied !== 'true') {
                             event.currentTarget.dataset.fallbackApplied = 'true'
                             event.currentTarget.src = fallbackProductImage

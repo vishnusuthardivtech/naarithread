@@ -2,13 +2,18 @@ import { useEffect, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { getProductMeta } from '../data/products'
 import { catalogConstants } from '../services/catalogService'
 import { formatPrice } from '../utils/storage'
 
 const QUICK_VIEW_SIZES = ['S', 'M', 'L', 'XL']
 
 const getDatasetValue = (button, card, key) => button?.dataset?.[key] || card?.dataset?.[key] || ''
+
+const getProductMeta = (product) => ({
+  description:
+    product?.description ||
+    `${product?.name || 'This product'} is designed for modern celebrations with timeless elegance, premium craftsmanship, and comfortable festive wearability.`,
+})
 
 export default function QuickViewModal() {
   const navigate = useNavigate()
@@ -38,6 +43,7 @@ export default function QuickViewModal() {
         id,
         name: getDatasetValue(button, card, 'name'),
         price: Number(getDatasetValue(button, card, 'price')) || 0,
+        images: [getDatasetValue(button, card, 'image')].filter(Boolean),
         image: getDatasetValue(button, card, 'image'),
       }
 
@@ -84,7 +90,8 @@ export default function QuickViewModal() {
         id: activeProduct.id,
         name: activeProduct.name,
         price: activeProduct.price,
-        image: activeProduct.image,
+        images: activeProduct.images?.length ? [...activeProduct.images] : [imageToShow],
+        image: imageToShow,
         quantity: 1,
         size: selectedSize,
       })

@@ -14,9 +14,16 @@ const normalizeWishlistItem = (product, user) => ({
   id: product?.id,
   name: product?.name || product?.title || '',
   price: toPriceNumber(product?.price, Number(String(product?.priceLabel ?? '').replace(/[^0-9]/g, '')) || 0),
-  image: product?.image || product?.img || '',
+  images: product?.images?.length ? [...product.images] : [product?.image || product?.img].filter(Boolean),
+  image: product?.images?.[0] || product?.image || product?.img || '',
   userEmail: product?.userEmail || user.email,
 })
+
+const withoutUserEmail = (item) => {
+  const nextItem = { ...item }
+  delete nextItem.userEmail
+  return nextItem
+}
 
 const getUserWishlist = (user) => {
   if (!user?.email) {
@@ -36,13 +43,13 @@ const getUserWishlist = (user) => {
       removeData(legacyKey)
       return migratedEntries
         .filter((item) => item.userEmail === user.email)
-        .map(({ userEmail, ...item }) => item)
+        .map(withoutUserEmail)
     }
   }
 
   return entries
     .filter((item) => !item?.userEmail || item.userEmail === user.email)
-    .map(({ userEmail, ...item }) => item)
+    .map(withoutUserEmail)
 }
 
 export function useWishlist(user) {
@@ -68,7 +75,7 @@ export function useWishlist(user) {
       : [...entries, normalizeWishlistItem(product, user)]
     const nextItems = nextEntries
       .filter((item) => !item?.userEmail || item.userEmail === user.email)
-      .map(({ userEmail, ...item }) => item)
+      .map(withoutUserEmail)
 
     setItems(nextItems)
     setData(WISHLIST_KEY, nextEntries)
@@ -83,7 +90,7 @@ export function useWishlist(user) {
     const nextEntries = getWishlistEntries().filter((item) => !((!item?.userEmail || item.userEmail === user.email) && item.id === id))
     const nextItems = nextEntries
       .filter((item) => !item?.userEmail || item.userEmail === user.email)
-      .map(({ userEmail, ...item }) => item)
+      .map(withoutUserEmail)
 
     setItems(nextItems)
     setData(WISHLIST_KEY, nextEntries)
