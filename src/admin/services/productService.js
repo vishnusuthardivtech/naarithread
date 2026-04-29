@@ -52,16 +52,37 @@ function validateProductPayload(payload) {
 }
 
 function sanitizeImages(images = []) {
+  const baseUrl = String(import.meta.env.BASE_URL || '/')
+  const baseUrlWithoutSlash = baseUrl.replace(/\/+$/, '')
+
   return Array.isArray(images)
     ? images.filter((image) => typeof image === 'string').map((image) => image.trim()).filter(Boolean)
-      .filter((image) => {
-        try {
-          const url = new URL(image)
-          return url.protocol === 'http:' || url.protocol === 'https:'
-        } catch {
-          return false
+      .map((image) => {
+        let normalizedImage = String(image).replace(/\\/g, '/').trim()
+        if (!normalizedImage) return ''
+
+        normalizedImage = normalizedImage.replace(/^file:\/\/\/+/i, '')
+        normalizedImage = normalizedImage.replace(/^[A-Za-z]:\//, '')
+        normalizedImage = normalizedImage.replace(/^[A-Za-z]:\\/, '')
+
+        if (/\/public\/images\//i.test(normalizedImage)) {
+          normalizedImage = normalizedImage.replace(/^.*\/public\/images\//i, '/images/')
+        } else if (/^public\/images\//i.test(normalizedImage)) {
+          normalizedImage = normalizedImage.replace(/^public\/images\//i, '/images/')
+        } else if (/\/images\//i.test(normalizedImage)) {
+          normalizedImage = normalizedImage.replace(/^.*(?=\/images\/)/, '')
         }
+
+        normalizedImage = normalizedImage.replace(/\/+/g, '/')
+        if (!normalizedImage.startsWith('/')) {
+          normalizedImage = `/${normalizedImage}`
+        }
+
+        return normalizedImage.startsWith(baseUrlWithoutSlash)
+          ? normalizedImage
+          : `${baseUrlWithoutSlash}${normalizedImage}`
       })
+      .filter(Boolean)
     : []
 }
 

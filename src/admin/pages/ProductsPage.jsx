@@ -73,18 +73,40 @@ const createEmptyForm = () => ({
 })
 
 function parseImageUrls(value = '') {
+  const baseUrl = String(import.meta.env.BASE_URL || '/')
+  const baseUrlWithoutSlash = baseUrl.replace(/\/+$/, '')
+
   return String(value)
     .split(/[\n,]+/)
     .map((url) => url.trim())
     .filter(Boolean)
-    .filter((url) => {
-      try {
-        const parsedUrl = new URL(url)
-        return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
-      } catch {
-        return false
+    .map((url) => {
+      let normalizedUrl = String(url).replace(/\\/g, '/').trim()
+      if (!normalizedUrl) return ''
+
+      normalizedUrl = normalizedUrl.replace(/^file:\/\/\/+/i, '')
+      normalizedUrl = normalizedUrl.replace(/^[A-Za-z]:\//, '')
+      normalizedUrl = normalizedUrl.replace(/^[A-Za-z]:\\/, '')
+
+      if (/\/public\/images\//i.test(normalizedUrl)) {
+        normalizedUrl = normalizedUrl.replace(/^.*\/public\/images\//i, '/images/')
+      } else if (/^public\/images\//i.test(normalizedUrl)) {
+        normalizedUrl = normalizedUrl.replace(/^public\/images\//i, '/images/')
+      } else if (/\/images\//i.test(normalizedUrl)) {
+        normalizedUrl = normalizedUrl.replace(/^.*(?=\/images\/)/, '')
       }
+
+      normalizedUrl = normalizedUrl.replace(/\/+/g, '/')
+      if (!normalizedUrl.startsWith('/')) {
+        normalizedUrl = `/${normalizedUrl}`
+      }
+
+      return normalizedUrl.startsWith(baseUrlWithoutSlash)
+        ? normalizedUrl
+        : `${baseUrlWithoutSlash}${normalizedUrl}`
     })
+    .filter(Boolean)
+    .filter((url) => url.startsWith('/') || /^https?:\/\//.test(url))
 }
 
 function getInitialForm(product) {

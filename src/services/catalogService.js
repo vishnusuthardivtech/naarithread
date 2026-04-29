@@ -2,7 +2,8 @@ import { ADMIN_PRODUCTS_STORAGE_KEY } from '../admin/api/storage'
 import { getData, setData, subscribeToStorage } from '../utils/localStorage'
 
 const PRODUCT_CHANNEL_KEY = ADMIN_PRODUCTS_STORAGE_KEY
-const toBaseImagePath = (path = '') => `${import.meta.env.BASE_URL}${String(path).replace(/^\/+/, '')}`
+const BASE_URL = String(import.meta.env.BASE_URL || '/')
+const toBaseImagePath = (path = '') => `${BASE_URL}${String(path).replace(/^\/+/, '')}`
 const PLACEHOLDER_IMAGE = toBaseImagePath('images/placeholder.jpg')
 
 const CATEGORY_OPTIONS = ['Mirror Lehenga', 'Sequence Lehenga', 'Party Lehenga']
@@ -13,7 +14,7 @@ function normalizeImagePath(imagePath) {
     return ''
   }
 
-  const normalizedPath = String(imagePath).replace(/\\/g, '/').trim()
+  let normalizedPath = String(imagePath).replace(/\\/g, '/').trim()
   if (!normalizedPath) {
     return ''
   }
@@ -22,7 +23,27 @@ function normalizeImagePath(imagePath) {
     return normalizedPath
   }
 
-  return ''
+  normalizedPath = normalizedPath.replace(/^file:\/\/\/+/i, '')
+  normalizedPath = normalizedPath.replace(/^[A-Za-z]:\//, '')
+  normalizedPath = normalizedPath.replace(/^[A-Za-z]:\\/, '')
+
+  if (/\/public\/images\//i.test(normalizedPath)) {
+    normalizedPath = normalizedPath.replace(/^.*\/public\/images\//i, '/images/')
+  } else if (/^public\/images\//i.test(normalizedPath)) {
+    normalizedPath = normalizedPath.replace(/^public\/images\//i, '/images/')
+  } else if (/\/images\//i.test(normalizedPath)) {
+    normalizedPath = normalizedPath.replace(/^.*(?=\/images\/)/, '')
+  }
+
+  normalizedPath = normalizedPath.replace(/\/+/g, '/')
+  if (!normalizedPath.startsWith('/')) {
+    normalizedPath = `/${normalizedPath}`
+  }
+
+  const baseUrlWithoutSlash = BASE_URL.replace(/\/+$/, '')
+  return normalizedPath.startsWith(baseUrlWithoutSlash)
+    ? normalizedPath
+    : `${baseUrlWithoutSlash}${normalizedPath}`
 }
 
 function inferCategory(product = {}) {
