@@ -44,7 +44,6 @@ export default function QuickViewModal() {
         name: getDatasetValue(button, card, 'name'),
         price: Number(getDatasetValue(button, card, 'price')) || 0,
         images: [getDatasetValue(button, card, 'image')].filter(Boolean),
-        image: getDatasetValue(button, card, 'image'),
       }
 
       setSelectedSize('M')
@@ -80,7 +79,8 @@ export default function QuickViewModal() {
     return null
   }
 
-  const imageToShow = activeProduct.images?.[0] || activeProduct.image || catalogConstants.PLACEHOLDER_IMAGE
+  const image = activeProduct.images?.[0]
+  const imageToShow = image || catalogConstants.PLACEHOLDER_IMAGE
 
   const closeModal = () => setActiveProduct(null)
 
@@ -90,8 +90,7 @@ export default function QuickViewModal() {
         id: activeProduct.id,
         name: activeProduct.name,
         price: activeProduct.price,
-        images: activeProduct.images?.length ? [...activeProduct.images] : [imageToShow],
-        image: imageToShow,
+        images: Array.isArray(activeProduct.images) ? [...activeProduct.images] : [],
         quantity: 1,
         size: selectedSize,
       })
@@ -129,9 +128,6 @@ export default function QuickViewModal() {
               alt={activeProduct.name}
               className="quick-view-image"
               loading="lazy"
-              onError={(event) => {
-                event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
-              }}
             />
           </div>
         </div>
@@ -198,3 +194,4 @@ export default function QuickViewModal() {
     document.body,
   )
 }
+

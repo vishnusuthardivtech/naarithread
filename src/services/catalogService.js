@@ -1,5 +1,4 @@
 import { ADMIN_PRODUCTS_STORAGE_KEY } from '../admin/api/storage'
-import { assetPath } from '../data/site'
 import { getData, setData, subscribeToStorage } from '../utils/localStorage'
 
 const PRODUCT_CHANNEL_KEY = ADMIN_PRODUCTS_STORAGE_KEY
@@ -15,31 +14,15 @@ function normalizeImagePath(imagePath) {
   }
 
   const normalizedPath = String(imagePath).replace(/\\/g, '/').trim()
-  if (!normalizedPath || normalizedPath.startsWith('data:') || normalizedPath.startsWith('blob:')) {
+  if (!normalizedPath) {
     return ''
   }
 
-  if (/^(https?:)?\/\//.test(normalizedPath)) {
+  if (/^https?:\/\//.test(normalizedPath)) {
     return normalizedPath
   }
 
-  if (normalizedPath.startsWith('/images/')) {
-    return toBaseImagePath(normalizedPath)
-  }
-
-  if (/^images\//i.test(normalizedPath)) {
-    return toBaseImagePath(normalizedPath)
-  }
-
-  if (normalizedPath.startsWith('/assets/')) {
-    return assetPath(normalizedPath.replace(/^\/+/, ''))
-  }
-
-  if (/^assets\//i.test(normalizedPath)) {
-    return assetPath(normalizedPath)
-  }
-
-  return assetPath(normalizedPath)
+  return ''
 }
 
 function inferCategory(product = {}) {
@@ -72,13 +55,51 @@ function inferStock(product = {}) {
 
 function inferImages(product = {}) {
   const candidateImages = Array.isArray(product.images) && product.images.length
-    ? product.images
-    : [product.image].filter(Boolean)
+    ? [...product.images]
+    : []
 
   return candidateImages
     .filter((image) => typeof image === 'string')
     .map((image) => normalizeImagePath(image.trim()))
     .filter(Boolean)
+}
+
+function getDetailValue(source = {}, keys = []) {
+  if (!source || typeof source !== 'object' || Array.isArray(source)) {
+    return ''
+  }
+
+  const normalizedKeys = keys.map((key) => String(key).toLowerCase().replace(/[^a-z]/g, ''))
+  const entry = Object.entries(source).find(([key]) => normalizedKeys.includes(String(key).toLowerCase().replace(/[^a-z]/g, '')))
+
+  return String(entry?.[1] || '').trim()
+}
+
+function inferDetails(product = {}) {
+  const storedDetails = product.details && !Array.isArray(product.details) && typeof product.details === 'object'
+    ? product.details
+    : {}
+  const productDetails = product.productDetails && !Array.isArray(product.productDetails) && typeof product.productDetails === 'object'
+    ? product.productDetails
+    : {}
+  const detail = product.detail && !Array.isArray(product.detail) && typeof product.detail === 'object'
+    ? product.detail
+    : {}
+  const specifications = product.specifications && !Array.isArray(product.specifications) && typeof product.specifications === 'object'
+    ? product.specifications
+    : {}
+  const specs = product.specs && !Array.isArray(product.specs) && typeof product.specs === 'object'
+    ? product.specs
+    : {}
+  const detailSources = [storedDetails, productDetails, detail, specifications, specs, product]
+  const readDetail = (keys) => detailSources.map((source) => getDetailValue(source, keys)).find(Boolean) || ''
+
+  return {
+    fabric: readDetail(['fabric']),
+    work: readDetail(['work']),
+    occasion: readDetail(['occasion', 'occesion', 'ocassion']),
+    craftedIn: readDetail(['craftedIn', 'crafted in', 'craftedin', 'crafted_in', 'craft', 'crafted']),
+  }
 }
 
 function inferSourcePage(product = {}) {
@@ -109,8 +130,9 @@ function inferVisibilityFlag(product = {}, key, sourcePage) {
 export function normalizeCatalogProduct(product = {}) {
   const sourcePage = inferSourcePage(product)
   const images = inferImages(product)
+  const details = inferDetails(product)
   const stock = inferStock(product)
-  const imageToShow = images[0] || normalizeImagePath(product.image) || PLACEHOLDER_IMAGE
+  const imageToShow = images[0] || PLACEHOLDER_IMAGE
 
   return {
     ...product,
@@ -121,8 +143,8 @@ export function normalizeCatalogProduct(product = {}) {
     category: String(inferCategory(product)).trim(),
     collection: String(inferCollection(product)).trim(),
     description: String(product.description || '').trim(),
+    details,
     images,
-    image: imageToShow,
     imageToShow,
     isNewArrival: Boolean(inferVisibilityFlag(product, 'isNewArrival', sourcePage)),
     isBestSeller: Boolean(inferVisibilityFlag(product, 'isBestSeller', sourcePage)),
@@ -135,7 +157,9 @@ export function normalizeCatalogProduct(product = {}) {
 }
 
 export function getProductImage(product = {}) {
-  return product.images?.[0] || PLACEHOLDER_IMAGE
+  return Array.isArray(product.images) && product.images.length > 0
+    ? product.images[0]
+    : PLACEHOLDER_IMAGE
 }
 
 function getAdminCatalogProducts() {
@@ -153,11 +177,6 @@ export function getStoredCatalogProducts() {
   if (!adminProducts.length) {
     console.warn('No admin products found')
   }
-
-  // Debug: log each product's images to verify uniqueness
-  adminProducts.forEach((product) => {
-    console.log(product.id, product.images)
-  })
 
   return adminProducts
 }

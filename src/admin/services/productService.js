@@ -7,9 +7,8 @@ function validateProductPayload(payload) {
   const description = String(payload.description ?? '').trim()
   const price = Number(payload.price)
   const stock = Number(payload.stock)
-  const images = Array.isArray(payload.images)
-    ? payload.images.filter((image) => typeof image === 'string').map((image) => image.trim()).filter(Boolean)
-    : []
+  const images = sanitizeImages(payload.images)
+  const details = sanitizeDetails(payload.details)
 
   if (!name) {
     throw new Error('Product name is required')
@@ -28,15 +27,50 @@ function validateProductPayload(payload) {
   }
 
   if (!images.length) {
-    throw new Error('At least one product image is required')
-  }
-
-  if (images.some((image) => image.startsWith('data:') || image.startsWith('blob:'))) {
-    throw new Error('Use image URLs only, not uploaded files')
+    throw new Error('Please enter at least one image URL')
   }
 
   if (!description) {
     throw new Error('Description is required')
+  }
+
+  if (!details.fabric) {
+    throw new Error('Fabric is required')
+  }
+
+  if (!details.work) {
+    throw new Error('Work is required')
+  }
+
+  if (!details.occasion) {
+    throw new Error('Occasion is required')
+  }
+
+  if (!details.craftedIn) {
+    throw new Error('Crafted In is required')
+  }
+}
+
+function sanitizeImages(images = []) {
+  return Array.isArray(images)
+    ? images.filter((image) => typeof image === 'string').map((image) => image.trim()).filter(Boolean)
+      .filter((image) => {
+        try {
+          const url = new URL(image)
+          return url.protocol === 'http:' || url.protocol === 'https:'
+        } catch {
+          return false
+        }
+      })
+    : []
+}
+
+function sanitizeDetails(details = {}) {
+  return {
+    fabric: String(details.fabric || '').trim(),
+    work: String(details.work || '').trim(),
+    occasion: String(details.occasion || '').trim(),
+    craftedIn: String(details.craftedIn || '').trim(),
   }
 }
 
@@ -68,17 +102,21 @@ export const productService = {
     validateProductPayload(payload)
     const adminProducts = getAdminCatalogProductOverrides()
     const now = new Date().toISOString()
+    const images = sanitizeImages(payload.images)
+    const description = payload.description.trim()
+    const details = sanitizeDetails(payload.details)
     const product = normalizeCatalogProduct({
       id: createAdminId('product'),
       name: payload.name.trim(),
       category: payload.category.trim(),
       collection: String(payload.collection ?? '').trim(),
       price: Number(payload.price) || 0,
-      images: payload.images.filter((image) => typeof image === 'string').map((image) => image.trim()).filter(Boolean),
+      images: [...images],
       stock: Number(payload.stock) || 0,
       isNewArrival: Boolean(payload.isNewArrival),
       isBestSeller: Boolean(payload.isBestSeller),
-      description: payload.description.trim(),
+      description,
+      details,
       createdAt: now,
       updatedAt: now,
       sku: String(payload.sku ?? '').trim(),
@@ -98,16 +136,20 @@ export const productService = {
       throw new Error('Product not found')
     }
 
+    const images = payload.images ? sanitizeImages(payload.images) : [...(existingProduct.images || [])]
+    const description = String(payload.description ?? existingProduct.description).trim()
+    const details = payload.details ? sanitizeDetails(payload.details) : sanitizeDetails(existingProduct.details)
     const updatedProduct = normalizeCatalogProduct({
       ...existingProduct,
       ...payload,
       name: String(payload.name ?? existingProduct.name).trim(),
       category: String(payload.category ?? existingProduct.category).trim(),
       collection: String(payload.collection ?? existingProduct.collection).trim(),
-      description: String(payload.description ?? existingProduct.description).trim(),
+      description,
+      details,
       price: Number(payload.price ?? existingProduct.price) || 0,
       stock: Number(payload.stock ?? existingProduct.stock) || 0,
-      images: payload.images?.filter((image) => typeof image === 'string').map((image) => image.trim()).filter(Boolean) ?? existingProduct.images,
+      images: [...images],
       isNewArrival: Boolean(payload.isNewArrival ?? existingProduct.isNewArrival),
       isBestSeller: Boolean(payload.isBestSeller ?? existingProduct.isBestSeller),
       sku: String(payload.sku ?? existingProduct.sku).trim(),

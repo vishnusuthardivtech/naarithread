@@ -14,8 +14,7 @@ const normalizeWishlistItem = (product, user) => ({
   id: product?.id,
   name: product?.name || product?.title || '',
   price: toPriceNumber(product?.price, Number(String(product?.priceLabel ?? '').replace(/[^0-9]/g, '')) || 0),
-  images: product?.images?.length ? [...product.images] : [product?.image || product?.img].filter(Boolean),
-  image: product?.images?.[0] || product?.image || product?.img || '',
+  images: Array.isArray(product?.images) ? [...product.images] : [],
   userEmail: product?.userEmail || user.email,
 })
 

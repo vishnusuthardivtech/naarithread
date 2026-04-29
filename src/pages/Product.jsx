@@ -4,17 +4,56 @@ import StarRating from '../components/StarRating'
 import { useApp } from '../context/AppContext'
 import { useReviews } from '../hooks/useReviews'
 import { reviewService } from '../services/reviewService'
-import { catalogConstants } from '../services/catalogService'
+import { catalogConstants, normalizeCatalogProduct } from '../services/catalogService'
+import { getData, subscribeToStorage } from '../utils/localStorage'
 import { formatPrice } from '../utils/storage'
 
+const ADMIN_PRODUCTS_STORAGE_KEY = 'ntAdminProducts'
 const getOriginalPrice = (price) => Math.ceil((price * 1.35) / 100) * 100
 
 const getProductMeta = (product) => ({
-  description:
-    product?.description ||
-    `${product?.name || 'This product'} is designed for modern celebrations with timeless elegance, premium craftsmanship, and comfortable festive wearability.`,
-  details: product?.details || ['Fabric: Premium occasion fabric', 'Work: Signature festive detailing', 'Occasion: Celebration wear', 'Crafted in Surat'],
+  description: product?.description || '',
 })
+
+const normalizeDetailKey = (value = '') => String(value).toLowerCase().replace(/[^a-z]/g, '')
+
+const getDetailValue = (source = {}, keys = []) => {
+  if (!source || typeof source !== 'object' || Array.isArray(source)) {
+    return ''
+  }
+
+  const normalizedKeys = keys.map(normalizeDetailKey)
+  const entry = Object.entries(source).find(([key]) => normalizedKeys.includes(normalizeDetailKey(key)))
+
+  return String(entry?.[1] || '').trim()
+}
+
+const getProductDetails = (product = {}) => {
+  const storedDetails = product.details && typeof product.details === 'object' && !Array.isArray(product.details)
+    ? product.details
+    : {}
+  const productDetails = product.productDetails && typeof product.productDetails === 'object' && !Array.isArray(product.productDetails)
+    ? product.productDetails
+    : {}
+  const detail = product.detail && typeof product.detail === 'object' && !Array.isArray(product.detail)
+    ? product.detail
+    : {}
+  const specifications = product.specifications && typeof product.specifications === 'object' && !Array.isArray(product.specifications)
+    ? product.specifications
+    : {}
+  const specs = product.specs && typeof product.specs === 'object' && !Array.isArray(product.specs)
+    ? product.specs
+    : {}
+  const sources = [storedDetails, productDetails, detail, specifications, specs, product]
+  const readDetail = (keys) => sources.map((source) => getDetailValue(source, keys)).find(Boolean) || ''
+
+  return {
+    fabric: readDetail(['fabric']),
+    work: readDetail(['work']),
+    occasion: readDetail(['occasion', 'occesion', 'ocassion']),
+    craftedIn: readDetail(['craftedIn', 'crafted in', 'craftedin', 'crafted_in', 'craft', 'crafted']),
+  }
+}
 
 function formatReviewDate(value) {
   return new Date(value).toLocaleDateString('en-IN', {
@@ -29,10 +68,24 @@ export default function Product() {
   const navigate = useNavigate()
   const { addToCart, ensureUser, user, products } = useApp()
   const selectedId = searchParams.get('id')
-  const product = useMemo(
-    () => products.find((item) => item.id === selectedId),
-    [products, selectedId],
-  )
+  const [adminProducts, setAdminProducts] = useState(() => getData(ADMIN_PRODUCTS_STORAGE_KEY, []))
+  const product = useMemo(() => {
+    const contextProduct = products.find((item) => item.id === selectedId)
+    const adminProduct = Array.isArray(adminProducts)
+      ? adminProducts.find((item) => String(item.id) === String(selectedId))
+        || adminProducts.find((item) => contextProduct?.sku && String(item.sku) === String(contextProduct.sku))
+        || adminProducts.find((item) => contextProduct?.name && String(item.name).trim().toLowerCase() === String(contextProduct.name).trim().toLowerCase())
+      : null
+
+    if (adminProduct) {
+      return normalizeCatalogProduct({
+        ...contextProduct,
+        ...adminProduct,
+      })
+    }
+
+    return contextProduct
+  }, [products, selectedId, adminProducts])
   const [quantity, setQuantity] = useState(1)
   const [selectedSize, setSelectedSize] = useState('')
   const [tab, setTab] = useState('desc')
@@ -45,16 +98,21 @@ export default function Product() {
   const [reviewFormError, setReviewFormError] = useState('')
   const { reviews, summary, loading: reviewsLoading, error: reviewsError, reload: reloadReviews } = useReviews(selectedId)
 
+  useEffect(() => subscribeToStorage(ADMIN_PRODUCTS_STORAGE_KEY, () => {
+    setAdminProducts(getData(ADMIN_PRODUCTS_STORAGE_KEY, []))
+  }), [])
+
   useEffect(() => {
     setQuantity(1)
     setSelectedSize('')
     setTab('desc')
-    setActiveImage(product?.images?.[0] || product?.image || catalogConstants.PLACEHOLDER_IMAGE)
+    const firstImage = product?.images?.[0] || catalogConstants.PLACEHOLDER_IMAGE
+    setActiveImage(firstImage)
     setCartError('')
     setReviewForm({ rating: 0, comment: '' })
     setReviewFormMessage('')
     setReviewFormError('')
-  }, [selectedId, product?.image, product?.images])
+  }, [selectedId, product?.images])
 
   useEffect(() => {
     const onScroll = () => {
@@ -80,8 +138,17 @@ export default function Product() {
   }
 
   const productMeta = getProductMeta(product)
-  const images = product.images?.length ? product.images : []
-  const imageToShow = images.includes(activeImage) ? activeImage : product.images?.[0] || product.image || catalogConstants.PLACEHOLDER_IMAGE
+  const details = getProductDetails(product)
+  const detailRows = [
+    details.fabric ? `Fabric: ${details.fabric}` : '',
+    details.work ? `Work: ${details.work}` : '',
+    details.occasion ? `Occasion: ${details.occasion}` : '',
+    details.craftedIn ? `Crafted in: ${details.craftedIn}` : '',
+  ].filter(Boolean)
+  const images = Array.isArray(product.images) && product.images.length > 0 ? product.images : []
+  const image = product.images?.[0]
+  const imageToShow = image || catalogConstants.PLACEHOLDER_IMAGE
+  const activeImageToShow = images.includes(activeImage) ? activeImage : imageToShow
   const originalPrice = getOriginalPrice(product.price)
   const discount = Math.max(1, Math.round(((originalPrice - product.price) / originalPrice) * 100))
   const rating = summary.totalReviews ? summary.averageRating : 0
@@ -96,8 +163,7 @@ export default function Product() {
         id: product.id,
         name: product.name,
         price: product.price,
-        images: product.images?.length ? [...product.images] : [imageToShow],
-        image: imageToShow,
+        images: Array.isArray(product.images) ? [...product.images] : [],
         quantity,
         size: selectedSize,
       })
@@ -158,12 +224,9 @@ export default function Product() {
           <div className="pdp-gallery">
             <div className="pdp-main-image">
               <img
-                src={imageToShow}
+                src={activeImageToShow}
                 alt={product.name}
                 loading="lazy"
-                onError={(event) => {
-                  event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
-                }}
               />
             </div>
             {images.length > 1 ? (
@@ -172,16 +235,13 @@ export default function Product() {
                   <button
                     key={thumbnail}
                     type="button"
-                    className={`pdp-thumb-btn${thumbnail === imageToShow ? ' active' : ''}`}
+                    className={`pdp-thumb-btn${thumbnail === activeImageToShow ? ' active' : ''}`}
                     onClick={() => setActiveImage(thumbnail)}
                   >
                     <img
                       src={thumbnail}
                       alt={product.name}
                       loading="lazy"
-                      onError={(event) => {
-                        event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
-                      }}
                     />
                   </button>
                 ))}
@@ -274,13 +334,10 @@ export default function Product() {
           </div>
 
           <div className={`tab-content${tab === 'details' ? ' active' : ''}`} id="details">
-            <ul>
-              {productMeta.details.map((detail) => (
+            <ul className="pdp-description">
+              {detailRows.map((detail) => (
                 <li key={detail}>{detail}</li>
               ))}
-              <li>Category: {product.category}</li>
-              <li>Collection: {product.collection || 'Not assigned'}</li>
-              <li>Stock: {inStock ? `${product.stock} available` : 'Out of Stock'}</li>
             </ul>
           </div>
 
@@ -401,3 +458,4 @@ export default function Product() {
     </>
   )
 }
+

@@ -316,7 +316,7 @@ export function AppProvider({ children }) {
 
     console.log('[catalog-debug]', {
       productsLength: enrichedProducts.length,
-      sampleImage: enrichedProducts[0]?.imageToShow || enrichedProducts[0]?.image || null,
+      sampleImage: enrichedProducts[0]?.images?.[0] || null,
       filtersActive: Object.keys(listingFilters).some((listingKey) => {
         const filters = listingFilters[listingKey]
         return filters?.availability

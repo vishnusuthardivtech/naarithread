@@ -14,10 +14,8 @@ export default function ProductCard({ product, className = 'product-card', showN
   const reviewCount = Number(product.reviewCount) || 0
   const inStock = Number(product.stock) > 0
   const [cartError, setCartError] = useState('')
-  const imageToShow = product.images?.[0] || product.image || catalogConstants.PLACEHOLDER_IMAGE
-
-  // Debug: log product image data to verify uniqueness
-  console.log(product.id, product.images)
+  const image = product.images?.[0]
+  const imageToShow = image || catalogConstants.PLACEHOLDER_IMAGE
 
   const handleCartClick = (event) => {
     event.preventDefault()
@@ -39,8 +37,7 @@ export default function ProductCard({ product, className = 'product-card', showN
         id: product.id,
         name: product.name,
         price: product.price,
-        images: product.images?.length ? [...product.images] : [imageToShow],
-        image: imageToShow,
+        images: Array.isArray(product.images) ? [...product.images] : [],
         quantity: 1,
       })
     } catch (error) {
@@ -64,9 +61,6 @@ export default function ProductCard({ product, className = 'product-card', showN
             src={imageToShow}
             alt={product.category || product.name}
             loading="lazy"
-            onError={(event) => {
-              event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
-            }}
           />
           <div className="product-actions">
             <WishlistButton product={product} />
@@ -124,3 +118,4 @@ export default function ProductCard({ product, className = 'product-card', showN
     </div>
   )
 }
+

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { useApp } from '../context/AppContext'
-import { assetPath, normalizeAssetPath } from '../data/site'
 import { useOrders } from '../hooks/useOrders'
 import { getStoredCatalogProducts } from '../services/catalogService'
 import { formatPrice } from '../utils/storage'
@@ -17,57 +16,10 @@ const getProductMatch = (item = {}) => {
   )
 }
 
-const normalizeOrderImage = (value = '') => {
-  if (!value) {
-    return ''
-  }
-
-  let nextValue = String(value).trim().replace(/\\/g, '/')
-
-  if (!nextValue) {
-    return ''
-  }
-
-  if (/^(https?:)?\/\//.test(nextValue) || nextValue.startsWith('data:') || nextValue.startsWith('blob:')) {
-    return nextValue
-  }
-
-  const baseUrl = import.meta.env.BASE_URL || '/'
-  if (nextValue.startsWith(baseUrl)) {
-    nextValue = nextValue.slice(baseUrl.length)
-  }
-
-  nextValue = nextValue
-    .replace(/^\/+/, '')
-    .replace(/^public\//i, '')
-    .replace(/^src\//i, '')
-
-  if (/^images\//i.test(nextValue)) {
-    return `${import.meta.env.BASE_URL}${nextValue}`
-  }
-
-  if (/^assets\//i.test(nextValue)) {
-    return assetPath(nextValue)
-  }
-
-  if (nextValue.includes('/images/')) {
-    return `${import.meta.env.BASE_URL}images/${nextValue.replace(/^.*\/images\//, '')}`
-  }
-
-  if (nextValue.includes('/assets/')) {
-    return assetPath(nextValue.replace(/^.*\/assets\//, 'assets/'))
-  }
-
-  return assetPath(normalizeAssetPath(nextValue))
-}
-
 const resolveOrderImage = (item = {}) => {
   const matchedProduct = getProductMatch(item)
-  if (matchedProduct?.images?.[0]) {
-    return matchedProduct.images[0]
-  }
-
-  return normalizeOrderImage(item?.images?.[0] || item?.image || item?.img || item?.thumbnail || item?.photo) || FALLBACK_IMAGE
+  const image = matchedProduct?.images?.[0] || item?.images?.[0]
+  return image || FALLBACK_IMAGE
 }
 
 export default function Orders() {
@@ -105,16 +57,6 @@ export default function Orders() {
                         src={resolveOrderImage(firstProduct)}
                         className="order-main-img"
                         alt={firstProduct?.name || 'Ordered product'}
-                        onError={(event) => {
-                          const fallbackProductImage = normalizeOrderImage(firstProduct?.images?.[0] || firstProduct?.image || firstProduct?.img || firstProduct?.thumbnail || firstProduct?.photo)
-                          if (fallbackProductImage && event.currentTarget.dataset.fallbackApplied !== 'true') {
-                            event.currentTarget.dataset.fallbackApplied = 'true'
-                            event.currentTarget.src = fallbackProductImage
-                            return
-                          }
-
-                          event.currentTarget.src = FALLBACK_IMAGE
-                        }}
                       />
                     </div>
                     <div className="order-details">

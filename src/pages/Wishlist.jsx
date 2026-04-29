@@ -25,7 +25,7 @@ export default function Wishlist() {
       id: item.id,
       name: item?.name,
       price: item?.price || Number(String(item?.priceLabel).replace(/[^0-9]/g, '')),
-      image: resolveProductImage(item),
+      images: Array.isArray(item.images) ? [...item.images] : [],
       quantity: 1,
     })
 

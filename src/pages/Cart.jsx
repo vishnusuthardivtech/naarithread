@@ -23,28 +23,31 @@ export default function Cart() {
         ) : (
           <>
             <div className="cart-container" id="cartContainer">
-              {cartItems.map((item) => (
-                <div className="cart-card" key={`${item.id}-${item.size || ''}`}>
-                  <div className="cart-image">
-                    <img
-                      src={item.images?.[0] || item.image || catalogConstants.PLACEHOLDER_IMAGE}
-                      onError={(event) => {
-                        event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
-                      }}
-                    />
-                  </div>
-                  <div className="cart-details">
-                    <h3>{item.name}</h3>
-                    <p className="cart-price">{formatPrice(item.price)}</p>
-                    <div className="quantity-box">
-                      <button onClick={() => changeCartQuantity(item.id, Math.max(1, item.quantity - 1), item.size)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => changeCartQuantity(item.id, item.quantity + 1, item.size)}>+</button>
+              {cartItems.map((item) => {
+                const image = item.images?.[0]
+                const imageToShow = image || catalogConstants.PLACEHOLDER_IMAGE
+
+                return (
+                  <div className="cart-card" key={`${item.id}-${item.size || ''}`}>
+                    <div className="cart-image">
+                      <img
+                        src={imageToShow}
+                        alt={item.name}
+                      />
                     </div>
-                    <div className="cart-actions"><button className="remove-btn" onClick={() => removeFromCart(item.id, item.size)}>Remove</button></div>
+                    <div className="cart-details">
+                      <h3>{item.name}</h3>
+                      <p className="cart-price">{formatPrice(item.price)}</p>
+                      <div className="quantity-box">
+                        <button onClick={() => changeCartQuantity(item.id, Math.max(1, item.quantity - 1), item.size)}>-</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => changeCartQuantity(item.id, item.quantity + 1, item.size)}>+</button>
+                      </div>
+                      <div className="cart-actions"><button className="remove-btn" onClick={() => removeFromCart(item.id, item.size)}>Remove</button></div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
             <h2 id="cartTotal" className="cart-total">{`Total: ${formatPrice(total)}`}</h2>
             <div className="buy-all-wrapper"><button className="buy-all-btn" onClick={() => navigate('/checkout')}>Proceed to Checkout</button></div>
@@ -54,3 +57,4 @@ export default function Cart() {
     </>
   )
 }
+

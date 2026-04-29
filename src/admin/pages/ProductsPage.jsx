@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { catalogConstants } from '../../services/catalogService'
 import { formatPrice } from '../../utils/storage'
 import Badge from '../components/Badge'
@@ -54,44 +54,75 @@ const adminCheckboxStyle = {
   accentColor: '#d4af37',
 }
 
-const emptyForm = {
+const createEmptyForm = () => ({
   name: '',
   category: catalogConstants.CATEGORY_OPTIONS[0],
   collection: catalogConstants.COLLECTION_OPTIONS[0],
   price: '',
   images: [],
+  imageUrls: '',
   sku: '',
   stock: '',
   isNewArrival: false,
   isBestSeller: false,
   description: '',
+  fabric: '',
+  work: '',
+  occasion: '',
+  craftedIn: '',
+})
+
+function parseImageUrls(value = '') {
+  return String(value)
+    .split(/[\n,]+/)
+    .map((url) => url.trim())
+    .filter(Boolean)
+    .filter((url) => {
+      try {
+        const parsedUrl = new URL(url)
+        return parsedUrl.protocol === 'http:' || parsedUrl.protocol === 'https:'
+      } catch {
+        return false
+      }
+    })
 }
 
 function getInitialForm(product) {
   if (!product) {
-    return emptyForm
+    return createEmptyForm()
   }
+
+  const images = Array.isArray(product.images) ? [...product.images] : []
 
   return {
     name: product.name || '',
     category: product.category || '',
     collection: product.collection || '',
     price: String(product.price ?? ''),
-    images: Array.isArray(product.images) ? product.images : [product.image].filter(Boolean),
+    images,
+    imageUrls: images.join('\n'),
     sku: product.sku || '',
     stock: String(product.stock ?? ''),
     isNewArrival: Boolean(product.isNewArrival),
     isBestSeller: Boolean(product.isBestSeller),
     description: product.description || '',
+    fabric: product.details?.fabric || product.details?.Fabric || product.fabric || product.Fabric || '',
+    work: product.details?.work || product.details?.Work || product.work || product.Work || '',
+    occasion: product.details?.occasion || product.details?.occesion || product.details?.Occasion || product.details?.Occesion || product.occasion || product.occesion || product.Occasion || product.Occesion || '',
+    craftedIn: product.details?.craftedIn || product.details?.crafted_in || product.details?.craftedin || product.details?.craft || product.details?.CraftedIn || product.details?.Craft || product.craftedIn || product.crafted_in || product.craftedin || product.craft || product.CraftedIn || product.Craft || '',
   }
 }
 
 function validateForm(form) {
   if (!form.name.trim()) return 'Product name is required'
   if (!form.price || Number(form.price) <= 0) return 'Price must be greater than zero'
-  if (!Array.isArray(form.images) || !form.images.length) return 'At least one image is required'
+  if (!parseImageUrls(form.imageUrls).length) return 'Please enter at least one image URL'
   if (!form.category.trim()) return 'Category is required'
   if (!form.description.trim()) return 'Description is required'
+  if (!form.fabric.trim()) return 'Fabric is required'
+  if (!form.work.trim()) return 'Work is required'
+  if (!form.occasion.trim()) return 'Occasion is required'
+  if (!form.craftedIn.trim()) return 'Crafted In is required'
   return ''
 }
 
@@ -105,11 +136,10 @@ export default function ProductsPage() {
   const [viewMode, setViewMode] = useState('table')
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [editingProduct, setEditingProduct] = useState(null)
-  const [form, setForm] = useState(emptyForm)
+  const [form, setForm] = useState(() => createEmptyForm())
   const [saveError, setSaveError] = useState('')
   const [actionError, setActionError] = useState('')
   const [filters, setFilters] = useState({ category: 'all', stock: 'all', collection: 'all' })
-  const fileInputRef = useRef(null)
   const searchQuery = getQuery('/admin/products').trim().toLowerCase()
   const handleRefreshPage = () => window.location.reload()
 
@@ -145,13 +175,13 @@ export default function ProductsPage() {
   function closeForm() {
     setIsFormOpen(false)
     setEditingProduct(null)
-    setForm(emptyForm)
+    setForm(createEmptyForm())
     setSaveError('')
   }
 
   function openCreateForm() {
     setEditingProduct(null)
-    setForm(emptyForm)
+    setForm(createEmptyForm())
     setSaveError('')
     setIsFormOpen(true)
   }
@@ -171,44 +201,19 @@ export default function ProductsPage() {
     setForm((current) => ({ ...current, [key]: !current[key] }))
   }
 
-  async function appendFiles(files) {
-    const nextFiles = Array.from(files || [])
-    const imageUrls = await Promise.all(
-      nextFiles.map((file) => new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => resolve(String(reader.result || ''))
-        reader.onerror = () => reject(new Error('Unable to read image'))
-        reader.readAsDataURL(file)
-      })),
-    )
-
+  function updateImageUrls(value) {
     setForm((current) => ({
       ...current,
-      images: [...current.images, ...imageUrls].filter(Boolean),
+      imageUrls: value,
+      images: parseImageUrls(value),
     }))
-  }
-
-  async function handleFileChange(event) {
-    try {
-      await appendFiles(event.target.files)
-    } catch (uploadError) {
-      setSaveError(uploadError instanceof Error ? uploadError.message : 'Unable to upload images')
-    }
-  }
-
-  async function handleDrop(event) {
-    event.preventDefault()
-    try {
-      await appendFiles(event.dataTransfer.files)
-    } catch (uploadError) {
-      setSaveError(uploadError instanceof Error ? uploadError.message : 'Unable to upload images')
-    }
   }
 
   function removeImage(index) {
     setForm((current) => ({
       ...current,
       images: current.images.filter((_, imageIndex) => imageIndex !== index),
+      imageUrls: current.images.filter((_, imageIndex) => imageIndex !== index).join('\n'),
     }))
   }
 
@@ -224,10 +229,23 @@ export default function ProductsPage() {
     }
 
     try {
+      const { fabric, work, occasion, craftedIn, imageUrls, ...productForm } = form
+      const imageUrlsToSave = parseImageUrls(imageUrls)
+      const productPayload = {
+        ...productForm,
+        images: imageUrlsToSave,
+        details: {
+          fabric,
+          work,
+          occasion,
+          craftedIn,
+        },
+      }
+
       if (editingProduct) {
-        await productService.update(editingProduct.id, form)
+        await productService.update(editingProduct.id, productPayload)
       } else {
-        await productService.create(form)
+        await productService.create(productPayload)
       }
 
       closeForm()
@@ -313,14 +331,11 @@ export default function ProductsPage() {
           {filteredProducts.map((product) => (
             <Card key={product.id}>
               <div className="relative overflow-hidden rounded-xl mb-4">
-                {product.images?.[0] || product.image ? (
+                {Array.isArray(product.images) && product.images.length > 0 && product.images[0] ? (
                   <img
-                    src={product.images?.[0] || product.image || catalogConstants.PLACEHOLDER_IMAGE}
+                    src={product.images[0]}
                     alt={product.name}
                     className="w-full h-48 object-cover"
-                    onError={(event) => {
-                      event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
-                    }}
                   />
                 ) : (
                   <div className="w-full h-48 flex items-center justify-center admin-surface">
@@ -399,6 +414,25 @@ export default function ProductsPage() {
                   <label className="admin-label" htmlFor="product-description">Description</label>
                   <textarea id="product-description" className="admin-textarea" value={form.description} onChange={(event) => updateField('description', event.target.value)} required />
                 </div>
+                <div className="admin-form-field admin-form-field-full">
+                  <span className="admin-label">Product Details</span>
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-fabric">Fabric</label>
+                  <input id="product-fabric" name="fabric" className="admin-input" value={form.fabric} onChange={(event) => updateField('fabric', event.target.value)} required />
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-work">Work</label>
+                  <input id="product-work" name="work" className="admin-input" value={form.work} onChange={(event) => updateField('work', event.target.value)} required />
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-occasion">Occasion</label>
+                  <input id="product-occasion" name="occasion" className="admin-input" value={form.occasion} onChange={(event) => updateField('occasion', event.target.value)} required />
+                </div>
+                <div className="admin-form-field">
+                  <label className="admin-label" htmlFor="product-crafted-in">Crafted In</label>
+                  <input id="product-crafted-in" name="craftedIn" className="admin-input" value={form.craftedIn} onChange={(event) => updateField('craftedIn', event.target.value)} required />
+                </div>
               </div>
             </section>
 
@@ -442,35 +476,21 @@ export default function ProductsPage() {
 
           <section className="admin-form-section">
             <h3 className="admin-form-section-title">Media</h3>
-            <div
-              className="admin-image-dropzone"
-              onDragOver={(event) => event.preventDefault()}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                  event.preventDefault()
-                  fileInputRef.current?.click()
-                }
-              }}
-            >
-              <input ref={fileInputRef} type="file" accept="image/*" multiple className="admin-hidden-input" onChange={handleFileChange} />
-              <p>Drag and drop product images here, or tap to upload</p>
-            </div>
+            <textarea
+              className="admin-textarea"
+              value={form.imageUrls}
+              onChange={(event) => updateImageUrls(event.target.value)}
+              placeholder="Enter image URLs, one per line or comma-separated"
+            />
 
             {form.images.length ? (
               <div className="admin-image-preview-grid">
                 {form.images.map((image, index) => (
                   <div className="admin-image-preview-card" key={`${image}-${index}`}>
                     <img
-                      src={image || catalogConstants.PLACEHOLDER_IMAGE}
+                      src={image}
                       alt={`Product preview ${index + 1}`}
                       className="admin-image-preview-img"
-                      onError={(event) => {
-                        event.currentTarget.src = catalogConstants.PLACEHOLDER_IMAGE
-                      }}
                     />
                     <button type="button" className="admin-image-remove-btn" onClick={() => removeImage(index)}>Remove</button>
                   </div>

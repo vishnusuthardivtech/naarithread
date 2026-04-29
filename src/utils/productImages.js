@@ -1,26 +1,17 @@
-import { assetPath, normalizeAssetPath } from '../data/site'
 import { getStoredCatalogProducts } from '../services/catalogService'
 
 const FALLBACK_IMAGE = `${import.meta.env.BASE_URL}images/placeholder.jpg`
 
 /**
- * Strict validation for product image URLs.
- * Must start with "/images/" OR "http" AND end with .jpg/.jpeg/.png/.webp
+ * Validation for product image URLs.
+ * Admin-managed products use HTTP(S) URLs only.
  */
 export function isValidProductImageUrl(url) {
   if (!url || typeof url !== 'string') return false
   const trimmed = url.trim()
   if (!trimmed) return false
 
-  const hasValidPrefix = trimmed.startsWith('/images/') || /^https?:\/\//.test(trimmed)
-  const hasValidExtension = /\.(jpg|jpeg|png|webp)$/i.test(trimmed)
-
-  return hasValidPrefix && hasValidExtension
-}
-
-const stripBaseUrl = (value = '') => {
-  const baseUrl = import.meta.env.BASE_URL || '/'
-  return value.startsWith(baseUrl) ? value.slice(baseUrl.length) : value
+  return /^https?:\/\//.test(trimmed)
 }
 
 const normalizeStoredImagePath = (value = '') => {
@@ -34,37 +25,11 @@ const normalizeStoredImagePath = (value = '') => {
     return ''
   }
 
-  if (/^(https?:)?\/\//.test(nextValue) || nextValue.startsWith('data:') || nextValue.startsWith('blob:')) {
+  if (/^https?:\/\//.test(nextValue)) {
     return nextValue
   }
 
-  nextValue = stripBaseUrl(nextValue).replace(/^\/+/, '')
-
-  if (/^vite\.svg$/i.test(nextValue)) {
-    return FALLBACK_IMAGE
-  }
-
-  nextValue = nextValue
-    .replace(/^public\//i, '')
-    .replace(/^src\//i, '')
-
-  if (/^images\//i.test(nextValue)) {
-    return `${import.meta.env.BASE_URL}${nextValue}`
-  }
-
-  if (/^assets\//i.test(nextValue)) {
-    return assetPath(nextValue)
-  }
-
-  if (nextValue.includes('/images/')) {
-    return `${import.meta.env.BASE_URL}images/${nextValue.replace(/^.*\/images\//, '')}`
-  }
-
-  if (nextValue.includes('/assets/')) {
-    return assetPath(nextValue.replace(/^.*\/assets\//, 'assets/'))
-  }
-
-  return assetPath(normalizeAssetPath(nextValue))
+  return ''
 }
 
 const findMatchingProduct = (item = {}) => {
@@ -78,7 +43,7 @@ const findMatchingProduct = (item = {}) => {
 }
 
 export const resolveProductImage = (item = {}) => {
-  const directImage = item?.images?.[0] || item?.image || item?.img || item?.thumbnail || item?.photo
+  const directImage = item?.images?.[0]
   const normalizedDirectImage = normalizeStoredImagePath(directImage)
 
   // Only return direct image if it's a valid format
