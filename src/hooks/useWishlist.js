@@ -10,13 +10,21 @@ const toPriceNumber = (value, fallback = 0) => {
   return Number.isFinite(parsed) ? parsed : fallback
 }
 
-const normalizeWishlistItem = (product, user) => ({
-  id: product?.id,
-  name: product?.name || product?.title || '',
-  price: toPriceNumber(product?.price, Number(String(product?.priceLabel ?? '').replace(/[^0-9]/g, '')) || 0),
-  images: Array.isArray(product?.images) ? [...product.images] : [],
-  userEmail: product?.userEmail || user.email,
-})
+const normalizeWishlistItem = (product, user) => {
+  const images = Array.isArray(product?.images)
+    ? [...product.images]
+    : product?.image
+      ? [product.image]
+      : []
+
+  return {
+    id: product?.id,
+    name: product?.name || product?.title || '',
+    price: toPriceNumber(product?.price, Number(String(product?.priceLabel ?? '').replace(/[^0-9]/g, '')) || 0),
+    images,
+    userEmail: product?.userEmail || user.email,
+  }
+}
 
 const withoutUserEmail = (item) => {
   const nextItem = { ...item }

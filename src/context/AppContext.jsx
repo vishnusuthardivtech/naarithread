@@ -14,20 +14,7 @@ const defaultFilters = {
   availability: false,
   priceMin: MIN_FILTER_PRICE,
   priceMax: MAX_FILTER_PRICE,
-  colors: [],
   categories: [],
-}
-
-const inferColor = (product) => {
-  const text = `${product.name} ${product.category}`.toLowerCase()
-
-  if (text.includes('red') || text.includes('ruby')) return 'Red'
-  if (text.includes('pink') || text.includes('blush')) return 'Pink'
-  if (text.includes('green') || text.includes('emerald')) return 'Green'
-  if (text.includes('black') || text.includes('midnight')) return 'Black'
-  if (text.includes('gold') || text.includes('ivory') || text.includes('royale')) return 'Gold'
-
-  return 'Gold'
 }
 
 const inferCategory = (product, sourcePage) => {
@@ -80,7 +67,6 @@ export function AppProvider({ children }) {
     const products = ratedProducts.map((product) => ({
       ...product,
       inStock: Number(product.stock) > 0,
-      color: inferColor(product),
       filterCategory: inferCategory(product, product.sourcePage),
     }))
 
@@ -97,7 +83,6 @@ export function AppProvider({ children }) {
     availability: Boolean(filters.availability),
     priceMin: Math.max(MIN_FILTER_PRICE, Number(filters.priceMin ?? MIN_FILTER_PRICE)),
     priceMax: Math.min(MAX_FILTER_PRICE, Number(filters.priceMax ?? MAX_FILTER_PRICE)),
-    colors: [...(filters.colors ?? [])],
     categories: [...(filters.categories ?? [])],
   }), [])
 
@@ -128,14 +113,12 @@ export function AppProvider({ children }) {
       filters.availability
       || filters.priceMin !== MIN_FILTER_PRICE
       || filters.priceMax !== MAX_FILTER_PRICE
-      || filters.colors.length > 0
       || filters.categories.length > 0
 
     const normalizedProducts = products
       .map((product) => enrichedProductMap.get(product.id) ?? {
         ...normalizeCatalogProduct(product),
         inStock: Number(product.stock) > 0,
-        color: inferColor(product),
         filterCategory: inferCategory(product, product.sourcePage || ''),
       })
 
@@ -151,10 +134,6 @@ export function AppProvider({ children }) {
 
         const price = Number(product.price)
         if (price < filters.priceMin || price > filters.priceMax) {
-          return false
-        }
-
-        if (filters.colors.length > 0 && !filters.colors.includes(product.color)) {
           return false
         }
 
@@ -260,6 +239,7 @@ export function AppProvider({ children }) {
         id: product.id,
         quantity: Math.max(1, Number(product.quantity) || 1),
         name: product.name,
+        size: product.selectedSize || product.size,
       },
     ])
 
@@ -273,7 +253,7 @@ export function AppProvider({ children }) {
   }
 
   const changeCartQuantity = (id, quantity, size) => {
-    const stockCheck = validateCartItemsAgainstStock([{ id, quantity }])
+    const stockCheck = validateCartItemsAgainstStock([{ id, quantity, size }])
     if (!stockCheck.valid) {
       throw new Error(stockCheck.error)
     }
@@ -322,7 +302,6 @@ export function AppProvider({ children }) {
         return filters?.availability
           || filters?.priceMin !== MIN_FILTER_PRICE
           || filters?.priceMax !== MAX_FILTER_PRICE
-          || (filters?.colors?.length ?? 0) > 0
           || (filters?.categories?.length ?? 0) > 0
       }),
     })

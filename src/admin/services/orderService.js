@@ -32,6 +32,8 @@ function normalizeItem(item = {}) {
     price: Number(item.price) || 0,
     quantity: Number(item.quantity) || 1,
     images: Array.isArray(item.images) ? item.images : [],
+    size: item.size || item.selectedSize || '',
+    selectedSize: item.selectedSize || item.size || '',
   }
 }
 

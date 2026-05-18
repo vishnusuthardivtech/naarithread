@@ -8,6 +8,7 @@ const PLACEHOLDER_IMAGE = toBaseImagePath('images/placeholder.jpg')
 
 const CATEGORY_OPTIONS = ['Mirror Lehenga', 'Sequence Lehenga', 'Party Lehenga']
 const COLLECTION_OPTIONS = ['collection1', 'collection2', 'collection3']
+const SIZE_OPTIONS = ['S', 'M', 'L', 'XL']
 
 function normalizeImagePath(imagePath) {
   if (!imagePath) {
@@ -67,11 +68,59 @@ function inferCollection(product = {}) {
 }
 
 function inferStock(product = {}) {
+  const sizeInventory = normalizeSizeInventory(product.sizeInventory, { stock: product.stock })
+  if (sizeInventory) {
+    return getSizeInventoryTotal(sizeInventory)
+  }
+
   if (Number.isFinite(Number(product.stock))) {
     return Math.max(0, Number(product.stock))
   }
 
   return 12
+}
+
+export function getSizeInventoryTotal(sizeInventory = {}) {
+  return SIZE_OPTIONS.reduce((sum, size) => {
+    const entry = sizeInventory?.[size]
+    if (!entry?.enabled) {
+      return sum
+    }
+
+    return sum + Math.max(0, Number(entry.stock) || 0)
+  }, 0)
+}
+
+export function normalizeSizeInventory(sizeInventory, fallbackProduct = {}) {
+  if (!sizeInventory || typeof sizeInventory !== 'object' || Array.isArray(sizeInventory)) {
+    return null
+  }
+
+  return SIZE_OPTIONS.reduce((inventory, size) => {
+    const source = sizeInventory[size] || sizeInventory[size.toLowerCase()] || {}
+    const stock = Math.max(0, Number(source.stock) || 0)
+    inventory[size] = {
+      enabled: Boolean(source.enabled),
+      stock,
+    }
+    return inventory
+  }, {})
+}
+
+export function getProductSizeInventory(product = {}) {
+  const normalizedInventory = normalizeSizeInventory(product.sizeInventory)
+  if (normalizedInventory) {
+    return normalizedInventory
+  }
+
+  const stock = inferStock({ ...product, sizeInventory: null })
+  return SIZE_OPTIONS.reduce((inventory, size) => {
+    inventory[size] = {
+      enabled: true,
+      stock,
+    }
+    return inventory
+  }, {})
 }
 
 function inferImages(product = {}) {
@@ -152,7 +201,8 @@ export function normalizeCatalogProduct(product = {}) {
   const sourcePage = inferSourcePage(product)
   const images = inferImages(product)
   const details = inferDetails(product)
-  const stock = inferStock(product)
+  const sizeInventory = normalizeSizeInventory(product.sizeInventory)
+  const stock = sizeInventory ? getSizeInventoryTotal(sizeInventory) : inferStock(product)
   const imageToShow = images[0] || PLACEHOLDER_IMAGE
 
   return {
@@ -161,6 +211,7 @@ export function normalizeCatalogProduct(product = {}) {
     name: String(product.name || '').trim(),
     price: Number(product.price) || 0,
     stock,
+    sizeInventory,
     category: String(inferCategory(product)).trim(),
     collection: String(inferCollection(product)).trim(),
     description: String(product.description || '').trim(),
@@ -269,9 +320,24 @@ export function updateCatalogStockLevels(orderProducts = []) {
   orderProducts.forEach((item) => {
     const product = productMap.get(String(item.id))
     const requestedQuantity = Math.max(1, Number(item.quantity) || 1)
+    const sizeInventory = normalizeSizeInventory(product?.sizeInventory)
+    const selectedSize = String(item.selectedSize || item.size || '').trim().toUpperCase()
 
     if (!product) {
       stockErrors.push(`${item.name || 'Product'} is no longer available`)
+      return
+    }
+
+    if (sizeInventory) {
+      const sizeEntry = sizeInventory[selectedSize]
+      if (!selectedSize || !sizeEntry?.enabled) {
+        stockErrors.push(`${product.name} size ${selectedSize || ''} is unavailable`.trim())
+        return
+      }
+
+      if (sizeEntry.stock < requestedQuantity) {
+        stockErrors.push(`${product.name} size ${selectedSize} only has ${sizeEntry.stock} item(s) left`)
+      }
       return
     }
 
@@ -289,12 +355,36 @@ export function updateCatalogStockLevels(orderProducts = []) {
   }
 
   const nextProducts = catalogProducts.map((product) => {
-    const orderItem = orderProducts.find((item) => String(item.id) === String(product.id))
-    if (!orderItem) {
+    const matchingOrderItems = orderProducts.filter((item) => String(item.id) === String(product.id))
+    if (!matchingOrderItems.length) {
       return product
     }
 
-    const nextStock = Math.max(0, product.stock - (Math.max(1, Number(orderItem.quantity) || 1)))
+    const sizeInventory = normalizeSizeInventory(product.sizeInventory)
+    if (sizeInventory) {
+      const nextSizeInventory = { ...sizeInventory }
+      matchingOrderItems.forEach((item) => {
+        const selectedSize = String(item.selectedSize || item.size || '').trim().toUpperCase()
+        const currentEntry = nextSizeInventory[selectedSize]
+        if (!currentEntry) {
+          return
+        }
+
+        nextSizeInventory[selectedSize] = {
+          ...currentEntry,
+          stock: Math.max(0, currentEntry.stock - Math.max(1, Number(item.quantity) || 1)),
+        }
+      })
+
+      return normalizeCatalogProduct({
+        ...product,
+        sizeInventory: nextSizeInventory,
+        updatedAt: new Date().toISOString(),
+      })
+    }
+
+    const orderedQuantity = matchingOrderItems.reduce((sum, item) => sum + Math.max(1, Number(item.quantity) || 1), 0)
+    const nextStock = Math.max(0, product.stock - orderedQuantity)
     return normalizeCatalogProduct({
       ...product,
       stock: nextStock,
@@ -316,6 +406,8 @@ export function validateCartItemsAgainstStock(cartItems = []) {
   for (const item of cartItems) {
     const product = productMap.get(String(item.id))
     const requestedQuantity = Math.max(1, Number(item.quantity) || 1)
+    const sizeInventory = normalizeSizeInventory(product?.sizeInventory)
+    const selectedSize = String(item.selectedSize || item.size || '').trim().toUpperCase()
 
     if (!product) {
       return { valid: false, error: `${item.name || 'Product'} is unavailable`, product: null }
@@ -323,6 +415,23 @@ export function validateCartItemsAgainstStock(cartItems = []) {
 
     if (product.stock <= 0) {
       return { valid: false, error: `${product.name} is out of stock`, product }
+    }
+
+    if (sizeInventory) {
+      const sizeEntry = sizeInventory[selectedSize]
+      if (!selectedSize || !sizeEntry?.enabled) {
+        return { valid: false, error: `${product.name} size ${selectedSize || ''} is unavailable`.trim(), product }
+      }
+
+      if (sizeEntry.stock <= 0) {
+        return { valid: false, error: `${product.name} size ${selectedSize} is out of stock`, product }
+      }
+
+      if (requestedQuantity > sizeEntry.stock) {
+        return { valid: false, error: `${product.name} size ${selectedSize} only has ${sizeEntry.stock} item(s) available`, product }
+      }
+
+      continue
     }
 
     if (requestedQuantity > product.stock) {
@@ -336,5 +445,6 @@ export function validateCartItemsAgainstStock(cartItems = []) {
 export const catalogConstants = {
   CATEGORY_OPTIONS,
   COLLECTION_OPTIONS,
+  SIZE_OPTIONS,
   PLACEHOLDER_IMAGE,
 }

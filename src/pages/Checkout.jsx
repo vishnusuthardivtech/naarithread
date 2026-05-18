@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import { useAddress } from '../hooks/useAddress'
 import { useOrders } from '../hooks/useOrders'
@@ -10,13 +10,17 @@ import { states } from '../data/site'
 export default function Checkout() {
   const { user, cartItems, emptyCart, validateCartItemsAgainstStock } = useApp()
   const navigate = useNavigate()
+  const location = useLocation()
   const { defaultAddress } = useAddress(user)
   const { addOrder } = useOrders(user)
   const [payment, setPayment] = useState('cod')
   const [errors, setErrors] = useState({})
   const [checkoutError, setCheckoutError] = useState('')
   const [form, setForm] = useState({ fullName: '', phone: '', email: '', address1: '', address2: '', city: '', state: '', pincode: '', upiId: '', cardNumber: '', cardExpiry: '', cardCvv: '' })
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const buyNowItems = Array.isArray(location.state?.buyNowItems) ? location.state.buyNowItems : []
+  const checkoutItems = buyNowItems.length ? buyNowItems : cartItems
+  const total = checkoutItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const getSelectedSize = (item) => item.selectedSize || item.size || ''
 
   useEffect(() => {
     if (!defaultAddress) {
@@ -52,20 +56,25 @@ export default function Checkout() {
     setErrors(nextErrors)
     if (Object.keys(nextErrors).length) return
 
-    const stockValidation = validateCartItemsAgainstStock(cartItems)
+    if (checkoutItems.some((item) => !getSelectedSize(item))) {
+      setCheckoutError('Please select size for all products')
+      return
+    }
+
+    const stockValidation = validateCartItemsAgainstStock(checkoutItems)
     if (!stockValidation.valid) {
       setCheckoutError(stockValidation.error)
       return
     }
 
-    const stockUpdate = updateCatalogStockLevels(cartItems)
+    const stockUpdate = updateCatalogStockLevels(checkoutItems)
     if (!stockUpdate.success) {
       setCheckoutError(stockUpdate.error || 'Unable to place order')
       return
     }
 
     addOrder({
-      products: cartItems,
+      products: checkoutItems,
       total,
       address: {
         fullName: form.fullName.trim() || user?.name || '',
@@ -78,7 +87,9 @@ export default function Checkout() {
         pincode: form.pincode.trim(),
       },
     })
-    emptyCart()
+    if (!buyNowItems.length) {
+      emptyCart()
+    }
     navigate('/orders')
   }
 
@@ -101,17 +112,13 @@ export default function Checkout() {
         <div className="checkout-summary">
           <h2>Order Summary</h2>
           {checkoutError ? <p className="product-card-error">{checkoutError}</p> : null}
-          <div id="checkoutItems">{cartItems.map((item) => <div className="checkout-item" key={item.id}><span>{item.name} x {item.quantity}</span><span>{formatPrice(item.price * item.quantity)}</span></div>)}</div>
-          <h3 id="checkoutTotal">{cartItems.length ? `Total: ${formatPrice(total)}` : ''}</h3>
+          <div id="checkoutItems">{checkoutItems.map((item) => <div className="checkout-item" key={`${item.id}-${getSelectedSize(item)}`}><span>{item.name}{getSelectedSize(item) ? ` (Size: ${getSelectedSize(item)})` : ''} x {item.quantity}</span><span>{formatPrice(item.price * item.quantity)}</span></div>)}</div>
+          <h3 id="checkoutTotal">{checkoutItems.length ? `Total: ${formatPrice(total)}` : ''}</h3>
           <hr style={{ margin: '25px 0', borderColor: 'rgba(212,175,55,0.2)' }} />
           <h2>Payment Method</h2>
           <div className="payment-options">
             <label className="payment-option"><input type="radio" name="payment" value="cod" checked={payment === 'cod'} onChange={(event) => setPayment(event.target.value)} />Cash on Delivery</label>
-            <label className="payment-option"><input type="radio" name="payment" value="upi" checked={payment === 'upi'} onChange={(event) => setPayment(event.target.value)} />UPI</label>
-            <label className="payment-option"><input type="radio" name="payment" value="card" checked={payment === 'card'} onChange={(event) => setPayment(event.target.value)} />Credit / Debit Card</label>
           </div>
-          <div id="upiSection" className={`payment-extra${payment === 'upi' ? '' : ' hidden'}`}><input type="text" id="upiId" placeholder="Enter UPI ID (example@upi)" value={form.upiId} onChange={(event) => setForm({ ...form, upiId: event.target.value })} /><small className="error">{errors.upiId}</small></div>
-          <div id="cardSection" className={`payment-extra${payment === 'card' ? '' : ' hidden'}`}><input type="text" id="cardNumber" placeholder="Card Number" value={form.cardNumber} onChange={(event) => setForm({ ...form, cardNumber: event.target.value })} /><input type="text" id="cardExpiry" placeholder="MM/YY" value={form.cardExpiry} onChange={(event) => setForm({ ...form, cardExpiry: event.target.value })} /><input type="text" id="cardCvv" placeholder="CVV" value={form.cardCvv} onChange={(event) => setForm({ ...form, cardCvv: event.target.value })} /><small className="error">{errors.cardNumber || errors.cardCvv}</small></div>
           <button id="placeOrderBtn" className="place-order-btn" onClick={placeOrder}>Place Order</button>
         </div>
       </div>

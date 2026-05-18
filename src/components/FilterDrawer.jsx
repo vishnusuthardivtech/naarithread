@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useApp } from '../context/AppContext'
 
-const colorOptions = ['Red', 'Pink', 'Green', 'Gold', 'Black']
 const formatRupees = (value) => `\u20B9${Number(value).toLocaleString('en-IN')}`
 
 export default function FilterDrawer({ open, onOpen, onClose, listingKey }) {
@@ -59,7 +58,6 @@ export default function FilterDrawer({ open, onOpen, onClose, listingKey }) {
   const activeCount = [
     activeFilters.availability ? 1 : 0,
     activeFilters.priceMin !== minFilterPrice || activeFilters.priceMax !== maxFilterPrice ? 1 : 0,
-    activeFilters.colors.length,
     activeFilters.categories.length,
   ].reduce((total, value) => total + value, 0)
 
@@ -120,23 +118,6 @@ export default function FilterDrawer({ open, onOpen, onClose, listingKey }) {
             <div className="price-values">
               <span>{`Min Price: ${formatRupees(draftFilters.priceMin)}`}</span>
               <span>{`Max Price: ${formatRupees(draftFilters.priceMax)}`}</span>
-            </div>
-          </div>
-
-          <div className="filter-group">
-            <h5>Color</h5>
-            <div className="filter-colors">
-              {colorOptions.map((color) => (
-                <button
-                  type="button"
-                  key={color}
-                  className={`color-swatch${draftFilters.colors.includes(color) ? ' active' : ''}`}
-                  onClick={() => toggleMultiSelect('colors', color)}
-                >
-                  <span className={`color-dot ${color.toLowerCase()}`}></span>
-                  <span>{color}</span>
-                </button>
-              ))}
             </div>
           </div>
 

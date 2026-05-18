@@ -292,10 +292,6 @@ export default function OrdersPage() {
 
                 <div className="admin-order-meta">
                   <div className="admin-order-meta-item">
-                    <span className="admin-order-meta-label">Top Item</span>
-                    <div className="admin-order-meta-value">{order.items?.[0]?.name || 'No items listed'}</div>
-                  </div>
-                  <div className="admin-order-meta-item">
                     <span className="admin-order-meta-label">Shipping Address</span>
                     <div className="admin-order-meta-value">
                       {[
@@ -309,6 +305,23 @@ export default function OrdersPage() {
                         .join(', ') || 'Not available'}
                     </div>
                   </div>
+                </div>
+                <div className="admin-order-card-items">
+                  {(order.items || order.products || []).map((item, index) => (
+                    <div key={`${item?.id || item?.name}-${index}`} className="admin-order-card-item">
+                      <div className="admin-order-card-item-thumb">
+                        {item?.images?.[0] ? (
+                          <img src={item.images[0]} alt={item.name || 'Ordered product'} />
+                        ) : null}
+                      </div>
+                      <div className="admin-order-card-item-info">
+                        <div className="admin-order-card-item-title">{item?.name || 'Unnamed Product'}</div>
+                        <div className="admin-order-card-item-meta">Size: {item?.selectedSize || item?.size || 'N/A'}</div>
+                        <div className="admin-order-card-item-meta">Qty: {item?.quantity || 1}</div>
+                      </div>
+                      <div className="admin-order-card-item-price">{formatPrice(item?.price || 0)}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { catalogConstants } from '../../services/catalogService'
+import { catalogConstants, getSizeInventoryTotal, normalizeSizeInventory } from '../../services/catalogService'
 import { formatPrice } from '../../utils/storage'
 import Badge from '../components/Badge'
 import Button from '../components/Button'
@@ -54,6 +54,28 @@ const adminCheckboxStyle = {
   accentColor: '#d4af37',
 }
 
+const createEmptySizeInventory = () => catalogConstants.SIZE_OPTIONS.reduce((inventory, size) => {
+  inventory[size] = {
+    enabled: true,
+    stock: 0,
+  }
+  return inventory
+}, {})
+
+const createLegacySizeInventory = (stock) => {
+  const totalStock = Math.max(0, Number(stock) || 0)
+  const baseStock = Math.floor(totalStock / catalogConstants.SIZE_OPTIONS.length)
+  const remainingStock = totalStock % catalogConstants.SIZE_OPTIONS.length
+
+  return catalogConstants.SIZE_OPTIONS.reduce((inventory, size, index) => {
+    inventory[size] = {
+      enabled: true,
+      stock: baseStock + (index < remainingStock ? 1 : 0),
+    }
+    return inventory
+  }, {})
+}
+
 const createEmptyForm = () => ({
   name: '',
   category: catalogConstants.CATEGORY_OPTIONS[0],
@@ -63,6 +85,7 @@ const createEmptyForm = () => ({
   imageUrls: '',
   sku: '',
   stock: '',
+  sizeInventory: createEmptySizeInventory(),
   isNewArrival: false,
   isBestSeller: false,
   description: '',
@@ -115,6 +138,8 @@ function getInitialForm(product) {
   }
 
   const images = Array.isArray(product.images) ? [...product.images] : []
+  const normalizedSizeInventory = normalizeSizeInventory(product.sizeInventory)
+  const sizeInventory = normalizedSizeInventory || createLegacySizeInventory(product.stock)
 
   return {
     name: product.name || '',
@@ -124,7 +149,8 @@ function getInitialForm(product) {
     images,
     imageUrls: images.join('\n'),
     sku: product.sku || '',
-    stock: String(product.stock ?? ''),
+    stock: String(getSizeInventoryTotal(sizeInventory)),
+    sizeInventory,
     isNewArrival: Boolean(product.isNewArrival),
     isBestSeller: Boolean(product.isBestSeller),
     description: product.description || '',
@@ -146,6 +172,10 @@ function validateForm(form) {
   if (!form.occasion.trim()) return 'Occasion is required'
   if (!form.craftedIn.trim()) return 'Crafted In is required'
   return ''
+}
+
+function getFormStock(form) {
+  return getSizeInventoryTotal(form.sizeInventory)
 }
 
 function getStatusVariant(stock) {
@@ -221,6 +251,24 @@ export default function ProductsPage() {
 
   function updateCheckboxField(key) {
     setForm((current) => ({ ...current, [key]: !current[key] }))
+  }
+
+  function updateSizeInventory(size, field, value) {
+    setForm((current) => {
+      const nextSizeInventory = {
+        ...current.sizeInventory,
+        [size]: {
+          ...(current.sizeInventory?.[size] || { enabled: true, stock: 0 }),
+          [field]: field === 'stock' ? Math.max(0, Number(value) || 0) : value,
+        },
+      }
+
+      return {
+        ...current,
+        sizeInventory: nextSizeInventory,
+        stock: String(getSizeInventoryTotal(nextSizeInventory)),
+      }
+    })
   }
 
   function updateImageUrls(value) {
@@ -467,7 +515,7 @@ export default function ProductsPage() {
                 </div>
                 <div className="admin-form-field">
                   <label className="admin-label" htmlFor="product-stock">Stock</label>
-                  <input id="product-stock" className="admin-input" type="number" min="0" step="1" value={form.stock} onChange={(event) => updateField('stock', event.target.value)} required />
+                  <input id="product-stock" className="admin-input" type="number" min="0" step="1" value={getFormStock(form)} readOnly required />
                 </div>
                 <div className="admin-form-field">
                   <label className="admin-label" htmlFor="product-sku">SKU</label>
@@ -476,7 +524,34 @@ export default function ProductsPage() {
                 <div className="admin-form-field">
                   <label className="admin-label">Status</label>
                   <div className="admin-inline-badge-row">
-                    <Badge variant={getStatusVariant(form.stock)}>{Number(form.stock) > 0 ? 'In Stock' : 'Out of Stock'}</Badge>
+                    <Badge variant={getStatusVariant(getFormStock(form))}>{getFormStock(form) > 0 ? 'In Stock' : 'Out of Stock'}</Badge>
+                  </div>
+                </div>
+                <div className="admin-form-field admin-form-field-full">
+                  <span className="admin-label">Size Inventory</span>
+                  <div className="admin-form-grid-two">
+                    {catalogConstants.SIZE_OPTIONS.map((size) => (
+                      <div className="admin-form-field" key={size}>
+                        <label htmlFor={`product-size-${size}`} style={adminCheckboxLabelStyle}>
+                          <input
+                            id={`product-size-${size}`}
+                            type="checkbox"
+                            checked={Boolean(form.sizeInventory?.[size]?.enabled)}
+                            onChange={(event) => updateSizeInventory(size, 'enabled', event.target.checked)}
+                            style={adminCheckboxStyle}
+                          />
+                          <span>{size}</span>
+                        </label>
+                        <input
+                          className="admin-input"
+                          type="number"
+                          min="0"
+                          step="1"
+                          value={form.sizeInventory?.[size]?.stock ?? 0}
+                          onChange={(event) => updateSizeInventory(size, 'stock', event.target.value)}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
                 <div className="admin-form-field admin-form-field-full">

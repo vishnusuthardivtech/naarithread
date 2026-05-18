@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import StarRating from '../components/StarRating'
+import WishlistButton from '../components/WishlistButton'
 import { useApp } from '../context/AppContext'
 import { useReviews } from '../hooks/useReviews'
 import { reviewService } from '../services/reviewService'
-import { catalogConstants, normalizeCatalogProduct } from '../services/catalogService'
+import { catalogConstants, getProductSizeInventory, normalizeCatalogProduct } from '../services/catalogService'
 import { getData, subscribeToStorage } from '../utils/localStorage'
 import { formatPrice } from '../utils/storage'
 
@@ -66,7 +67,7 @@ function formatReviewDate(value) {
 export default function Product() {
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
-  const { addToCart, ensureUser, user, products } = useApp()
+  const { addToCart, cartItems, ensureUser, user, products } = useApp()
   const selectedId = searchParams.get('id')
   const [adminProducts, setAdminProducts] = useState(() => getData(ADMIN_PRODUCTS_STORAGE_KEY, []))
   const product = useMemo(() => {
@@ -86,17 +87,28 @@ export default function Product() {
 
     return contextProduct
   }, [products, selectedId, adminProducts])
+  const cartSelectedSize = useMemo(() => {
+    const existingCartItem = cartItems.find((item) => String(item.id) === String(selectedId))
+    return existingCartItem?.selectedSize || existingCartItem?.size || ''
+  }, [cartItems, selectedId])
   const [quantity, setQuantity] = useState(1)
   const [selectedSize, setSelectedSize] = useState('')
   const [tab, setTab] = useState('desc')
   const [stickyVisible, setStickyVisible] = useState(false)
-  const [activeImage, setActiveImage] = useState('')
+  const [activeImageIndex, setActiveImageIndex] = useState(0)
   const [cartError, setCartError] = useState('')
   const [reviewForm, setReviewForm] = useState({ rating: 0, comment: '' })
   const [isSubmittingReview, setIsSubmittingReview] = useState(false)
   const [reviewFormMessage, setReviewFormMessage] = useState('')
   const [reviewFormError, setReviewFormError] = useState('')
+  const touchStartRef = useRef({ x: 0, y: 0 })
   const { reviews, summary, loading: reviewsLoading, error: reviewsError, reload: reloadReviews } = useReviews(selectedId)
+  const galleryImages = useMemo(() => {
+    const productImages = product?.images
+    return Array.isArray(productImages) && productImages.length > 0
+      ? productImages
+      : [catalogConstants.PLACEHOLDER_IMAGE]
+  }, [product?.images])
 
   useEffect(() => subscribeToStorage(ADMIN_PRODUCTS_STORAGE_KEY, () => {
     setAdminProducts(getData(ADMIN_PRODUCTS_STORAGE_KEY, []))
@@ -104,15 +116,18 @@ export default function Product() {
 
   useEffect(() => {
     setQuantity(1)
-    setSelectedSize('')
+    setSelectedSize(cartSelectedSize)
     setTab('desc')
-    const firstImage = product?.images?.[0] || catalogConstants.PLACEHOLDER_IMAGE
-    setActiveImage(firstImage)
+    setActiveImageIndex(0)
     setCartError('')
     setReviewForm({ rating: 0, comment: '' })
     setReviewFormMessage('')
     setReviewFormError('')
-  }, [selectedId, product?.images])
+  }, [selectedId, product?.images, cartSelectedSize])
+
+  useEffect(() => {
+    setActiveImageIndex((current) => Math.min(current, galleryImages.length - 1))
+  }, [galleryImages.length])
 
   useEffect(() => {
     const onScroll = () => {
@@ -126,6 +141,48 @@ export default function Product() {
     onScroll()
     return () => window.removeEventListener('scroll', onScroll)
   }, [product])
+
+  useEffect(() => {
+    if (!product || !selectedSize) {
+      return
+    }
+
+    const sizeInventory = getProductSizeInventory(product)
+    const selectedSizeEntry = sizeInventory[selectedSize]
+    if (!selectedSizeEntry?.enabled || Number(selectedSizeEntry.stock) <= 0) {
+      setSelectedSize('')
+      setQuantity(1)
+    }
+  }, [product, selectedSize])
+
+  const nextImage = useCallback(() => {
+    setActiveImageIndex((current) => (current + 1) % galleryImages.length)
+  }, [galleryImages.length])
+
+  const prevImage = useCallback(() => {
+    setActiveImageIndex((current) => (current - 1 + galleryImages.length) % galleryImages.length)
+  }, [galleryImages.length])
+
+  const handleGalleryTouchStart = (event) => {
+    const touch = event.touches[0]
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY }
+  }
+
+  const handleGalleryTouchEnd = (event) => {
+    const touch = event.changedTouches[0]
+    const deltaX = touch.clientX - touchStartRef.current.x
+    const deltaY = touch.clientY - touchStartRef.current.y
+
+    if (Math.abs(deltaX) < 45 || Math.abs(deltaX) < Math.abs(deltaY) * 1.4) {
+      return
+    }
+
+    if (deltaX < 0) {
+      nextImage()
+    } else {
+      prevImage()
+    }
+  }
 
   if (!product) {
     return (
@@ -145,18 +202,35 @@ export default function Product() {
     details.occasion ? `Occasion: ${details.occasion}` : '',
     details.craftedIn ? `Crafted in: ${details.craftedIn}` : '',
   ].filter(Boolean)
-  const images = Array.isArray(product.images) && product.images.length > 0 ? product.images : []
-  const image = product.images?.[0]
-  const imageToShow = image || catalogConstants.PLACEHOLDER_IMAGE
-  const activeImageToShow = images.includes(activeImage) ? activeImage : imageToShow
+  const images = galleryImages
+  const activeImageToShow = images[activeImageIndex] || catalogConstants.PLACEHOLDER_IMAGE
   const originalPrice = getOriginalPrice(product.price)
   const discount = Math.max(1, Math.round(((originalPrice - product.price) / originalPrice) * 100))
   const rating = summary.totalReviews ? summary.averageRating : 0
   const reviewCount = summary.totalReviews
-  const inStock = Number(product.stock) > 0
+  const parsedStock = Number(product.stock)
+  const stockValue = Number.isFinite(parsedStock) ? parsedStock : 0
+  const inStock = stockValue > 0
+  const sizeInventory = getProductSizeInventory(product)
+  const visibleSizes = catalogConstants.SIZE_OPTIONS
+    .map((size) => ({ size, stock: Math.max(0, Number(sizeInventory[size]?.stock) || 0), enabled: Boolean(sizeInventory[size]?.enabled) }))
+    .filter((sizeOption) => sizeOption.enabled)
+  const selectedSizeStock = visibleSizes.find((sizeOption) => sizeOption.size === selectedSize)?.stock ?? 0
+  const stockStatus = !inStock
+    ? { className: 'out-of-stock', label: 'Out of Stock' }
+    : stockValue <= 5
+      ? { className: 'low-stock', label: `Low Stock (${stockValue} available)` }
+      : stockValue <= 10
+        ? { className: 'limited-stock', label: `In Stock (${stockValue} available)` }
+        : { className: 'in-stock', label: `In Stock (${stockValue} available)` }
 
   const submitCart = () => {
     setCartError('')
+
+    if (!selectedSize) {
+      setCartError('Please select a size')
+      return
+    }
 
     try {
       addToCart({
@@ -166,6 +240,7 @@ export default function Product() {
         images: Array.isArray(product.images) ? [...product.images] : [],
         quantity,
         size: selectedSize,
+        selectedSize,
       })
     } catch (error) {
       setCartError(error instanceof Error ? error.message : 'Unable to add to cart')
@@ -173,12 +248,34 @@ export default function Product() {
   }
 
   const handleBuyNow = () => {
-    if (!inStock || !selectedSize) {
+    setCartError('')
+
+    if (!inStock) {
       return
     }
 
-    submitCart()
-    navigate('/cart')
+    if (!selectedSize) {
+      setCartError('Please select a size')
+      return
+    }
+
+    if (!ensureUser()) {
+      return
+    }
+
+    navigate('/checkout', {
+      state: {
+        buyNowItems: [{
+          id: product.id,
+          name: product.name,
+          price: product.price,
+          images: Array.isArray(product.images) ? [...product.images] : [],
+          quantity,
+          size: selectedSize,
+          selectedSize,
+        }],
+      },
+    })
   }
 
   const canSubmitReview = Boolean(reviewForm.rating && reviewForm.comment.trim() && !isSubmittingReview)
@@ -222,21 +319,46 @@ export default function Product() {
       <main className="pdp-page">
         <section className="pdp-container">
           <div className="pdp-gallery">
-            <div className="pdp-main-image">
+            <div
+              className="pdp-main-image"
+              onTouchStart={handleGalleryTouchStart}
+              onTouchEnd={handleGalleryTouchEnd}
+            >
               <img
+                key={activeImageToShow}
                 src={activeImageToShow}
                 alt={product.name}
                 loading="lazy"
               />
+              {images.length > 1 ? (
+                <>
+                  <button
+                    type="button"
+                    className="pdp-gallery-nav pdp-gallery-nav-prev"
+                    aria-label="Previous product image"
+                    onClick={prevImage}
+                  >
+                    &#8249;
+                  </button>
+                  <button
+                    type="button"
+                    className="pdp-gallery-nav pdp-gallery-nav-next"
+                    aria-label="Next product image"
+                    onClick={nextImage}
+                  >
+                    &#8250;
+                  </button>
+                </>
+              ) : null}
             </div>
             {images.length > 1 ? (
               <div className="pdp-thumbnails">
-                {images.map((thumbnail) => (
+                {images.map((thumbnail, index) => (
                   <button
-                    key={thumbnail}
+                    key={`${thumbnail}-${index}`}
                     type="button"
-                    className={`pdp-thumb-btn${thumbnail === activeImageToShow ? ' active' : ''}`}
-                    onClick={() => setActiveImage(thumbnail)}
+                    className={`pdp-thumb-btn${index === activeImageIndex ? ' active' : ''}`}
+                    onClick={() => setActiveImageIndex(index)}
                   >
                     <img
                       src={thumbnail}
@@ -254,8 +376,8 @@ export default function Product() {
             <div className="pdp-rating">
               {reviewCount ? `${rating.toFixed(1)} ⭐` : 'No reviews yet'} <span>({reviewCount} Reviews)</span>
             </div>
-            <div className={`pdp-stock-pill${inStock ? ' in-stock' : ' out-of-stock'}`}>
-              {inStock ? `In Stock (${product.stock} available)` : 'Out of Stock'}
+            <div className={`pdp-stock-pill ${stockStatus.className}`}>
+              {stockStatus.label}
             </div>
             <div className="pdp-price-box">
               <span className="pdp-mrp">{formatPrice(originalPrice)}</span>
@@ -267,12 +389,12 @@ export default function Product() {
             <div className="pdp-size-section">
               <h4>Select Size</h4>
               <div className="pdp-sizes">
-                {['S', 'M', 'L', 'XL'].map((size) => (
+                {visibleSizes.map(({ size, stock }) => (
                   <button
                     key={size}
-                    className={`size-btn${selectedSize === size ? ' active' : ''}`}
+                    className={`size-btn${selectedSize === size ? ' active' : ''}${stock <= 0 ? ' size-out-of-stock' : ''}`}
                     onClick={() => setSelectedSize(size)}
-                    disabled={!inStock}
+                    disabled={!inStock || stock <= 0}
                   >
                     {size}
                   </button>
@@ -283,19 +405,17 @@ export default function Product() {
             <div className="pdp-quantity">
               <button onClick={() => setQuantity((value) => Math.max(1, value - 1))} disabled={!inStock}>-</button>
               <span id="qty">{quantity}</span>
-              <button onClick={() => setQuantity((value) => value + 1)} disabled={!inStock || quantity >= Number(product.stock)}>+</button>
+              <button onClick={() => setQuantity((value) => value + 1)} disabled={!inStock || !selectedSize || quantity >= selectedSizeStock}>+</button>
             </div>
 
             <div className="pdp-buttons">
-              <button className="royal-btn royal-outline" id="mainAddBtn" disabled={!selectedSize || !inStock} onClick={submitCart}>
+              <button className="royal-btn royal-outline" id="mainAddBtn" disabled={!inStock} onClick={submitCart}>
                 {inStock ? 'Add to Cart' : 'Out of Stock'}
               </button>
-              <button className="royal-btn royal-gold" onClick={handleBuyNow} disabled={!selectedSize || !inStock}>
+              <button className="royal-btn royal-gold" onClick={handleBuyNow}>
                 {inStock ? 'Buy Now' : 'Unavailable'}
               </button>
-              <button className="pdp-wishlist">
-                <span>+</span>
-              </button>
+              <WishlistButton product={product} className="pdp-wishlist" />
             </div>
             {cartError ? <p className="product-card-error">{cartError}</p> : null}
 
@@ -445,7 +565,7 @@ export default function Product() {
 
       <div className={`sticky-cart-bar${stickyVisible ? ' active' : ''}`}>
         <div className="sticky-price">{formatPrice(product.price)}</div>
-        <button className="sticky-add-btn" id="stickyAddBtn" disabled={!selectedSize || !inStock} onClick={submitCart}>
+        <button className="sticky-add-btn" id="stickyAddBtn" disabled={!inStock} onClick={submitCart}>
           {inStock ? 'Add to Cart' : 'Out of Stock'}
         </button>
       </div>

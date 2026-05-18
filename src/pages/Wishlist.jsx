@@ -1,12 +1,24 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
-import { resolveProductImage } from '../utils/productImages'
+import { catalogConstants } from '../services/catalogService'
 import { formatPrice } from '../utils/storage'
 
 export default function Wishlist() {
   const { user, addToCart, wishlistItems, removeFromWishlist } = useApp()
   const navigate = useNavigate()
+
+  const getWishlistImage = (item) => {
+    const imageFromArray = Array.isArray(item?.images)
+      ? item.images.find((image) => typeof image === 'string' && image.trim())
+      : null
+
+    const image = imageFromArray || item?.image || item?.images
+
+    return typeof image === 'string' && image.trim()
+      ? image.trim()
+      : catalogConstants.PLACEHOLDER_IMAGE
+  }
 
   useEffect(() => {
     if (!user) {
@@ -65,7 +77,7 @@ export default function Wishlist() {
             {wishlistItems.map((item) => (
               <div className="wishlist-card active" key={item.id}>
                 <div className="wishlist-image">
-                  <img src={resolveProductImage(item)} alt={item?.name || 'Wishlist product'} />
+                  <img src={getWishlistImage(item)} alt={item?.name || 'Wishlist product'} />
                   <button
                     className="remove-btn"
                     onClick={() => handleRemove(item.id)}

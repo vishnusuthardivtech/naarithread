@@ -3,8 +3,8 @@ import { getStoredCatalogProducts } from '../services/catalogService'
 const FALLBACK_IMAGE = `${import.meta.env.BASE_URL}images/placeholder.jpg`
 
 /**
- * Validation for product image URLs.
- * Admin-managed products use HTTP(S) URLs only.
+ * Validation for stored product image values.
+ * Supports HTTP(S) URLs and local catalog paths.
  */
 export function isValidProductImageUrl(url) {
   if (!url || typeof url !== 'string') return false
@@ -20,7 +20,6 @@ const normalizeStoredImagePath = (value = '') => {
   }
 
   let nextValue = String(value).trim().replace(/\\/g, '/')
-
   if (!nextValue) {
     return ''
   }
@@ -29,7 +28,24 @@ const normalizeStoredImagePath = (value = '') => {
     return nextValue
   }
 
-  return ''
+  nextValue = nextValue.replace(/^file:\/\/\/+/, '')
+  nextValue = nextValue.replace(/^[A-Za-z]:\//, '')
+  nextValue = nextValue.replace(/^[A-Za-z]:\\/, '')
+
+  if (/\/public\/images\//i.test(nextValue)) {
+    nextValue = nextValue.replace(/^.*\/public\/images\//i, '/images/')
+  } else if (/^public\/images\//i.test(nextValue)) {
+    nextValue = nextValue.replace(/^public\/images\//i, '/images/')
+  } else if (/\/images\//i.test(nextValue)) {
+    nextValue = nextValue.replace(/^.*(?=\/images\/)/, '')
+  }
+
+  nextValue = nextValue.replace(/\/+/g, '/')
+  if (!nextValue.startsWith('/')) {
+    nextValue = `/${nextValue}`
+  }
+
+  return nextValue
 }
 
 const findMatchingProduct = (item = {}) => {
@@ -43,17 +59,19 @@ const findMatchingProduct = (item = {}) => {
 }
 
 export const resolveProductImage = (item = {}) => {
-  const directImage = item?.images?.[0]
+  const directImage = item?.images?.[0] || item?.image
   const normalizedDirectImage = normalizeStoredImagePath(directImage)
 
-  // Only return direct image if it's a valid format
-  if (normalizedDirectImage && isValidProductImageUrl(normalizedDirectImage)) {
+  if (normalizedDirectImage) {
     return normalizedDirectImage
   }
 
   const matchedProduct = findMatchingProduct(item)
-  if (matchedProduct?.images?.[0] && isValidProductImageUrl(matchedProduct.images[0])) {
-    return normalizeStoredImagePath(matchedProduct.images[0])
+  const matchedImage = matchedProduct?.images?.[0] || matchedProduct?.image
+  const normalizedMatchedImage = normalizeStoredImagePath(matchedImage)
+
+  if (normalizedMatchedImage) {
+    return normalizedMatchedImage
   }
 
   return FALLBACK_IMAGE

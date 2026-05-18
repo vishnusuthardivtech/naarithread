@@ -1,14 +1,14 @@
 import { createAdminId } from '../api/storage'
-import { getAdminCatalogProductOverrides, getCatalogOptions, getStoredCatalogProducts, normalizeCatalogProduct, saveAdminCatalogProducts } from '../../services/catalogService'
+import { catalogConstants, getAdminCatalogProductOverrides, getCatalogOptions, getSizeInventoryTotal, getStoredCatalogProducts, normalizeCatalogProduct, normalizeSizeInventory, saveAdminCatalogProducts } from '../../services/catalogService'
 
 function validateProductPayload(payload) {
   const name = String(payload.name ?? '').trim()
   const category = String(payload.category ?? '').trim()
   const description = String(payload.description ?? '').trim()
   const price = Number(payload.price)
-  const stock = Number(payload.stock)
   const images = sanitizeImages(payload.images)
   const details = sanitizeDetails(payload.details)
+  const stock = getSizeInventoryTotal(sanitizeSizeInventory(payload.sizeInventory))
 
   if (!name) {
     throw new Error('Product name is required')
@@ -95,6 +95,21 @@ function sanitizeDetails(details = {}) {
   }
 }
 
+function sanitizeSizeInventory(sizeInventory = {}) {
+  const normalizedInventory = normalizeSizeInventory(sizeInventory)
+  if (normalizedInventory) {
+    return normalizedInventory
+  }
+
+  return catalogConstants.SIZE_OPTIONS.reduce((inventory, size) => {
+    inventory[size] = {
+      enabled: true,
+      stock: 0,
+    }
+    return inventory
+  }, {})
+}
+
 function getProducts() {
   return getStoredCatalogProducts()
 }
@@ -126,6 +141,7 @@ export const productService = {
     const images = sanitizeImages(payload.images)
     const description = payload.description.trim()
     const details = sanitizeDetails(payload.details)
+    const sizeInventory = sanitizeSizeInventory(payload.sizeInventory)
     const product = normalizeCatalogProduct({
       id: createAdminId('product'),
       name: payload.name.trim(),
@@ -133,7 +149,7 @@ export const productService = {
       collection: String(payload.collection ?? '').trim(),
       price: Number(payload.price) || 0,
       images: [...images],
-      stock: Number(payload.stock) || 0,
+      sizeInventory,
       isNewArrival: Boolean(payload.isNewArrival),
       isBestSeller: Boolean(payload.isBestSeller),
       description,
@@ -160,6 +176,7 @@ export const productService = {
     const images = payload.images ? sanitizeImages(payload.images) : [...(existingProduct.images || [])]
     const description = String(payload.description ?? existingProduct.description).trim()
     const details = payload.details ? sanitizeDetails(payload.details) : sanitizeDetails(existingProduct.details)
+    const sizeInventory = sanitizeSizeInventory(payload.sizeInventory ?? existingProduct.sizeInventory)
     const updatedProduct = normalizeCatalogProduct({
       ...existingProduct,
       ...payload,
@@ -169,7 +186,7 @@ export const productService = {
       description,
       details,
       price: Number(payload.price ?? existingProduct.price) || 0,
-      stock: Number(payload.stock ?? existingProduct.stock) || 0,
+      sizeInventory,
       images: [...images],
       isNewArrival: Boolean(payload.isNewArrival ?? existingProduct.isNewArrival),
       isBestSeller: Boolean(payload.isBestSeller ?? existingProduct.isBestSeller),

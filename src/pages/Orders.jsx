@@ -22,6 +22,8 @@ const resolveOrderImage = (item = {}) => {
   return image || FALLBACK_IMAGE
 }
 
+const getProductSizeLabel = (item = {}) => item?.selectedSize || item?.size || 'N/A'
+
 export default function Orders() {
   const { user } = useApp()
   const { orders, removeOrder } = useOrders(user)
@@ -62,7 +64,25 @@ export default function Orders() {
                     <div className="order-details">
                       <div className="order-id"><strong>Order ID:</strong> {order?.id}</div>
                       <div className="order-date">{new Date(order?.date).toLocaleString()}</div>
-                      <div className="order-meta"><span><strong>{order?.products?.map((product) => product?.name || 'Unnamed Product').join(', ')}</strong></span><span>Total Items: {order?.products?.reduce((sum, product) => sum + (product?.quantity || 1), 0)}</span><span>{formatPrice(order?.total || 0)}</span></div>
+                      <div className="order-meta"><span>Total Items: {order?.products?.reduce((sum, product) => sum + (Number(product?.quantity) || 1), 0)}</span><span>{formatPrice(order?.total || 0)}</span></div>
+                      <div className="order-products-list">
+                        {(order?.products || []).map((product, index) => (
+                          <div key={`${product?.id || product?.name}-${index}`} className="order-product-item">
+                            <div className="order-product-thumb">
+                              <img
+                                src={resolveOrderImage(product)}
+                                alt={product?.name || 'Ordered product'}
+                              />
+                            </div>
+                            <div className="order-product-info">
+                              <strong>{product?.name || 'Unnamed Product'}</strong>
+                              <span>Size: {getProductSizeLabel(product)}</span>
+                              <span>Qty: {product?.quantity || 1}</span>
+                            </div>
+                            <div className="order-product-price">{formatPrice(product?.price || 0)}</div>
+                          </div>
+                        ))}
+                      </div>
                       <div className="order-meta"><span>{order?.address?.address1}{order?.address?.address2 ? `, ${order.address.address2}` : ''}</span><span>{order?.address?.city}, {order?.address?.state} - {order?.address?.pincode}</span><span>{order?.address?.phone}</span></div>
                       <div className="order-bottom">
                         <div className={`order-status-badge ${statusClass}`}>{order?.status}</div>

@@ -22,6 +22,8 @@ const normalizeProduct = (product = {}) => ({
   price: Number(product.price) || 0,
   images: Array.isArray(product.images) ? product.images : [],
   quantity: product.quantity || 1,
+  size: product.selectedSize || product.size || '',
+  selectedSize: product.selectedSize || product.size || '',
 })
 
 const normalizeOrder = (order = {}) => ({
