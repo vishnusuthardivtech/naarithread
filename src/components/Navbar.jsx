@@ -77,6 +77,7 @@ export default function Navbar({ onSearchOpen, isMobileMenuOpen, setIsMobileMenu
         <NavLink to="/best-seller" onClick={closeAllMenus}>Best Seller </NavLink>
         <NavLink to="/about" onClick={closeAllMenus}>About</NavLink>
         <NavLink to="/contact" onClick={closeAllMenus}>Contact</NavLink>
+        <NavLink to="/shop" onClick={closeAllMenus}>SHOP</NavLink>
       </nav>
 
       <div className="nav-icons">

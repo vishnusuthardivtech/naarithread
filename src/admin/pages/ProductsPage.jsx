@@ -1,602 +1,708 @@
-import { useMemo, useState } from 'react'
-import { catalogConstants, getSizeInventoryTotal, normalizeSizeInventory } from '../../services/catalogService'
-import { formatPrice } from '../../utils/storage'
-import Badge from '../components/Badge'
-import Button from '../components/Button'
-import Card from '../components/Card'
-import EmptyState from '../components/EmptyState'
-import LoadingState from '../components/LoadingState'
-import Modal from '../components/Modal'
-import Table from '../components/Table'
-import { useAdminPageSearch } from '../context/AdminPageSearchContext'
-import { useAdminCollection } from '../hooks/useAdminCollection'
-import { productService } from '../services/productService'
-
-const adminProductSelectStyle = {
-  padding: '12px 44px 12px 16px',
-  borderRadius: '14px',
-  border: '1px solid rgba(212, 175, 55, 0.4)',
-  background: 'linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.98))',
-  color: '#fff',
-  appearance: 'none',
-  WebkitAppearance: 'none',
-  MozAppearance: 'none',
-  backgroundImage:
-    `linear-gradient(180deg, rgba(31, 31, 31, 0.98), rgba(17, 17, 17, 0.98)),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 20 20'%3E%3Cpath fill='%23f3ddac' d='M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.12l3.71-3.89a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0L5.21 8.27a.75.75 0 0 1 .02-1.06Z'/%3E%3C/svg%3E")`,
-  backgroundRepeat: 'no-repeat, no-repeat',
-  backgroundPosition: '0 0, right 14px center',
-  backgroundSize: '100% 100%, 16px 16px',
-}
-
-const adminProductOptionStyle = {
-  background: '#111',
-  color: '#fff',
-}
-
-const adminCheckboxGroupStyle = {
-  display: 'grid',
-  gap: '12px',
-}
-
-const adminCheckboxLabelStyle = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: '10px',
-  color: '#f6ead2',
-  fontSize: '14px',
-  fontWeight: 500,
-}
-
-const adminCheckboxStyle = {
-  width: '16px',
-  height: '16px',
-  accentColor: '#d4af37',
-}
-
-const createEmptySizeInventory = () => catalogConstants.SIZE_OPTIONS.reduce((inventory, size) => {
-  inventory[size] = {
-    enabled: true,
-    stock: 0,
-  }
-  return inventory
-}, {})
-
-const createLegacySizeInventory = (stock) => {
-  const totalStock = Math.max(0, Number(stock) || 0)
-  const baseStock = Math.floor(totalStock / catalogConstants.SIZE_OPTIONS.length)
-  const remainingStock = totalStock % catalogConstants.SIZE_OPTIONS.length
-
-  return catalogConstants.SIZE_OPTIONS.reduce((inventory, size, index) => {
-    inventory[size] = {
-      enabled: true,
-      stock: baseStock + (index < remainingStock ? 1 : 0),
-    }
-    return inventory
-  }, {})
-}
-
-const createEmptyForm = () => ({
-  name: '',
-  category: catalogConstants.CATEGORY_OPTIONS[0],
-  collection: catalogConstants.COLLECTION_OPTIONS[0],
-  price: '',
-  images: [],
-  imageUrls: '',
-  sku: '',
-  stock: '',
-  sizeInventory: createEmptySizeInventory(),
-  isNewArrival: false,
-  isBestSeller: false,
-  description: '',
-  fabric: '',
-  work: '',
-  occasion: '',
-  craftedIn: '',
-})
-
-function parseImageUrls(value = '') {
-  const baseUrl = String(import.meta.env.BASE_URL || '/')
-  const baseUrlWithoutSlash = baseUrl.replace(/\/+$/, '')
-
-  return String(value)
-    .split(/[\n,]+/)
-    .map((url) => url.trim())
-    .filter(Boolean)
-    .map((url) => {
-      let normalizedUrl = String(url).replace(/\\/g, '/').trim()
-      if (!normalizedUrl) return ''
-
-      normalizedUrl = normalizedUrl.replace(/^file:\/\/\/+/i, '')
-      normalizedUrl = normalizedUrl.replace(/^[A-Za-z]:\//, '')
-      normalizedUrl = normalizedUrl.replace(/^[A-Za-z]:\\/, '')
-
-      if (/\/public\/images\//i.test(normalizedUrl)) {
-        normalizedUrl = normalizedUrl.replace(/^.*\/public\/images\//i, '/images/')
-      } else if (/^public\/images\//i.test(normalizedUrl)) {
-        normalizedUrl = normalizedUrl.replace(/^public\/images\//i, '/images/')
-      } else if (/\/images\//i.test(normalizedUrl)) {
-        normalizedUrl = normalizedUrl.replace(/^.*(?=\/images\/)/, '')
-      }
-
-      normalizedUrl = normalizedUrl.replace(/\/+/g, '/')
-      if (!normalizedUrl.startsWith('/')) {
-        normalizedUrl = `/${normalizedUrl}`
-      }
-
-      return normalizedUrl.startsWith(baseUrlWithoutSlash)
-        ? normalizedUrl
-        : `${baseUrlWithoutSlash}${normalizedUrl}`
-    })
-    .filter(Boolean)
-    .filter((url) => url.startsWith('/') || /^https?:\/\//.test(url))
-}
-
-function getInitialForm(product) {
-  if (!product) {
-    return createEmptyForm()
-  }
-
-  const images = Array.isArray(product.images) ? [...product.images] : []
-  const normalizedSizeInventory = normalizeSizeInventory(product.sizeInventory)
-  const sizeInventory = normalizedSizeInventory || createLegacySizeInventory(product.stock)
-
-  return {
-    name: product.name || '',
-    category: product.category || '',
-    collection: product.collection || '',
-    price: String(product.price ?? ''),
-    images,
-    imageUrls: images.join('\n'),
-    sku: product.sku || '',
-    stock: String(getSizeInventoryTotal(sizeInventory)),
-    sizeInventory,
-    isNewArrival: Boolean(product.isNewArrival),
-    isBestSeller: Boolean(product.isBestSeller),
-    description: product.description || '',
-    fabric: product.details?.fabric || product.details?.Fabric || product.fabric || product.Fabric || '',
-    work: product.details?.work || product.details?.Work || product.work || product.Work || '',
-    occasion: product.details?.occasion || product.details?.occesion || product.details?.Occasion || product.details?.Occesion || product.occasion || product.occesion || product.Occasion || product.Occesion || '',
-    craftedIn: product.details?.craftedIn || product.details?.crafted_in || product.details?.craftedin || product.details?.craft || product.details?.CraftedIn || product.details?.Craft || product.craftedIn || product.crafted_in || product.craftedin || product.craft || product.CraftedIn || product.Craft || '',
-  }
-}
-
-function validateForm(form) {
-  if (!form.name.trim()) return 'Product name is required'
-  if (!form.price || Number(form.price) <= 0) return 'Price must be greater than zero'
-  if (!parseImageUrls(form.imageUrls).length) return 'Please enter at least one image URL'
-  if (!form.category.trim()) return 'Category is required'
-  if (!form.description.trim()) return 'Description is required'
-  if (!form.fabric.trim()) return 'Fabric is required'
-  if (!form.work.trim()) return 'Work is required'
-  if (!form.occasion.trim()) return 'Occasion is required'
-  if (!form.craftedIn.trim()) return 'Crafted In is required'
-  return ''
-}
-
-function getFormStock(form) {
-  return getSizeInventoryTotal(form.sizeInventory)
-}
-
-function getStatusVariant(stock) {
-  return Number(stock) > 0 ? 'success' : 'danger'
-}
+import { useEffect, useState } from 'react'
 
 export default function ProductsPage() {
-  const { data: products = [], loading, error, reload } = useAdminCollection(productService.getAll)
-  const { getQuery } = useAdminPageSearch()
-  const [viewMode, setViewMode] = useState('table')
-  const [isFormOpen, setIsFormOpen] = useState(false)
-  const [editingProduct, setEditingProduct] = useState(null)
-  const [form, setForm] = useState(() => createEmptyForm())
-  const [saveError, setSaveError] = useState('')
-  const [actionError, setActionError] = useState('')
-  const [filters, setFilters] = useState({ category: 'all', stock: 'all', collection: 'all' })
-  const searchQuery = getQuery('/admin/products').trim().toLowerCase()
-  const handleRefreshPage = () => window.location.reload()
 
-  const categoryOptions = useMemo(
-    () => catalogConstants.CATEGORY_OPTIONS,
-    [],
-  )
-  const collectionOptions = useMemo(
-    () => catalogConstants.COLLECTION_OPTIONS,
-    [],
-  )
+  const [products, setProducts] =
+    useState([])
 
-  const filteredProducts = useMemo(
-    () =>
-      products.filter((product) => {
-        const matchesSearch = !searchQuery || [product.name, product.category, product.collection, product.status, product.sku].some((value) =>
-          String(value || '')
-            .toLowerCase()
-            .includes(searchQuery),
-        )
-        const matchesCategory = filters.category === 'all' || product.category === filters.category
-        const matchesCollection = filters.collection === 'all' || product.collection === filters.collection
-        const matchesStock = filters.stock === 'all' || (filters.stock === 'in' ? Number(product.stock) > 0 : Number(product.stock) <= 0)
-        return matchesSearch && matchesCategory && matchesCollection && matchesStock
-      }),
-    [products, searchQuery, filters],
-  )
+  const [loading, setLoading] =
+    useState(false)
 
-  if (loading) {
-    return <LoadingState label="Loading products..." />
-  }
+  const [message, setMessage] =
+    useState('')
 
-  function closeForm() {
-    setIsFormOpen(false)
-    setEditingProduct(null)
-    setForm(createEmptyForm())
-    setSaveError('')
-  }
+  // ============================
+  // FORM STATE
+  // ============================
 
-  function openCreateForm() {
-    setEditingProduct(null)
-    setForm(createEmptyForm())
-    setSaveError('')
-    setIsFormOpen(true)
-  }
+  const [form, setForm] = useState({
 
-  function openEditForm(product) {
-    setEditingProduct(product)
-    setForm(getInitialForm(product))
-    setSaveError('')
-    setIsFormOpen(true)
-  }
+    product_name: '',
+    category: '',
+    collection: '',
+    descripion: '',
+    fabric: '',
+    work: '',
+    occasion: '',
+    crafted_in: '',
+    price: '',
+    stock: '',
+    sku: '',
+    size: ''
+  })
 
-  function updateField(key, value) {
-    setForm((current) => ({ ...current, [key]: value }))
-  }
+  // ============================
+  // IMAGE STATE
+  // ============================
 
-  function updateCheckboxField(key) {
-    setForm((current) => ({ ...current, [key]: !current[key] }))
-  }
+  const [images, setImages] =
+    useState([])
 
-  function updateSizeInventory(size, field, value) {
-    setForm((current) => {
-      const nextSizeInventory = {
-        ...current.sizeInventory,
-        [size]: {
-          ...(current.sizeInventory?.[size] || { enabled: true, stock: 0 }),
-          [field]: field === 'stock' ? Math.max(0, Number(value) || 0) : value,
-        },
+  const [previewImages, setPreviewImages] =
+    useState([])
+
+  // ============================
+  // FETCH PRODUCTS
+  // ============================
+
+  async function fetchProducts() {
+
+    try {
+
+      const response = await fetch(
+        'http://localhost:5000/api/products'
+      )
+
+      const data =
+        await response.json()
+
+      if (data.success) {
+
+        setProducts(data.data)
       }
 
-      return {
-        ...current,
-        sizeInventory: nextSizeInventory,
-        stock: String(getSizeInventoryTotal(nextSizeInventory)),
-      }
+    } catch (error) {
+
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+
+    fetchProducts()
+
+  }, [])
+
+  // ============================
+  // HANDLE INPUT CHANGE
+  // ============================
+
+  function handleChange(event) {
+
+    setForm({
+
+      ...form,
+
+      [event.target.name]:
+        event.target.value
     })
   }
 
-  function updateImageUrls(value) {
-    setForm((current) => ({
-      ...current,
-      imageUrls: value,
-      images: parseImageUrls(value),
+  // ============================
+  // HANDLE IMAGE CHANGE
+  // ============================
+
+  function handleImageChange(event) {
+
+    const files = Array.from(
+      event.target.files
+    )
+
+    setImages(files)
+
+    const previews = files.map((file) => ({
+
+      file,
+
+      url: URL.createObjectURL(file)
     }))
+
+    setPreviewImages(previews)
   }
 
-  function removeImage(index) {
-    setForm((current) => ({
-      ...current,
-      images: current.images.filter((_, imageIndex) => imageIndex !== index),
-      imageUrls: current.images.filter((_, imageIndex) => imageIndex !== index).join('\n'),
-    }))
-  }
+  // ============================
+  // CREATE PRODUCT
+  // ============================
 
   async function handleSubmit(event) {
+
     event.preventDefault()
-    setSaveError('')
-    setActionError('')
 
-    const validationError = validateForm(form)
-    if (validationError) {
-      setSaveError(validationError)
-      return
-    }
+    setLoading(true)
+
+    setMessage('')
 
     try {
-      const { fabric, work, occasion, craftedIn, imageUrls, ...productForm } = form
-      const imageUrlsToSave = parseImageUrls(imageUrls)
-      const productPayload = {
-        ...productForm,
-        images: imageUrlsToSave,
-        details: {
-          fabric,
-          work,
-          occasion,
-          craftedIn,
-        },
+
+      const formData = new FormData()
+
+      // TEXT FIELDS
+
+      Object.keys(form).forEach((key) => {
+
+        formData.append(
+          key,
+          form[key]
+        )
+      })
+
+      // MULTIPLE IMAGES
+
+      images.forEach((image) => {
+
+        formData.append(
+          'media',
+          image
+        )
+      })
+
+      const response = await fetch(
+
+        'http://localhost:5000/api/products',
+
+        {
+          method: 'POST',
+          body: formData
+        }
+      )
+
+      const data =
+        await response.json()
+
+      console.log(data)
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.message ||
+          'Unable to create product'
+        )
       }
 
-      if (editingProduct) {
-        await productService.update(editingProduct.id, productPayload)
-      } else {
-        await productService.create(productPayload)
-      }
+      setMessage(
+        'Product Created Successfully'
+      )
 
-      closeForm()
-      await reload()
-    } catch (submitError) {
-      setSaveError(submitError instanceof Error ? submitError.message : 'Unable to save product')
+      // RESET FORM
+
+      setForm({
+
+        product_name: '',
+        category: '',
+        collection: '',
+        descripion: '',
+        fabric: '',
+        work: '',
+        occasion: '',
+        crafted_in: '',
+        price: '',
+        stock: '',
+        sku: '',
+        size: ''
+      })
+
+      setImages([])
+
+      setPreviewImages([])
+
+      fetchProducts()
+
+    } catch (error) {
+
+      console.log(error)
+
+      setMessage(error.message)
     }
+
+    setLoading(false)
   }
 
-  async function handleDelete(productId) {
-    setActionError('')
+  // ============================
+  // DELETE PRODUCT
+  // ============================
+
+  async function deleteProduct(id) {
+
     try {
-      await productService.delete(productId)
-      await reload()
-    } catch (deleteError) {
-      setActionError(deleteError instanceof Error ? deleteError.message : 'Unable to delete product')
+
+      const response = await fetch(
+
+        `http://localhost:5000/api/products/${id}`,
+
+        {
+          method: 'DELETE'
+        }
+      )
+
+      const data =
+        await response.json()
+
+      console.log(data)
+
+      fetchProducts()
+
+    } catch (error) {
+
+      console.log(error)
     }
   }
-
-  const columns = [
-    { header: 'Product', accessor: 'name' },
-    { header: 'Price', accessor: 'price', render: (price) => formatPrice(price || 0) },
-    { header: 'Stock', accessor: 'stock', render: (stock) => stock || 0 },
-    { header: 'Category', accessor: 'category' },
-    { header: 'Collection', accessor: 'collection', render: (collection) => collection || 'Not set' },
-    {
-      header: 'Status',
-      accessor: 'stock',
-      render: (stock) => <Badge variant={getStatusVariant(stock)}>{Number(stock) > 0 ? 'In Stock' : 'Out of Stock'}</Badge>,
-    },
-  ]
 
   return (
-    <div className="space-y-6">
-      <div className="page-header">
-        <div>
-          <h1 className="page-title">Products</h1>
-          <p className="page-sub">Manage inventory, product visibility, collections, and media without changing the storefront design.</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <Button variant="secondary" size="sm" onClick={handleRefreshPage}>
-            Refresh
-          </Button>
-          <Button variant="secondary" size="sm" onClick={() => setViewMode(viewMode === 'table' ? 'grid' : 'table')}>
-            {viewMode === 'table' ? 'Grid View' : 'Table View'}
-          </Button>
-          <Button variant="primary" onClick={openCreateForm}>
-            Add Product
-          </Button>
-        </div>
-      </div>
 
-      <div className="admin-review-filter-row">
-        <select className="admin-select" style={adminProductSelectStyle} value={filters.category} onChange={(event) => setFilters((current) => ({ ...current, category: event.target.value }))}>
-          <option value="all" style={adminProductOptionStyle}>All Categories</option>
-          {categoryOptions.map((category) => (
-            <option key={category} value={category} style={adminProductOptionStyle}>{category}</option>
-          ))}
-        </select>
-        <select className="admin-select" style={adminProductSelectStyle} value={filters.stock} onChange={(event) => setFilters((current) => ({ ...current, stock: event.target.value }))}>
-          <option value="all" style={adminProductOptionStyle}>All Stock</option>
-          <option value="in" style={adminProductOptionStyle}>In Stock</option>
-          <option value="out" style={adminProductOptionStyle}>Out of Stock</option>
-        </select>
-        <select className="admin-select" style={adminProductSelectStyle} value={filters.collection} onChange={(event) => setFilters((current) => ({ ...current, collection: event.target.value }))}>
-          <option value="all" style={adminProductOptionStyle}>All Collections</option>
-          {collectionOptions.map((collection) => (
-            <option key={collection} value={collection} style={adminProductOptionStyle}>{collection}</option>
-          ))}
-        </select>
-      </div>
+    <div
+      style={{
+        padding: '30px',
+        background: '#0f0f0f',
+        minHeight: '100vh'
+      }}
+    >
 
-      {error || actionError ? (
-        <div className="p-4 bg-danger/10 border-danger rounded-xl text-danger">{error || actionError}</div>
-      ) : null}
+      {/* ===================== */}
+      {/* CREATE PRODUCT FORM */}
+      {/* ===================== */}
 
-      {filteredProducts.length === 0 ? (
-        <EmptyState title="No Products" description="No products match the current search and filters." />
-      ) : viewMode === 'table' ? (
-        <Table columns={columns} data={filteredProducts} onRowClick={openEditForm} />
-      ) : (
-        <div className="grid-cols-3">
-          {filteredProducts.map((product) => (
-            <Card key={product.id}>
-              <div className="relative overflow-hidden rounded-xl mb-4">
-                {Array.isArray(product.images) && product.images.length > 0 && product.images[0] ? (
-                  <img
-                    src={product.images[0]}
-                    alt={product.name}
-                    className="w-full h-48 object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-48 flex items-center justify-center admin-surface">
-                    <span className="text-text-secondary">No Image</span>
-                  </div>
-                )}
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <h3 className="font-semibold">{product.name}</h3>
-                  <p className="text-sm text-text-secondary">{product.category || 'Uncategorized'}</p>
-                  <p className="text-sm text-text-secondary">{product.collection || 'Collection not set'}</p>
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="font-bold text-gold">{formatPrice(product.price || 0)}</div>
-                  <Badge variant={getStatusVariant(product.stock)}>{Number(product.stock) > 0 ? 'In Stock' : 'Out of Stock'}</Badge>
-                </div>
-                <div className="text-sm text-text-secondary">{product.stock || 0} units available</div>
-                <div className="admin-action-row">
-                  <Button size="sm" variant="secondary" onClick={() => openEditForm(product)}>
-                    Edit
-                  </Button>
-                  <Button size="sm" variant="danger" onClick={() => handleDelete(product.id)}>
-                    Delete
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          ))}
-        </div>
-      )}
-
-      <Modal
-        isOpen={isFormOpen}
-        onClose={closeForm}
-        title={editingProduct ? 'Edit Product' : 'Add Product'}
-        footer={
-          <>
-            <Button variant="secondary" onClick={closeForm}>
-              Cancel
-            </Button>
-            <Button variant="primary" type="submit" form="admin-product-form">
-              {editingProduct ? 'Update Product' : 'Publish Product'}
-            </Button>
-          </>
-        }
+      <div
+        style={{
+          maxWidth: '1000px',
+          margin: '0 auto',
+          background: '#171717',
+          padding: '30px',
+          borderRadius: '20px',
+          marginBottom: '50px'
+        }}
       >
-        {saveError ? <div className="p-4 bg-danger/10 border-danger rounded-xl text-danger">{saveError}</div> : null}
 
-        <form id="admin-product-form" onSubmit={handleSubmit} className="space-y-6">
-          <div className="admin-product-form-grid">
-            <section className="admin-form-section">
-              <h3 className="admin-form-section-title">Product Details</h3>
-              <div className="admin-form-grid-two">
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-name">Product Name</label>
-                  <input id="product-name" className="admin-input" value={form.name} onChange={(event) => updateField('name', event.target.value)} required />
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-category">Category</label>
-                  <select id="product-category" className="admin-select" style={adminProductSelectStyle} value={form.category} onChange={(event) => updateField('category', event.target.value)} required>
-                    {categoryOptions.map((category) => (
-                      <option key={category} value={category} style={adminProductOptionStyle}>{category}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-collection">Collection</label>
-                  <select id="product-collection" className="admin-select" style={adminProductSelectStyle} value={form.collection} onChange={(event) => updateField('collection', event.target.value)}>
-                    {collectionOptions.map((collection) => (
-                      <option key={collection} value={collection} style={adminProductOptionStyle}>{collection}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="admin-form-field admin-form-field-full">
-                  <label className="admin-label" htmlFor="product-description">Description</label>
-                  <textarea id="product-description" className="admin-textarea" value={form.description} onChange={(event) => updateField('description', event.target.value)} required />
-                </div>
-                <div className="admin-form-field admin-form-field-full">
-                  <span className="admin-label">Product Details</span>
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-fabric">Fabric</label>
-                  <input id="product-fabric" name="fabric" className="admin-input" value={form.fabric} onChange={(event) => updateField('fabric', event.target.value)} required />
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-work">Work</label>
-                  <input id="product-work" name="work" className="admin-input" value={form.work} onChange={(event) => updateField('work', event.target.value)} required />
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-occasion">Occasion</label>
-                  <input id="product-occasion" name="occasion" className="admin-input" value={form.occasion} onChange={(event) => updateField('occasion', event.target.value)} required />
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-crafted-in">Crafted In</label>
-                  <input id="product-crafted-in" name="craftedIn" className="admin-input" value={form.craftedIn} onChange={(event) => updateField('craftedIn', event.target.value)} required />
-                </div>
-              </div>
-            </section>
+        <h1
+          style={{
+            color: '#fff',
+            marginBottom: '25px',
+            fontSize: '34px'
+          }}
+        >
+          Create Product
+        </h1>
 
-            <section className="admin-form-section">
-              <h3 className="admin-form-section-title">Pricing & Inventory</h3>
-              <div className="admin-form-grid-two">
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-price">Price</label>
-                  <input id="product-price" className="admin-input" type="number" min="1" step="1" value={form.price} onChange={(event) => updateField('price', event.target.value)} required />
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-stock">Stock</label>
-                  <input id="product-stock" className="admin-input" type="number" min="0" step="1" value={getFormStock(form)} readOnly required />
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label" htmlFor="product-sku">SKU</label>
-                  <input id="product-sku" className="admin-input" value={form.sku} onChange={(event) => updateField('sku', event.target.value)} />
-                </div>
-                <div className="admin-form-field">
-                  <label className="admin-label">Status</label>
-                  <div className="admin-inline-badge-row">
-                    <Badge variant={getStatusVariant(getFormStock(form))}>{getFormStock(form) > 0 ? 'In Stock' : 'Out of Stock'}</Badge>
-                  </div>
-                </div>
-                <div className="admin-form-field admin-form-field-full">
-                  <span className="admin-label">Size Inventory</span>
-                  <div className="admin-form-grid-two">
-                    {catalogConstants.SIZE_OPTIONS.map((size) => (
-                      <div className="admin-form-field" key={size}>
-                        <label htmlFor={`product-size-${size}`} style={adminCheckboxLabelStyle}>
-                          <input
-                            id={`product-size-${size}`}
-                            type="checkbox"
-                            checked={Boolean(form.sizeInventory?.[size]?.enabled)}
-                            onChange={(event) => updateSizeInventory(size, 'enabled', event.target.checked)}
-                            style={adminCheckboxStyle}
-                          />
-                          <span>{size}</span>
-                        </label>
-                        <input
-                          className="admin-input"
-                          type="number"
-                          min="0"
-                          step="1"
-                          value={form.sizeInventory?.[size]?.stock ?? 0}
-                          onChange={(event) => updateSizeInventory(size, 'stock', event.target.value)}
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="admin-form-field admin-form-field-full">
-                  <span className="admin-label">Display Sections</span>
-                  <div style={adminCheckboxGroupStyle}>
-                    <label htmlFor="product-show-new-arrival" style={adminCheckboxLabelStyle}>
-                      <input id="product-show-new-arrival" type="checkbox" checked={form.isNewArrival} onChange={() => updateCheckboxField('isNewArrival')} style={adminCheckboxStyle} />
-                      <span>Show in New Arrival</span>
-                    </label>
-                    <label htmlFor="product-show-best-seller" style={adminCheckboxLabelStyle}>
-                      <input id="product-show-best-seller" type="checkbox" checked={form.isBestSeller} onChange={() => updateCheckboxField('isBestSeller')} style={adminCheckboxStyle} />
-                      <span>Show in Best Seller</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </section>
-          </div>
+        <form onSubmit={handleSubmit}>
 
-          <section className="admin-form-section">
-            <h3 className="admin-form-section-title">Media</h3>
-            <textarea
-              className="admin-textarea"
-              value={form.imageUrls}
-              onChange={(event) => updateImageUrls(event.target.value)}
-              placeholder="Enter image URLs, one per line or comma-separated"
+          <input
+            type="text"
+            name="product_name"
+            placeholder="Product Name"
+            value={form.product_name}
+            onChange={handleChange}
+            required
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            name="category"
+            placeholder="Category"
+            value={form.category}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            name="collection"
+            placeholder="Collection"
+            value={form.collection}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <textarea
+            name="descripion"
+            placeholder="Description"
+            value={form.descripion}
+            onChange={handleChange}
+            style={textareaStyle}
+          />
+
+          <input
+            type="text"
+            name="fabric"
+            placeholder="Fabric"
+            value={form.fabric}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            name="work"
+            placeholder="Work"
+            value={form.work}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            name="occasion"
+            placeholder="Occasion"
+            value={form.occasion}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            name="crafted_in"
+            placeholder="Crafted In"
+            value={form.crafted_in}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="number"
+            name="price"
+            placeholder="Price"
+            value={form.price}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="number"
+            name="stock"
+            placeholder="Stock"
+            value={form.stock}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            name="sku"
+            placeholder="SKU"
+            value={form.sku}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          <input
+            type="text"
+            name="size"
+            placeholder="Size Example: S,M,L,XL"
+            value={form.size}
+            onChange={handleChange}
+            style={inputStyle}
+          />
+
+          {/* ===================== */}
+          {/* IMAGE INPUT */}
+          {/* ===================== */}
+
+          <div
+            style={{
+              marginBottom: '20px'
+            }}
+          >
+
+            <label
+              style={{
+                display: 'block',
+                color: '#fff',
+                marginBottom: '10px',
+                fontWeight: '600'
+              }}
+            >
+              Upload Product Images
+            </label>
+
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageChange}
+              style={{
+                color: '#fff'
+              }}
             />
 
-            {form.images.length ? (
-              <div className="admin-image-preview-grid">
-                {form.images.map((image, index) => (
-                  <div className="admin-image-preview-card" key={`${image}-${index}`}>
-                    <img
-                      src={image}
-                      alt={`Product preview ${index + 1}`}
-                      className="admin-image-preview-img"
-                    />
-                    <button type="button" className="admin-image-remove-btn" onClick={() => removeImage(index)}>Remove</button>
-                  </div>
-                ))}
+          </div>
+
+          {/* ===================== */}
+          {/* IMAGE PREVIEW */}
+          {/* ===================== */}
+
+          {
+            previewImages.length > 0 && (
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns:
+                    'repeat(auto-fill,minmax(180px,1fr))',
+                  gap: '20px',
+                  marginBottom: '30px'
+                }}
+              >
+
+                {
+                  previewImages.map(
+                    (image, index) => (
+
+                      <div
+                        key={index}
+                        style={{
+                          background: '#222',
+                          padding: '10px',
+                          borderRadius: '14px'
+                        }}
+                      >
+
+                        <img
+                          src={image.url}
+                          alt="Preview"
+                          style={{
+                            width: '100%',
+                            height: '180px',
+                            objectFit: 'cover',
+                            borderRadius: '10px'
+                          }}
+                        />
+
+                        <p
+                          style={{
+                            color: '#fff',
+                            fontSize: '12px',
+                            marginTop: '10px',
+                            wordBreak: 'break-word'
+                          }}
+                        >
+                          {image.file.name}
+                        </p>
+
+                      </div>
+                    )
+                  )
+                }
+
               </div>
-            ) : null}
-          </section>
+            )
+          }
+
+          <button
+            type="submit"
+            disabled={loading}
+            style={buttonStyle}
+          >
+
+            {
+              loading
+                ? 'Creating Product...'
+                : 'Create Product'
+            }
+
+          </button>
+
         </form>
-      </Modal>
+
+        {
+          message && (
+
+            <p
+              style={{
+                color: '#fff',
+                marginTop: '20px'
+              }}
+            >
+              {message}
+            </p>
+          )
+        }
+
+      </div>
+
+      {/* ===================== */}
+      {/* PRODUCT LIST */}
+      {/* ===================== */}
+
+      <div
+        style={{
+          maxWidth: '1200px',
+          margin: '0 auto'
+        }}
+      >
+
+        <h2
+          style={{
+            color: '#fff',
+            marginBottom: '25px'
+          }}
+        >
+          All Products
+        </h2>
+
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns:
+              'repeat(auto-fill,minmax(280px,1fr))',
+            gap: '25px'
+          }}
+        >
+
+          {
+            products.map((product) => {
+
+              let images = []
+
+              try {
+
+                images = JSON.parse(
+                  product.media || '[]'
+                )
+
+              } catch {
+
+                images = []
+              }
+
+              return (
+
+                <div
+                  key={product.product_id}
+                  style={{
+                    background: '#171717',
+                    borderRadius: '18px',
+                    overflow: 'hidden',
+                    border: '1px solid #2c2c2c'
+                  }}
+                >
+
+                  {
+                    images.length > 0 ? (
+
+                      <img
+                        src={`http://localhost:5000${images[0]}`}
+                        alt={product.product_name}
+                        style={{
+                          width: '100%',
+                          height: '260px',
+                          objectFit: 'cover'
+                        }}
+                      />
+
+                    ) : (
+
+                      <div
+                        style={{
+                          height: '260px',
+                          background: '#222'
+                        }}
+                      />
+                    )
+                  }
+
+                  <div
+                    style={{
+                      padding: '20px'
+                    }}
+                  >
+
+                    <h3
+                      style={{
+                        color: '#fff',
+                        marginBottom: '10px'
+                      }}
+                    >
+                      {product.product_name}
+                    </h3>
+
+                    <p
+                      style={{
+                        color: '#aaa',
+                        marginBottom: '8px'
+                      }}
+                    >
+                      {product.category}
+                    </p>
+
+                    <p
+                      style={{
+                        color: '#d4af37',
+                        fontWeight: '700',
+                        marginBottom: '15px'
+                      }}
+                    >
+                      ₹ {product.price}
+                    </p>
+
+                    <button
+                      onClick={() =>
+                        deleteProduct(
+                          product.product_id
+                        )
+                      }
+                      style={{
+                        width: '100%',
+                        padding: '12px',
+                        border: 'none',
+                        borderRadius: '10px',
+                        background: '#ff4d4d',
+                        color: '#fff',
+                        cursor: 'pointer',
+                        fontWeight: '600'
+                      }}
+                    >
+                      Delete Product
+                    </button>
+
+                  </div>
+
+                </div>
+              )
+            })
+          }
+
+        </div>
+
+      </div>
+
     </div>
   )
+}
+
+const inputStyle = {
+
+  width: '100%',
+
+  padding: '14px',
+
+  marginBottom: '16px',
+
+  borderRadius: '12px',
+
+  border: '1px solid #333',
+
+  background: '#1b1b1b',
+
+  color: '#fff',
+
+  outline: 'none',
+
+  fontSize: '14px'
+}
+
+const textareaStyle = {
+
+  ...inputStyle,
+
+  minHeight: '120px'
+}
+
+const buttonStyle = {
+
+  width: '100%',
+
+  padding: '15px',
+
+  border: 'none',
+
+  borderRadius: '14px',
+
+  background: '#d4af37',
+
+  color: '#000',
+
+  fontWeight: '700',
+
+  cursor: 'pointer',
+
+  fontSize: '16px'
 }

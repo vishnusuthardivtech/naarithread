@@ -34,6 +34,7 @@ import Faq from './pages/Faq'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import QuickViewModal from './components/QuickViewModal'
+import Shop from './pages/Shop'
 
 export default function App() {
   return (
@@ -67,6 +68,7 @@ export default function App() {
             <Route path="/collection3" element={<Collection3 />} />
             <Route path="/new-arrival" element={<NewArrival />} />
             <Route path="/best-seller" element={<BestSeller />} />
+            <Route path="/shop" element={<Shop />} />
             <Route path="/product" element={<Product />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/wishlist" element={<Wishlist />} />
